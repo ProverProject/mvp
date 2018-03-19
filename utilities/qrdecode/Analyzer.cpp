@@ -3,6 +3,7 @@
 
 #include "Analyzer.h"
 #include <algorithm>
+#include <cstdio>
 #include <png.h>
 #include "VideoAnalyzer.h"
 #include "JpegAnalyzer.h"
@@ -100,6 +101,7 @@ void Analyzer::analyzeGrayscaleImage(
     unsigned int  width,
     unsigned int  height,
     const char   *data,
+    int           verbosity,
     Result       &result)
 {
     zbar::Image zimg(width, height, "GREY", data, width*height);
@@ -114,6 +116,12 @@ void Analyzer::analyzeGrayscaleImage(
             std::vector<uint8_t> data=decodeNumber(it->get_data());
             if(data.size()==46)
                 result.incrementCodeCounter(data);
+            else if(verbosity>0)
+                fprintf(stderr, "Unsupported qrcode data size %u\n", data.size());
+        }
+        else if(verbosity>0)
+        {
+            fprintf(stderr, "Unsupported symbol type %d\n", it->get_type());
         }
     }
 }

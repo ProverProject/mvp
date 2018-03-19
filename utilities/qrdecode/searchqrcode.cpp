@@ -72,6 +72,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "File format is not supported\n");
         return 2;
     }
+    else if(verbosity>0)
+    {
+        fprintf(stderr, "File format accepted\n");
+    }
 
     auto result=analyzer->analyzeFile();
     if(!result)

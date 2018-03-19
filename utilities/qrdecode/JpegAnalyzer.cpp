@@ -66,10 +66,14 @@ Analyzer::Result JpegAnalyzer::analyzeFile()
         y+=rc;
     }
 
+    if(_config.getVerbosity()>0)
+        fprintf(stderr, "Image successfully decoded\n");
+
     analyzeGrayscaleImage(
         jpeg.output_width,
         jpeg.output_height,
         (const char *)imagedata.data(),
+        _config.getVerbosity(),
         result);
 
     jpeg_finish_decompress(&jpeg);

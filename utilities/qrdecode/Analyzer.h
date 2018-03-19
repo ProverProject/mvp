@@ -35,6 +35,7 @@ protected:
         unsigned int  width,
         unsigned int  height,
         const char   *data,
+        int           verbosity,
         Result       &result);
 
 private:

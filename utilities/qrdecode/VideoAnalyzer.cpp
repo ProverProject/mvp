@@ -104,6 +104,7 @@ Analyzer::Result VideoAnalyzer::analyzeFile()
                 frame->width,
                 frame->height,
                 (const char *)frame->data[0],
+                _config.getVerbosity(),
                 result);
 
             ++frameno;
