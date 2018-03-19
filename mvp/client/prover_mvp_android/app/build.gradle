@@ -1,0 +1,173 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "io.prover.provermvp"
+        //applicationId "io.prover.provermvp.demo"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 68
+        versionName "1.2.7_speed_1.75"
+        //versionName "1.2.6_demo_2"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11 -frtti -fexceptions"
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    applicationVariants.matching(
+            { it.buildType.name == android.buildTypes.release.name }
+    ).all { variant ->
+
+        variant.outputs.all {
+            outputFileName = "../../../../../../build/${variant.applicationId}-${variant.flavorName}-${variant.versionName}_${variant.versionCode}.apk"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild {
+                cmake {
+                    cppFlags "-fexceptions -frtti -fPIE -fPIC -std=c++11"
+                    abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64", "mips", "mips64"
+                }
+            }
+        }
+        debug {
+            externalNativeBuild {
+                cmake {
+                    cppFlags "-fexceptions -frtti -fPIE -funwind-tables -DDEBUG -fPIC  -std=c++11"
+                    abiFilters "armeabi"
+                }
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+    if (project.hasProperty("ProverMvp.signing")
+            && new File(project.property("ProverMvp.signing") + "ProverMvp.gradle").exists()) {
+        apply from: project.property("ProverMvp.signing") + "ProverMvp.gradle";
+    }
+
+    flavorDimensions "main"
+    productFlavors {
+        arm {
+            versionCode = android.defaultConfig.versionCode
+            dimension "main"
+            ndk {
+                abiFilters "armeabi",  "arm64-v8a"
+            }
+            externalNativeBuild {
+                cmake {
+                    abiFilters "armeabi",  "arm64-v8a"
+                }
+            }
+        }
+
+
+/*        arm64 {
+            dimension "main"
+            ndk {
+                abiFilter "arm64-v8a"
+            }
+            externalNativeBuild {
+                cmake {
+                    abiFilters "arm64-v8a"
+                }
+            }
+        }//*/
+
+        armeabi_v7a {
+            versionCode = android.defaultConfig.versionCode + 1
+            dimension "main"
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+            externalNativeBuild {
+                cmake {
+                    abiFilters "armeabi-v7a"
+                }
+            }
+        }
+
+        x86 {
+            versionCode = android.defaultConfig.versionCode + 2
+            dimension "main"
+            ndk {
+                abiFilter "x86"
+            }
+            externalNativeBuild {
+                cmake {
+                    abiFilters "x86"
+                }
+            }
+        }
+
+        x86_64 {
+            versionCode = android.defaultConfig.versionCode + 3
+            dimension "main"
+            ndk {
+                abiFilter "x86_64"
+            }
+            externalNativeBuild {
+                cmake {
+                    abiFilters "x86_64"
+                }
+            }
+        }
+
+        mips {
+            versionCode = android.defaultConfig.versionCode + 4
+            dimension "main"
+            ndk {
+                abiFilter "mips"
+            }
+            externalNativeBuild {
+                cmake {
+                    abiFilters "mips"
+                }
+            }
+        }
+
+        mips64 {
+            versionCode = android.defaultConfig.versionCode + 5
+            dimension "main"
+            ndk {
+                abiFilter "mips64"
+            }
+            externalNativeBuild {
+                cmake {
+                    abiFilters "mips64"
+                }
+            }
+        }// */
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:design:26.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.madgag.spongycastle:pkix:1.54.0.0'
+//    implementation ('org.web3j:core:3.1.1-android')
+}
