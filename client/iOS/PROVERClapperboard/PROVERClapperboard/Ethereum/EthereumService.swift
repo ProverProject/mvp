@@ -6,9 +6,7 @@ class EthereumService: EthereumServiceProtocol {
 
   // MARK: - Singleton
   static let shared = EthereumService()
-  private init() {
-    print("password: \(mainPassword)")
-  }
+  private init() {}
   
   // MARK: - Filemanager properties
   var documentURL: URL {

@@ -25,7 +25,6 @@ struct QRCoder {
     let maskToAlphaImage = maskToAlphaFilter.outputImage!
     
     let image = UIImage(ciImage: maskToAlphaImage.transformed(by: transform))
-    print(image.size)
     
     return image.withRenderingMode(.alwaysTemplate)
   }
