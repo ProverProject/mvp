@@ -24,7 +24,7 @@ if (!empty($_FILES['file'])) {
     $file = $_FILES['file']['tmp_name'];
     $fileName = $_FILES['file']['name'];
 
-    $result = exec("searchqrcode $file --orig-file-name $fileName 2> /dev/null", $output, $return_code);
+    $result = exec("searchqrcode $file --orig-file-name $fileName -v 2> /dev/null", $output, $return_code);
 
     echo "return_code: <pre>";
     var_dump($return_code);
