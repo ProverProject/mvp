@@ -15,7 +15,12 @@ class WalletViewController: UITableViewController {
   
   private let balanceLabel: UILabel = {
     let label = UILabel()
-    label.text = "0.0 P"
+    let text = NSMutableAttributedString(string: "0.0 ")
+    let attachment = NSTextAttachment()
+    attachment.image = #imageLiteral(resourceName: "proofSymbol")
+    let imageString = NSAttributedString(attachment: attachment)
+    text.append(imageString)
+    label.attributedText = text
     label.textColor = .white
     label.font = UIFont.systemFont(ofSize: 30)
     label.translatesAutoresizingMaskIntoConstraints = false
@@ -35,6 +40,7 @@ class WalletViewController: UITableViewController {
   
   @IBAction func copyButtonAction(_ sender: UIButton) {
     UIPasteboard.general.string = walletAddress.text
+    showAlert(with: "Successfully copy wallet address to clipboard", title: "Success", handler: nil)
   }
   
   // MARK: - Dependency
@@ -82,9 +88,12 @@ class WalletViewController: UITableViewController {
       fatalError("Unexpected segue")
     }
   }
+}
+
+// MARK: - Private methods
+private extension WalletViewController {
   
-  // MARK: - Private methods
-  private func configureNavigationTitle() {
+  func configureNavigationTitle() {
     
     guard let bar = navigationController?.navigationBar else { return }
     
@@ -106,7 +115,7 @@ class WalletViewController: UITableViewController {
       .constraint(equalTo: balanceTitleLabel.rightAnchor).isActive = true
   }
   
-  private func showSafariView() {
+  func showSafariView() {
     print("show safari view")
     guard let url = URL(string: "https://mvp.prover.io/#get_ropsten_testnet_ether") else {
       print("Can't create URL")
@@ -114,6 +123,14 @@ class WalletViewController: UITableViewController {
     }
     let safariView = SFSafariViewController(url: url)
     present(safariView, animated: true, completion: nil)
+  }
+  
+  func showAlert(with text: String,
+                 title: String = "Error",
+                 handler: ((UIAlertAction) -> Void)? = nil) {
+    let alert = UIAlertController(title: title, message: text, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: handler))
+    self.present(alert, animated: true, completion: nil)
   }
 }
 
