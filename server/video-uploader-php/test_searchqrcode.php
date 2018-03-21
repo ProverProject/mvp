@@ -18,13 +18,15 @@ if (@$_GET['TEST_SEARCHQRCODE_PASSWORD'] !== TEST_SEARCHQRCODE_PASSWORD) {
 </form>
 
 <?php
-var_dump($_FILES);
-var_dump($_POST);
 if (!empty($_FILES['file'])) {
     $file = $_FILES['file']['tmp_name'];
     $fileName = $_FILES['file']['name'];
 
-    $result = exec("searchqrcode $file --orig-file-name $fileName -v 2> /dev/null", $output, $return_code);
+    $result = exec("searchqrcode $file --orig-file-name $fileName -v 2>&1", $output, $return_code);
+
+    echo "file: <pre>";
+    var_dump($_FILES);
+    echo "</pre>";
 
     echo "return_code: <pre>";
     var_dump($return_code);
