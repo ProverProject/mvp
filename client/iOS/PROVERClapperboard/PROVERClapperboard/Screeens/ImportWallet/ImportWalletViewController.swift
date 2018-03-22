@@ -1,7 +1,7 @@
 import UIKit
 import FileBrowser
 
-class ImportWalletViewController: UITableViewController {
+class ImportWalletViewController: UIViewController {
   
   // MARK: - IBOutlet
   @IBOutlet weak var walletFileLabel: UILabel!

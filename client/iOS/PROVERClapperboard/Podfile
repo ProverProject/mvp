@@ -10,6 +10,6 @@ target 'PROVERClapperboard' do
   pod 'Moya'
   pod 'Geth'
   pod 'KeychainSwift'
-  pod 'Repeat'
   pod 'FileBrowser'
+  pod 'BigInt'
 end

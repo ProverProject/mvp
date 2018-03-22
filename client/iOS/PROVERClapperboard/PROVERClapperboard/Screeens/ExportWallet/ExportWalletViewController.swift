@@ -44,6 +44,7 @@ class ExportWalletViewController: UITableViewController {
       }
       return
     }
+    showAlert(with: "Successfully save wallet in documents folder", title: "Success", handler: nil)
     currentWallet = walletData
     
     self.passwordTextField.text = ""

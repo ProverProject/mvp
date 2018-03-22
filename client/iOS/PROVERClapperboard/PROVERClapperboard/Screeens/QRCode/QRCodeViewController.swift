@@ -9,6 +9,7 @@ class QRCodeViewController: UIViewController {
     }
   }
   @IBOutlet weak var qrImage: UIImageView!
+  @IBOutlet weak var logoQRImage: UIImageView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   
   // MARK: - IBAction
@@ -41,6 +42,13 @@ class QRCodeViewController: UIViewController {
           self.activityIndicator.isHidden = true
           self.qrImage.isHidden = false
           self.qrImage.image = image
+          
+          self.logoQRImage.image = image
+          let maskImageView = UIImageView()
+          maskImageView.frame = CGRect(origin: .zero, size: self.logoQRImage.frame.size)
+          maskImageView.image = #imageLiteral(resourceName: "symbol")
+          maskImageView.contentMode = .center
+          self.logoQRImage.mask = maskImageView
         }
       case .failure(let text):
         DispatchQueue.main.async {
@@ -68,8 +76,9 @@ class QRCodeViewController: UIViewController {
   func generateQR() {
     
     state = .loading
-    guard let text = text else { return }
     
+    guard let text = text else { return }
+
     let qrDataOperation = QRCodeDataOperation(apiService: store.apiService,
                                               ethereumService: store.ethereumService,
                                               text: text)
@@ -80,6 +89,7 @@ class QRCodeViewController: UIViewController {
       }
       switch result {
       case .success(let data):
+        print(data)
         self.state = .load(QRCoder().encode(data))
       case .failure(let error):
         print(error)
@@ -87,7 +97,18 @@ class QRCodeViewController: UIViewController {
         case .networkError:
           self.state = .failure("Issue with network connection")
         case .submitError(let submitError):
-          self.state = .failure(submitError.message)
+          switch submitError.message {
+          case "insufficient funds for gas * price + value":
+            self.state = .failure("insufficient funds on the balance")
+          case let text where
+            text.contains("known transaction") || text.contains("replacement transaction underpriced"):
+            self.state =
+              .failure("You can not execute the query until the previous transaction is placed in the blockchain")
+          default:
+            print(submitError.message)
+            print(submitError.code)
+            self.state = .failure(submitError.message)
+          }
         default:
           print(error)
         }
