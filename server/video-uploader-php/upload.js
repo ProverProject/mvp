@@ -211,10 +211,13 @@ Array.prototype.forEach.call(forms, function (form) {
             successHash.innerHTML = msgHash;
             successDownloadPdf.setAttribute('href', response.fileName);
 
-            if (response.typeText) {
+            if (response.datetime_ts) {
                 msgDateCreateQRCode = new Date(response.datetime_ts * 1000);
-                msgTypeText = response.typeText;
                 successDateCreateQRCode.innerHTML = msgDateCreateQRCode;
+            }
+
+            if (response.typeText) {
+                msgTypeText = response.typeText;
                 successSwypeCode.innerHTML = msgTypeText;
             }
 
