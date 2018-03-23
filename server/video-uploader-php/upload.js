@@ -81,6 +81,7 @@ Array.prototype.forEach.call(forms, function (form) {
         labelDefault = form.querySelector('label.box__labelFile_default'),
         successTimeSwypeCode = form.querySelector('.time_swype-code span'),
         successHash = form.querySelector('.hash span'),
+        successDateCreateQRCode = form.querySelector('.date-create span'),
         successSwypeCode = form.querySelector('.swype-code span'),
         successDownloadPdf = form.querySelector('.download-pdf'),
         successSwypeBeginEnd = form.querySelector('.swype-begin-end span'),
@@ -155,6 +156,7 @@ Array.prototype.forEach.call(forms, function (form) {
                 msgHash = 'Nothing found',
                 msgTypeText = 'Nothing found',
                 msgSwypeCode = 'Nothing found',
+                msgDateCreateQRCode = 'Nothing found',
                 msgSwypeBeginEnd = 'Nothing found';
             form.classList.add('is-success');
             var senderAddressesSpans = '';
@@ -210,7 +212,9 @@ Array.prototype.forEach.call(forms, function (form) {
             successDownloadPdf.setAttribute('href', response.fileName);
 
             if (response.typeText) {
+                msgDateCreateQRCode = new Date(response.datetime_ts * 1000);
                 msgTypeText = response.typeText;
+                successDateCreateQRCode.innerHTML = msgDateCreateQRCode;
                 successSwypeCode.innerHTML = msgTypeText;
             }
 

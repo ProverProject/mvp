@@ -563,6 +563,7 @@ input[type='search']::-webkit-search-results-decoration {
 .box.has-advanced-upload .box__success .swype-code,
 .box.has-advanced-upload .box__success .swype-begin-end,
 .box.has-advanced-upload .box__success .hash,
+.box.has-advanced-upload .box__success .date-create,
 .box.has-advanced-upload .box__success .time_hash {
     color: #ffffff;
     text-align: left;
@@ -572,6 +573,7 @@ input[type='search']::-webkit-search-results-decoration {
 .box.has-advanced-upload .box__success .swype-code span,
 .box.has-advanced-upload .box__success .swype-begin-end span,
 .box.has-advanced-upload .box__success .hash span,
+.box.has-advanced-upload .box__success .date-create span,
 .box.has-advanced-upload .box__success .time_hash span {
     float: right;
 }

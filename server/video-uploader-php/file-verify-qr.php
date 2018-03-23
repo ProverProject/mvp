@@ -149,11 +149,11 @@ function worker($file, $fileName)
                 'error' => 'wrong submit hash input'
             ];
         }
-        $block = getBlockByHash($gethClient, $gethClient->result->blockHash);
-        $datetime_ts = hexdec($block->timestamp);
         $inputStrLength = hexdec(substr($gethClient->result->input, 2 + (4 + 32) * 2, 64));
         $inputStrHex = substr($gethClient->result->input, 2 + (4 + 32 + 32) * 2, $inputStrLength * 2);
         $inputStr = hexToStr($inputStrHex);
+        $block = getBlockByHash($gethClient, $gethClient->result->blockHash);
+        $datetime_ts = hexdec($block->timestamp);
         return [
             'fileName' => $fileName,
             'isSuccess' => true,
