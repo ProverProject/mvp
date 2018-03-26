@@ -2,7 +2,7 @@
 
 ---
 
-ProverProject
+## ProverProject
 
 <img src="https://proverproject.github.io/images/prover.png" alt="Prover logo" width="100%">
 
