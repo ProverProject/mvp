@@ -98,7 +98,7 @@ saveClientInfo('index');
                 <form method="post" id="uploadForm" action="file-verify-hash.php" enctype="multipart/form-data" novalidate class="box">
                     <div class="box__input" onclick="document.getElementById('file').click()">
                         <div class="red-line"></div>
-                        <h3 class="box__verification">File verification</h3>
+                        <h3 class="box__verification">File verification (mp4)</h3>
                         <input type="file" name="file" id="file" class="box__file">
                         <label class="box__labelFile_default" for="">
                             <strong>Choose a file</strong>
@@ -284,7 +284,7 @@ saveClientInfo('index');
                     <form method="post" id="clapperboard-uploadForm" action="file-verify-qr.php" enctype="multipart/form-data" novalidate class="box">
                         <div class="box__input" onclick="document.getElementById('clapperboard-file').click()">
                             <div class="red-line"></div>
-                            <h3 class="box__verification">File verification</h3>
+                            <h3 class="box__verification">File verification (jpeg, png)</h3>
                             <input type="file" name="file" id="clapperboard-file" class="box__file">
                             <label class="box__labelFile_default" for="">
                                 <strong>Choose a file</strong>
