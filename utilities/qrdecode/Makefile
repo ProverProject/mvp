@@ -8,7 +8,8 @@ OBJECTS := \
     .obj/ImageProcessor.cpp.o \
     .obj/Analyzer.cpp.o \
     .obj/VideoAnalyzer.cpp.o \
-    .obj/JpegAnalyzer.cpp.o
+    .obj/JpegAnalyzer.cpp.o \
+    .obj/PngAnalyzer.cpp.o
 
 .PHONY: prepare all clean
 

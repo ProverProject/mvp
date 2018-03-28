@@ -7,6 +7,7 @@
 #include <png.h>
 #include "VideoAnalyzer.h"
 #include "JpegAnalyzer.h"
+#include "PngAnalyzer.h"
 
 
 Analyzer::Analyzer()
@@ -142,6 +143,11 @@ std::unique_ptr<Analyzer> Analyzer::Factory::createAnalyzer(
        origFileName.compare(dotpos, std::string::npos, ".JPEG")==0)
     {
         return std::unique_ptr<Analyzer>(new JpegAnalyzer(filename, config));
+    }
+    else if(origFileName.compare(dotpos, std::string::npos, ".png")==0 ||
+            origFileName.compare(dotpos, std::string::npos, ".PNG")==0)
+    {
+        return std::unique_ptr<Analyzer>(new PngAnalyzer(filename, config));
     }
     else
     {
