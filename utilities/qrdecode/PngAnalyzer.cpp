@@ -53,7 +53,7 @@ Analyzer::Result PngAnalyzer::analyzeFile()
     unsigned int width=png_get_image_width(png, info);
     unsigned int height=png_get_image_height(png, info);
 
-    png_set_rgb_to_gray(png, PNG_ERROR_ACTION_NONE, 54.0f/256.0f, 183.0f/256.0f);
+    png_set_rgb_to_gray(png, 1/*PNG_ERROR_ACTION_NONE*/, 54.0f/256.0f, 183.0f/256.0f);
     png_set_expand_gray_1_2_4_to_8(png);
 
     png_read_update_info(png, info);
