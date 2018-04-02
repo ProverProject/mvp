@@ -231,6 +231,13 @@ body.clapperboard .switch p.switch-prover {
     width: 100%;
     margin-left: -50%;
 }
+.main .market-link {
+    display: inline-block;
+    height: 40px;
+}
+.main .market-link img {
+    height: 100%;
+}
 #clapperboard-main .main-image img {
     margin-right: -50%;
     margin-left: 0;

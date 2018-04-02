@@ -74,8 +74,8 @@ saveClientInfo('index');
                         <li class="menu-list__item"><a href="#how-it-works">How it works</a></li>
                         <li class="menu-list__item"><a href="#use-cases">Use cases</a></li>
                         <li class="menu-list__item">
-                            <a target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.provermvp">
-                                <img class="google__play" src="images/gplay_eng.svg">
+                            <a class="market-link" target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.provermvp">
+                                <img class="google__play" src="images/googleplay_white.svg">
                             </a>
                         </li>
                     </ul>
@@ -273,8 +273,11 @@ saveClientInfo('index');
                             <li class="menu-list__item"><a href="#clapperboard-how-it-works">How it works</a></li>
                             <li class="menu-list__item"><a href="#clapperboard-use-cases">Use cases</a></li>
                             <li class="menu-list__item">
-                                <a target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.clapperboardmvp">
-                                    <img class="google__play" src="images/play_market.png">
+                                <a class="market-link" target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.clapperboardmvp">
+                                    <img class="google__play" src="images/googleplay_black.svg">
+                                </a>
+                                <a class="market-link" target="_blank" href="https://itunes.apple.com/us/app/prover-clapperboard-mvp/id1362026470?l=ru&ls=1&mt=8">
+                                    <img class="app__store" src="images/appstore_black.svg">
                                 </a>
                             </li>
                         </ul>
