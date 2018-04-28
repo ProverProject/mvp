@@ -39,8 +39,10 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user)
     $cmd = '';
     if ($txHash) {
         $cmd = "analyzefile $file --txhash $txHash --blockhash $blockHash 2> /dev/null";
+        $error = $cmd;
     } else if ($user) {
         $cmd = "analyzefile $file --user $user --blockhash $blockHash 2> /dev/null";
+        $error = $cmd;
     }
 
     $resultJson = [];
@@ -55,6 +57,8 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user)
             $swype = @$result['swype-code'];
             $beginSwypeTime = @$result['result']['time-begin'];
             $endSwypeTime = @$result['result']['time-end'];
+        } elseif ($result) {
+            $swype = @$result['swype-code'];
         }
     }
     return [
@@ -204,9 +208,7 @@ function worker($file, $fileName)
                                 $swype = $analyticResult['swype'];
                                 $beginSwypeTime = $analyticResult['beginSwypeTime'];
                                 $endSwypeTime = $analyticResult['endSwypeTime'];
-                                if ($beginSwypeTime && $endSwypeTime) {
-                                    $isSuccess = true;
-                                }
+                                $isSuccess = true;
                             }
                         }
                     }
@@ -224,9 +226,7 @@ function worker($file, $fileName)
                         $swype = $analyticResult['swype'];
                         $beginSwypeTime = $analyticResult['beginSwypeTime'];
                         $endSwypeTime = $analyticResult['endSwypeTime'];
-                        if ($beginSwypeTime && $endSwypeTime) {
-                            $isSuccess = true;
-                        }
+                        $isSuccess = true;
                     }
                 }
 
