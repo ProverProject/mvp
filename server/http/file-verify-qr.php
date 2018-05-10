@@ -154,6 +154,11 @@ function worker($file, $fileName)
         $inputStr = hexToStr($inputStrHex);
         $block = getBlockByHash($gethClient, $gethClient->result->blockHash);
         $datetime_ts = hexdec($block->timestamp);
+        
+        // add $time, $qr
+        $time = 0;
+        $qr_img = "https://upload.wikimedia.org/wikipedia/commons/e/eb/QR-%D0%BA%D0%BE%D0%B4.png";
+        generationPdfQr($fileName, $inputStr, '0x' . $hash, $time, $qr_img);
         return [
             'fileName' => $fileName,
             'isSuccess' => true,
