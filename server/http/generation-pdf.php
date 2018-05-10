@@ -218,7 +218,7 @@ function generationPdfQr($fileName, $inputStr, $hash, $time, $qr_img) {
         mkdir($tmpPath, 0777);
 
     $date = new DateTime();
-    $date->setTimestamp(hexdec($time));
+    $date->setTimestamp($time);
     $time = $date->format("d-m-Y H:i:s");
 
     $htmlPage = templateHTMLQr($inputStr, $hash, $time, $qr_img);

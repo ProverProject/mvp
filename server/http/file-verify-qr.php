@@ -155,10 +155,9 @@ function worker($file, $fileName)
         $block = getBlockByHash($gethClient, $gethClient->result->blockHash);
         $datetime_ts = hexdec($block->timestamp);
         
-        // add $time, $qr
-        $time = 0;
+        // заменить на рельный QR $qr_img
         $qr_img = "https://upload.wikimedia.org/wikipedia/commons/e/eb/QR-%D0%BA%D0%BE%D0%B4.png";
-        generationPdfQr($fileName, $inputStr, '0x' . $hash, $time, $qr_img);
+        generationPdfQr($fileName, $inputStr, '0x' . $hash, $datetime_ts, $qr_img);
         return [
             'fileName' => $fileName,
             'isSuccess' => true,
