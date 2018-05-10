@@ -316,7 +316,7 @@ saveClientInfo('index');
                                 <p class="hash">File hash: <span></span></p>
                                 <p class="date-create">Date create: <span></span></p>
                                 <p class="swype-code">Type text: <span></span></p>
-                                <a target="_blank" href="" class="download-pdf" style="display: none;">Download .pdf certificate</a>
+                                <a target="_blank" href="" class="download-pdf">Download .pdf certificate</a>
                                 <strong onclick="document.getElementById('clapperboard-file').click()">Try another file</strong>
                             </div>
                         </div>
