@@ -184,7 +184,7 @@ if (!empty($_FILES['file'])) {
 } else if (isset($argv[1])) {
     $file = $argv[1];
 }
-
+$fileName = str_replace(" ", "_", $fileName);
 $workerResult = worker($file, $fileName);
 die(uploadResult($workerResult['isSuccess'], $workerResult['fileName'], $workerResult['typeText'], $workerResult['hash'], $workerResult['datetime_ts'], $workerResult['error']));
 
