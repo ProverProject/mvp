@@ -1,5 +1,7 @@
 <?php
 
+include "libs/phpqrcode/qrlib.php";
+
 const namePDFConstructor = 'Constructor';
 const pathLibPDFConstructor = '/usr/local/lib';
 
@@ -12,6 +14,11 @@ function generationPdf($fileName, $hash, $swype, $startTime, $endTime) {
     if(!file_exists($tmpPath))
         mkdir($tmpPath, 0777);
 
+    $fileNameSwypeCode = $tmpPath.'swypeCode.png';
+    $fileNameHash = $tmpPath.'hash.png';
+    $errorCorrectionLevel = 'L';
+    $matrixPointSize = 5;
+
     $date = new DateTime();
     if (!empty($startTime)) {
         $date->setTimestamp(hexdec($startTime));
@@ -21,7 +28,12 @@ function generationPdf($fileName, $hash, $swype, $startTime, $endTime) {
         $date->setTimestamp(hexdec($endTime));
         $endTime = $date->format("d-m-Y H:i:s");
     }
-    $htmlPage = templateHTML($fileName, $hash, $swype, $startTime, $endTime);
+
+    // generation QRcode
+    QRcode::png($hash, $fileNameHash, $errorCorrectionLevel, $matrixPointSize, 2);
+    QRcode::png($swype, $fileNameSwypeCode, $errorCorrectionLevel, $matrixPointSize, 2);
+
+    $htmlPage = templateHTML($fileName, $hash, $swype, $startTime, $endTime, $fileNameSwypeCode, $fileNameHash);
     $nameConfigFileHTML = $tmpPath . $fileName . '.html';
     file_put_contents($nameConfigFileHTML, $htmlPage);
     chmod($nameConfigFileHTML, 0777);
@@ -53,7 +65,7 @@ function generationPdf($fileName, $hash, $swype, $startTime, $endTime) {
     rmdir($tmpPath);
 }
 
-function templateHTML($fileName, $hash, $swype, $startTime, $endTime) {
+function templateHTML($fileName, $hash, $swype, $startTime, $endTime, $fileNameSwypeCode, $fileNameHash) {
     $html = <<<EOD
         <style>
     * {
@@ -199,6 +211,14 @@ function templateHTML($fileName, $hash, $swype, $startTime, $endTime) {
         <div class="content-link">
             <p style="float:left;margin:60px 0 60px 115px;">www.prover.io</p>
             <p style="float:right;margin: 60px 115px 60px 0;">mvp.prover.io</p>
+        </div>
+        <div class="qr-code left">
+            <img src="$fileNameSwypeCode">
+            <h5>Reference block<br>with swype-code</h5>
+        </div>
+        <div class="qr-code right">
+            <img src="$fileNameHash">
+            <h5>Reference block<br>with hash</h5>
         </div>
     </div>
 </div>
