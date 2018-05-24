@@ -413,7 +413,7 @@ function templateHTMLQr($inputStr, $hash, $time, $qr_img) {
         <p class="center"><strong>$inputStr</strong></p>
 
         <div class="content-text">
-            <p>We hereby confirm that this video file was actually recorded not earlier than the date described in this certificate. The basis for this statement is the fact of presence the swype code that was generated, with the number of the block, current at that time, and the hash of the file, stored in the block, current at that time. Links to the blocks are presented here.</p>
+            <p>We hereby confirm that this video file was actually recorded exactly during the time interval, that is described in this certificate. The basis for this statement is the fact of presence the QR code that was generated, with the number of the block, current at that time, and the hash of the file, stored in the block, current at that time. Links to the blocks are presented here.</p>
         </div>
         <div class="content-link">
             <p style="float:left;margin:60px 0 60px 115px;">www.prover.io</p>
