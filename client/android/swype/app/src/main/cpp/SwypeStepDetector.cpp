@@ -4,6 +4,7 @@
 
 #include "SwypeStepDetector.h"
 #include "common.h"
+#include "settings.h"
 
 void SwypeStepDetector::Add(VectorExplained shift) {
     shift._x *= _speedMultX;
@@ -14,6 +15,17 @@ void SwypeStepDetector::Add(VectorExplained shift) {
     _current.Add(shift);
     _current._timestamp = shift._timestamp;
     _total.Add(shift);
+    _count++;
+}
+
+void SwypeStepDetector::Set(VectorExplained total) {
+    total._x *= _speedMultX;
+    total._defectX *= _speedMultX;
+    total._y *= _speedMultY;
+    total._defectY *= _speedMultY;
+
+    _current = total;
+    //_total.Add(shift);
     _count++;
 }
 
@@ -90,7 +102,7 @@ void SwypeStepDetector::SetTarget(VectorExplained target) {
 
     _targetRadius = _defaultTargetRadius;
     if (_relaxed && _target._direction % 2 == 0) {// for diagonal target at server
-        _targetRadius *= 1.65;
+        _targetRadius *= DIAGONAL_TARGET_RADIUS_MULT;
     }
 
     _BoundsChecker.SetDirection(_target._direction);

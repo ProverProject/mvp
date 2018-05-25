@@ -16,11 +16,14 @@ import android.view.View;
  */
 
 public class DefectView extends View {
-    private static final float TARGET_RADIUS = 0.22f;
+    private static final float TARGET_RADIUS = 0.16f;
+    private static final float DIAGONAL_TARGET_RADIUS_MULT = 1.4f;
     private static final float FIT_FACTOR_H = 0.45f;
     private static final float PARABOLA_START = -0.03f;
     private static final float PARABOLA_END = 1.21f;
     private static final float PARABOLA_STEP = 0.123f;
+
+
     private final RectF defectRect = new RectF();
     private final RectF defectRect2 = new RectF();
     private final RectF targetRect = new RectF();
@@ -161,7 +164,7 @@ public class DefectView extends View {
 
 
         if (isDiagonal) {
-            canvas.drawCircle(targetCenter.x, targetCenter.y, targetRadius * 1.65f, targetPaint);
+            canvas.drawCircle(targetCenter.x, targetCenter.y, targetRadius * DIAGONAL_TARGET_RADIUS_MULT, targetPaint);
 
             canvas.save();
             canvas.translate(fromXpx, fromYpx);

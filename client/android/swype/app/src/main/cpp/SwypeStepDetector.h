@@ -22,6 +22,8 @@ public:
 
     virtual void Add(VectorExplained);
 
+    virtual void Set(VectorExplained);
+
     void Reset();
 
     /**

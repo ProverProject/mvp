@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 68
-        versionName "1.2.7_speed_1.75"
+        versionName "1.3_speed_1.4"
         //versionName "1.2.6_demo_2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -29,7 +29,7 @@ android {
     ).all { variant ->
 
         variant.outputs.all {
-            outputFileName = "../../../../../../build/${variant.applicationId}-${variant.flavorName}-${variant.versionName}_${variant.versionCode}.apk"
+            outputFileName = "../../../../../build/${variant.applicationId}-${variant.flavorName}-${variant.versionName}_${variant.versionCode}.apk"
         }
     }
 

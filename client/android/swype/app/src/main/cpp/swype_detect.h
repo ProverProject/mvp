@@ -114,7 +114,7 @@
 //  *         visualization
 //  * @param debug - some debug data
 //  */
-//  void processFrame_new(
+//  void processFrame(
 //     const unsigned char *frame_i,
 //     int width_i,
 //     int height_i,
@@ -130,13 +130,6 @@
 
 #pragma once
 
-#define VECTOR_WINDOW_START 0.025
-#define VECTOR_WINDOW_END 0.04
-
-#define MAX_DETECTOR_DEVIATION 0.22
-
-#define MIN_TIME_BETWEEN_DETECTORS 100
-
 #include <opencv2/opencv.hpp>
 #include <cmath>
 #include <ctime>
@@ -147,6 +140,7 @@
 #include "SwypeStepDetector.h"
 #include "CircleDetector.h"
 #include "SwypeCodeDetector.h"
+#include "DetectorState.h"
 
 
 class SwypeDetect {
@@ -182,9 +176,13 @@ public:
      * @param y
      * @param debug
      */
-    void processFrame_new(const unsigned char *frame_i, int width_i, int height_i,
-                          uint timestamp, int &state, int &index, int &x, int &y,
-                          int &debug);
+    void processFrame(const unsigned char *frame_i, int width_i, int height_i,
+                      uint timestamp, int &state, int &index, int &x, int &y,
+                      int &debug);
+
+    void processFrame3(const unsigned char *frame_i, int width_i, int height_i,
+                       uint timestamp, int &outState, int &index, int &x, int &y,
+                       int &debug);
 
     void setRelaxed(bool relaxed);
     // frame - pointer to a buffer with a frame
@@ -197,16 +195,24 @@ private:
 
     void MoveToState(int state, uint timestamp);
 
-    cv::Point2d Frame_processor(cv::Mat &frame_i);
+    VectorExplained ShiftToPrevFrame2(cv::Mat &frame_i, uint timestamp);
 
-    void AddDetector(unsigned int timestamp);
+    void SetBaseFrame(cv::Mat &frame_i);
+
+    void log1(uint timestamp, cv::Point2d &shift, VectorExplained &scaledShift,
+              VectorExplained &windowedShift);
+
+    void AddDetector(unsigned int timestamp, cv::Mat &baseFrame);
 
     SwipeCode swypeCode;//we have swype code or we will wait swype code
 
     int S; //state S
 
+    DetectorState _state;
+
     cv::UMat buf1ft;
     cv::UMat buf2ft;
+    cv::UMat baseFt;
     cv::UMat hann;
 
     CircleDetector _circleDetector;
@@ -221,6 +227,7 @@ private:
     bool _relaxed;
 
     std::list<SwypeCodeDetector> _detectors;
+    SwypeCodeDetector _detector;
 
     unsigned int _maxDetectors = 1;
 

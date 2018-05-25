@@ -13,18 +13,18 @@ class SwypeCodeDetector {
 public:
     SwypeCodeDetector() : _id(++counter), _stepDetector(_id) {};
 
-    SwypeCodeDetector(SwipeCode &code, double speedMult, float maxDeviation,
-                      bool relaxed, unsigned int timestamp);
+    SwypeCodeDetector(SwipeCode &code, double shiftScaleXMult, double shiftScaleYMult,
+                      double speedMult, float maxDeviation, bool relaxed, unsigned int timestamp);
 
     void Init(SwipeCode &code, double speedMult, float maxDeviation, bool relaxed,
-              unsigned int timestamp);
+              unsigned int timestamp,
+              bool delayStart, double shiftScaleXMult, double shiftScaleYMult);
 
-    /**
-     * @param shift
-     */
-    void Add(VectorExplained &shift);
+    void NextFrame(cv::Mat &frame_i, uint timestamp);
 
     void FillResult(int &status, int &index, int &x, int &y, int &debug);
+
+    void SetBaseFrame(cv::Mat &frame);
 
     /*
      *    1 -- swype code completed
@@ -38,6 +38,12 @@ public:
     unsigned int _id;
 
 private:
+
+    VectorExplained ShiftToBaseFrame(cv::Mat &frame_i, uint timestamp);
+
+
+    void log2(uint timestamp, const cv::Point2d &shift, VectorExplained &scaledShift);
+
     SwipeCode _code;
     SwypeStepDetector _stepDetector;
 
@@ -50,6 +56,13 @@ private:
     unsigned int _startTimestamp = 0;
 
     static unsigned int counter;
+
+    cv::UMat curFrameFt;
+    cv::UMat baseFt;
+    cv::UMat hann;
+
+    double _shiftScaleXMult = 0.0;
+    double _shiftScaleYMult = 0.0;
 };
 
 #endif //PROVER_MVP_ANDROID_SWYPECODEDETECTOR_H

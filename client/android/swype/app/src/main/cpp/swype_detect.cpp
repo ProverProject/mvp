@@ -41,45 +41,47 @@ void SwypeDetect::SetDetectorSize(int detectorWidth, int detectorHeight) {
 
 void SwypeDetect::setSwype(string swype) {
     swypeCode.Init(swype);
-    if (S == 1) {
-        AddDetector(0);
-    }
 }
 
-Point2d SwypeDetect::Frame_processor(cv::Mat &frame_i) {
+VectorExplained SwypeDetect::ShiftToPrevFrame2(cv::Mat &frame_i, uint timestamp) {
     if (buf1ft.empty()) {
         frame_i.convertTo(buf1ft, CV_64F);// converting frames to CV_64F type
         createHanningWindow(hann, buf1ft.size(), CV_64F); //  create Hanning window
         _tickTock = false;
-        return Point2d(0, 0);
+        return VectorExplained();
     }
+
+    Point2d shift;
 
     _tickTock = !_tickTock;
     if (_tickTock) {
         frame_i.convertTo(buf2ft, CV_64F);// converting frames to CV_64F type
-        return phaseCorrelate(buf1ft, buf2ft, hann); // we calculate a phase offset vector
+        shift = phaseCorrelate(buf1ft, buf2ft, hann); // we calculate a phase offset vector
     } else {
         frame_i.convertTo(buf1ft, CV_64F);// converting frames to CV_64F type
-        return phaseCorrelate(buf2ft, buf1ft, hann); // we calculate a phase offset vector
+        shift = phaseCorrelate(buf2ft, buf1ft, hann); // we calculate a phase offset vector
     }
-}
-
-void SwypeDetect::processFrame_new(const unsigned char *frame_i, int width_i, int height_i,
-                                   uint timestamp, int &state, int &index, int &x, int &y,
-                                   int &debug) {
-    Mat frame(height_i, width_i, CV_8UC1, (uchar *) frame_i);
-    Point2d shift = Frame_processor(frame);
-
-    if (_detectorWidth != width_i || _detecttorHeight != height_i) {
-        SetDetectorSize(_detectorWidth, _detecttorHeight);
-    }
-
     VectorExplained scaledShift;
     scaledShift.SetMul(shift, _xMult, _yMult);
     VectorExplained windowedShift = scaledShift;
     windowedShift.ApplyWindow(VECTOR_WINDOW_START, VECTOR_WINDOW_END);
     windowedShift.setRelativeDefect(_relaxed ? DEFECT : DEFECT_CLIENT);
     windowedShift._timestamp = timestamp;
+
+    log1(timestamp, shift, scaledShift, windowedShift);
+
+    return windowedShift;
+}
+
+void SwypeDetect::SetBaseFrame(cv::Mat &frame_i) {
+    frame_i.convertTo(baseFt, CV_64F);// converting frames to CV_64F type
+    if (hann.empty()) {
+        createHanningWindow(hann, baseFt.size(), CV_64F);
+    }
+}
+
+void SwypeDetect::log1(uint timestamp, cv::Point2d &shift, VectorExplained &scaledShift,
+                       VectorExplained &windowedShift) {
 
     if (logLevel > 0 && windowedShift._mod > 0) {
         LOGI_NATIVE(
@@ -89,25 +91,109 @@ void SwypeDetect::processFrame_new(const unsigned char *frame_i, int width_i, in
                 windowedShift._x, windowedShift._y, windowedShift._mod, windowedShift._angle,
                 windowedShift._direction);
     }
+}
 
-    index = 1;
+void
+SwypeDetect::processFrame3(const unsigned char *frame_i, int width_i, int height_i, uint timestamp,
+                           int &outState, int &index, int &x, int &y, int &debug) {
+    Mat frame(height_i, width_i, CV_8UC1, (uchar *) frame_i);
 
-    if (windowedShift._mod > 0) {
-        _circleDetector.AddShift(windowedShift);
-        if (_circleDetector.IsCircle()) {
-            if (swypeCode.empty()) {
-                MoveToState(1, timestamp);
-            } else {
-                AddDetector(timestamp);
-            }
-        }
+    if (_detectorWidth != width_i || _detecttorHeight != height_i) {
+        SetDetectorSize(_detectorWidth, _detecttorHeight);
     }
 
     bool filledResponce = false;
 
+    switch (_state.Status()) {
+        case DetectorState::WaitingForCircle: {
+            VectorExplained windowedShift = ShiftToPrevFrame2(frame, timestamp);
+            _circleDetector.AddShift(windowedShift);
+            if (_circleDetector.IsCircle()) {
+                _state.GotCircle(timestamp, swypeCode);
+            }
+        }
+            break;
+
+        case DetectorState::GotCircleWaitingForSwype:
+            if (!swypeCode.empty()) {
+                _state.GotCircle(timestamp, swypeCode);
+            }
+            break;
+
+        case DetectorState::WaitingToStartSwypeCode:
+            if (_state.IsStateOutdated(timestamp)) {
+                _state.StartDetection(timestamp, swypeCode);
+                SetBaseFrame(frame);
+                _detector.Init(swypeCode, SWYPE_SPEED, TARGET_RADIUS, _relaxed, timestamp,
+                               false, _xMult, _yMult);
+                _detector.SetBaseFrame(frame);
+            }
+            break;
+
+        case DetectorState::DetectingSwypeCode: {
+            _detector.NextFrame(frame, timestamp);
+
+            if (_detector._status < 0) {
+                _state.Restart(timestamp);
+            } else if (_detector._status == 1) {
+                _state.Finish(timestamp);
+            }
+            _detector.FillResult(outState, index, x, y, debug);
+            filledResponce = true;
+        }
+            break;
+
+        case DetectorState::SwypeCodeDone:
+            break;
+    }
+
+    if (!filledResponce) {
+        x = 0;
+        y = 0;
+        outState = _state.Status();
+    }
+}
+
+void SwypeDetect::processFrame(const unsigned char *frame_i, int width_i, int height_i,
+                               uint timestamp, int &state, int &index, int &x, int &y,
+                               int &debug) {
+    Mat frame(height_i, width_i, CV_8UC1, (uchar *) frame_i);
+
+    if (_detectorWidth != width_i || _detecttorHeight != height_i) {
+        SetDetectorSize(_detectorWidth, _detecttorHeight);
+    }
+    if (S == 4) {
+        x = 0;
+        y = 0;
+        state = S;
+        return;
+    }
+
+    index = 1;
+    bool filledResponce = false;
+
+    if (_detectors.size() < _maxDetectors) {
+        VectorExplained windowedShift = ShiftToPrevFrame2(frame, timestamp);
+        if (S == 1) {
+            if (!swypeCode.empty()) {
+                AddDetector(timestamp, frame);
+            }
+        } else if (windowedShift._mod > 0) {
+            _circleDetector.AddShift(windowedShift);
+            if (_circleDetector.IsCircle()) {
+                if (swypeCode.empty()) {
+                    MoveToState(1, timestamp);
+                } else {
+                    AddDetector(timestamp, frame);
+                }
+            }
+        }
+
+    }
+
     if (_detectors.size() > 0) {
         for (auto it = _detectors.begin(); it != _detectors.end();) {
-            it->Add(windowedShift);
+            it->NextFrame(frame, timestamp);
             if (it->_status < 0) {
                 if (_maxDetectors == 1) {
                     it->FillResult(state, index, x, y, debug);
@@ -122,19 +208,17 @@ void SwypeDetect::processFrame_new(const unsigned char *frame_i, int width_i, in
             }
         }
     } else {
-        //x = (int) (windowedShift._x * 1024);
-        //y = (int) (windowedShift._y * 1024);
         state = S;
     }
 
     if (!filledResponce) {
         if (S == 4) {
             if (_detectors.size() > 0)
-                _detectors.front().FillResult(state, index, x, y, debug);
+                _detectors.front().FillResult(S, index, x, y, debug);
             state = S;
         } else if (_detectors.size() == 0) {
-            x = (int) (windowedShift._x * 1024);
-            y = (int) (windowedShift._y * 1024);
+            x = 0;
+            y = 0;
             state = S;
         } else {
             _detectors.front().FillResult(state, index, x, y, debug);
@@ -153,11 +237,11 @@ void SwypeDetect::setRelaxed(bool relaxed) {
     _maxDetectors = relaxed ? 32 : 1;
 }
 
-void SwypeDetect::AddDetector(unsigned int timestamp) {
+void SwypeDetect::AddDetector(unsigned int timestamp, cv::Mat &baseFrame) {
     if (_detectors.size() < _maxDetectors) {
         if (timestamp == 0 || timestamp >= _lastDetectorAdded + MIN_TIME_BETWEEN_DETECTORS) {
-            _detectors.emplace_back(swypeCode, SWYPE_SPEED, MAX_DETECTOR_DEVIATION, _relaxed,
-                                    timestamp);
+            _detectors.emplace_back(swypeCode, _xMult, _yMult, SWYPE_SPEED, TARGET_RADIUS,
+                                    _relaxed, timestamp);
             _lastDetectorAdded = timestamp;
             LOGI_NATIVE("Detector added %d, t %d", _detectors.back()._id, timestamp);
         }

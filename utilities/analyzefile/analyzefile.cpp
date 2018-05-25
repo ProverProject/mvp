@@ -365,7 +365,7 @@ int main(int argc, char *argv[])
             int state=-1, index=-1, x=-1, y=-1;
             int debug=-1;
 
-            detector.processFrame_new(frame->data[0], frame->width, frame->height, timestamp, state, index, x, y, debug);
+            detector.processFrame(frame->data[0], frame->width, frame->height, timestamp, state, index, x, y, debug);
 
             if(state==3 && swypeBeginTimestamp==-1)
                 swypeBeginTimestamp=timestamp;

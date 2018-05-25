@@ -84,8 +84,8 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameNV21(JNIEnv *env, jo
     static long counter = 0;
     LOGI_NATIVE("start frame detection %ld", counter);
 
-    detector->processFrame_new((const unsigned char *) frameData, width, height, (uint) timestamp,
-                               res[0], res[1], res[2], res[3], res[4]);
+    detector->processFrame((const unsigned char *) frameData, width, height, (uint) timestamp,
+                           res[0], res[1], res[2], res[3], res[4]);
 
     env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
     env->ReleaseByteArrayElements(frameData_, frameData, JNI_ABORT);
@@ -130,8 +130,8 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameY_18BufStrided(JNIEn
     }
 
     SwypeDetect *detector = (SwypeDetect *) nativeHandler;
-    detector->processFrame_new(frameData, width, height, (uint) timestamp, res[0], res[1], res[2],
-                               res[3], res[4]);
+    detector->processFrame(frameData, width, height, (uint) timestamp, res[0], res[1], res[2],
+                           res[3], res[4]);
 
     env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
 }
