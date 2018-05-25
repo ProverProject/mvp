@@ -426,3 +426,30 @@ EOD;
     return $html;
 
 }
+
+function generationProverQRcode($picName, $isWM)
+{
+    $picPath = __DIR__ . '/' . $picName . '.png';
+    $size = getimagesize($picPath);
+    $srcPic = new Imagick($picPath);
+
+    $srcW = $srcPic->getImageWidth();
+    $srcH = $srcPic->getImageHeight();
+    if($isWM) //установка водяного знака, помещаем метку в картинку
+    {
+        $copyright = __DIR__ . '/P6x.png';
+        $copyHeight = 185;
+        $copyWidth = 185;
+        $watermark = new Imagick();
+        $watermark->setBackgroundColor(new ImagickPixel('transparent'));
+        $watermark->readImage($copyright);
+        $watermark->setImageFormat("png32");
+        $watermark->resizeImage($copyWidth, $copyHeight, imagick::FILTER_LANCZOS, 1, TRUE);
+        $srcPic->compositeImage($watermark, imagick::COMPOSITE_OVER, 0, 0);
+        $watermark->clear();
+        $watermark->destroy();
+    }
+    $srcPic->writeImage(__DIR__ . '/images/' . $picName . '.png');
+    $srcPic->clear();
+    $srcPic->destroy();
+}
