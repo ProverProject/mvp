@@ -228,7 +228,7 @@ EOD;
 
 }
 
-function generationPdfQr($fileName, $inputStr, $hash, $time, $qr_img) {
+function generationPdfQr($fileName, $inputStr, $hash, $time) {
 
     $pdfPath = __DIR__ . '/pdf/';
     $tmpPath = __DIR__ . '/pdf/'. md5(md5($fileName) . md5(date("H:i:s"))) .'/';
@@ -237,11 +237,20 @@ function generationPdfQr($fileName, $inputStr, $hash, $time, $qr_img) {
     if(!file_exists($tmpPath))
         mkdir($tmpPath, 0777);
 
+    $fileNameQRcode = 'qrcode.png';
+    $pathNameQRcode = $tmpPath . $fileNameQRcode;
+    $errorCorrectionLevel = 'L';
+    $matrixPointSize = 5;
+
     $date = new DateTime();
     $date->setTimestamp($time);
     $time = $date->format("d-m-Y H:i:s");
 
-    $htmlPage = templateHTMLQr($inputStr, $hash, $time, $qr_img);
+    // generation QRcode
+    QRcode::png($inputStr, $pathNameQRcode, $errorCorrectionLevel, $matrixPointSize, 2);
+    $pathQRcode = generationProverQRcode($tmpPath, $fileNameQRcode);
+
+    $htmlPage = templateHTMLQr($inputStr, $hash, $time, $pathQRcode);
     $nameConfigFileHTML = $tmpPath . $fileName . '.html';
     file_put_contents($nameConfigFileHTML, $htmlPage);
     chmod($nameConfigFileHTML, 0777);
@@ -427,29 +436,31 @@ EOD;
 
 }
 
-function generationProverQRcode($picName, $isWM)
+function generationProverQRcode($tmpPath, $fileNameQRcode)
 {
-    $picPath = __DIR__ . '/' . $picName . '.png';
-    $size = getimagesize($picPath);
-    $srcPic = new Imagick($picPath);
-
+    $fileQRcode = $tmpPath . $fileNameQRcode;
+    $srcPic = new \Imagick($fileQRcode);
+    $srcPic->setImageOpacity( 0.75 );
     $srcW = $srcPic->getImageWidth();
     $srcH = $srcPic->getImageHeight();
-    if($isWM) //установка водяного знака, помещаем метку в картинку
-    {
-        $copyright = __DIR__ . '/P6x.png';
-        $copyHeight = 185;
-        $copyWidth = 185;
-        $watermark = new Imagick();
-        $watermark->setBackgroundColor(new ImagickPixel('transparent'));
-        $watermark->readImage($copyright);
-        $watermark->setImageFormat("png32");
-        $watermark->resizeImage($copyWidth, $copyHeight, imagick::FILTER_LANCZOS, 1, TRUE);
-        $srcPic->compositeImage($watermark, imagick::COMPOSITE_OVER, 0, 0);
-        $watermark->clear();
-        $watermark->destroy();
-    }
-    $srcPic->writeImage(__DIR__ . '/images/' . $picName . '.png');
+
+    $copyright = __DIR__ . '/images/watermark.png';
+    $copyHeight = $srcW * 0.6;
+    $copyWidth = $srcH * 0.6;
+    $watermark = new \Imagick();
+    $watermark->setBackgroundColor(new \ImagickPixel('transparent'));
+    $watermark->readImage($copyright);
+    $watermark->resizeImage($copyWidth, $copyHeight, imagick::FILTER_LANCZOS, 1, TRUE);
+    $watermarkW = $watermark->getImageWidth();
+    $watermarkH = $watermark->getImageHeight();
+    $srcPic->compositeImage($watermark, imagick::COMPOSITE_OVER, ($srcW - $watermarkW)/2, ($srcH - $watermarkH)/2);
+    $watermark->clear();
+    $watermark->destroy();
+
+    $pathQRcode = $tmpPath . '/' . md5(md5($fileNameQRcode) . md5(date("H:i:s"))) . '.png';
+    $srcPic->writeImage($pathQRcode);
     $srcPic->clear();
     $srcPic->destroy();
+
+    return $pathQRcode;
 }
