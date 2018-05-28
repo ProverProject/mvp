@@ -3,8 +3,8 @@ CFLAGS := -Wall -pipe
 CXXFLAGS := $(CFLAGS) -std=c++14
 # -O0 -ggdb
 LFLAGS := -lavformat -lavcodec -lavutil -lavfilter -lopencv_features2d -lopencv_imgproc -lopencv_core -lpng
-VPATH := . ../client/prover_mvp_android/app/src/main/cpp
-CXXFLAGS += -I../client/prover_mvp_android/app/src/main/cpp
+VPATH := . ../../client/android/swype/app/src/main/cpp
+CXXFLAGS += -I../../client/android/swype/app/src/main/cpp
 OBJECTS := \
     .obj/analyzefile.cpp.o \
     .obj/VideoFileReader.cpp.o \

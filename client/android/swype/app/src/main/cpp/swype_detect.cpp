@@ -68,7 +68,9 @@ VectorExplained SwypeDetect::ShiftToPrevFrame2(cv::Mat &frame_i, uint timestamp)
     windowedShift.setRelativeDefect(_relaxed ? DEFECT : DEFECT_CLIENT);
     windowedShift._timestamp = timestamp;
 
-    log1(timestamp, shift, scaledShift, windowedShift);
+    if (logLevel & LOG_CIRCLE_DETECTION) {
+        log1(timestamp, shift, scaledShift, windowedShift);
+    }
 
     return windowedShift;
 }

@@ -22,6 +22,10 @@
 
 extern int logLevel;
 
+#define LOG_CIRCLE_DETECTION 2
+#define LOG_GENERAL_DETECTION 4
+
+
 #define JNI_COMMIT_AND_RELEASE 0
 
 #endif

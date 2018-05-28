@@ -29,7 +29,7 @@ bool CircleDetector::IsCircle() {
     for (int i = 2; i <= total_; i++) {
         pos = (pos_ - i + SHIFTS) % SHIFTS;
         if (shifts_[pos]._timestamp < noFramesBefore) {
-            if (logLevel >= 1 && minDeviation < 0.5) {
+            if ((logLevel & LOG_CIRCLE_DETECTION) && minDeviation < 0.5) {
                 LOGI_NATIVE("IsCircle minDeviation: %.4f-%.4f = %.4f", minDeviation,
                             minDeviationDefect, minDeviationDist);
             }
@@ -45,10 +45,13 @@ bool CircleDetector::IsCircle() {
                 ValueWithDefect areaByP2ToCircle = area / (perimeter * perimeter);
                 areaByP2ToCircle /= Circle_S_by_P2;
 
-                LOGI_NATIVE(
-                        "IsCircle %d vertices: %d, diff: %.4f-+%.4f (%.4f, %.4f) , area: %.4f+%.4f, areaByP2 to target: %.4f+%.4f",
-                        timestamp, i + 1, sum._mod, sum.ModDefect(), sum._defectX, sum._defectY,
-                        area.value, area.defect, areaByP2ToCircle.value, areaByP2ToCircle.defect);
+                if (logLevel & LOG_CIRCLE_DETECTION) {
+                    LOGI_NATIVE(
+                            "IsCircle %d vertices: %d, diff: %.4f-+%.4f (%.4f, %.4f) , area: %.4f+%.4f, areaByP2 to target: %.4f+%.4f",
+                            timestamp, i + 1, sum._mod, sum.ModDefect(), sum._defectX, sum._defectY,
+                            area.value, area.defect, areaByP2ToCircle.value,
+                            areaByP2ToCircle.defect);
+                }
                 double areaVal = _relaxed ? area.value + area.defect : area.value;
                 double aToPValue = _relaxed ? areaByP2ToCircle.value + areaByP2ToCircle.defect
                                             : areaByP2ToCircle.value;
