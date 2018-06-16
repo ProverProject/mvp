@@ -13,8 +13,10 @@ class SwypeCodeDetector {
 public:
     SwypeCodeDetector() : _id(++counter), _stepDetector(_id) {};
 
-    SwypeCodeDetector(SwipeCode &code, double shiftScaleXMult, double shiftScaleYMult,
-                      double speedMult, float maxDeviation, bool relaxed, unsigned int timestamp);
+    SwypeCodeDetector(SwipeCode &code, double shiftScaleXMult,
+                          double shiftScaleYMult, double speedMult,
+                          float maxDeviation, bool relaxed, double defect,
+                          unsigned int timestamp);
 
     void Init(SwipeCode &code, double speedMult, float maxDeviation, bool relaxed,
               unsigned int timestamp,
@@ -63,6 +65,8 @@ private:
 
     double _shiftScaleXMult = 0.0;
     double _shiftScaleYMult = 0.0;
+
+    double _defect;
 };
 
 #endif //PROVER_MVP_ANDROID_SWYPECODEDETECTOR_H

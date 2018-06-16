@@ -202,7 +202,7 @@ private:
     void log1(uint timestamp, cv::Point2d &shift, VectorExplained &scaledShift,
               VectorExplained &windowedShift);
 
-    void AddDetector(unsigned int timestamp, cv::Mat &baseFrame);
+    void AddDetector(unsigned int timestamp, cv::Mat &baseFrame, double defect);
 
     SwipeCode swypeCode;//we have swype code or we will wait swype code
 

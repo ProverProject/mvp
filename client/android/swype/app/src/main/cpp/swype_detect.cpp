@@ -178,7 +178,7 @@ void SwypeDetect::processFrame(const unsigned char *frame_i, int width_i, int he
         VectorExplained windowedShift = ShiftToPrevFrame2(frame, timestamp);
         if (S == 1) {
             if (!swypeCode.empty()) {
-                AddDetector(timestamp, frame);
+                AddDetector(timestamp, frame, _relaxed ? DEFECT : DEFECT_CLIENT);
             }
         } else if (windowedShift._mod > 0) {
             _circleDetector.AddShift(windowedShift);
@@ -186,7 +186,7 @@ void SwypeDetect::processFrame(const unsigned char *frame_i, int width_i, int he
                 if (swypeCode.empty()) {
                     MoveToState(1, timestamp);
                 } else {
-                    AddDetector(timestamp, frame);
+                    AddDetector(timestamp, frame, 0);
                 }
             }
         }
@@ -239,11 +239,11 @@ void SwypeDetect::setRelaxed(bool relaxed) {
     _maxDetectors = relaxed ? 32 : 1;
 }
 
-void SwypeDetect::AddDetector(unsigned int timestamp, cv::Mat &baseFrame) {
+void SwypeDetect::AddDetector(unsigned int timestamp, cv::Mat &baseFrame, double defect) {
     if (_detectors.size() < _maxDetectors) {
         if (timestamp == 0 || timestamp >= _lastDetectorAdded + MIN_TIME_BETWEEN_DETECTORS) {
             _detectors.emplace_back(swypeCode, _xMult, _yMult, SWYPE_SPEED, TARGET_RADIUS,
-                                    _relaxed, timestamp);
+                                    _relaxed, defect, timestamp);
             _lastDetectorAdded = timestamp;
             LOGI_NATIVE("Detector added %d, t %d", _detectors.back()._id, timestamp);
         }

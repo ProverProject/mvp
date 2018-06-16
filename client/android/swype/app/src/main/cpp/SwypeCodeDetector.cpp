@@ -9,11 +9,12 @@
 unsigned int SwypeCodeDetector::counter = 0;
 
 SwypeCodeDetector::SwypeCodeDetector(SwipeCode &code, double shiftScaleXMult,
-                                     double shiftScaleYMult,
-                                     double speedMult, float maxDeviation, bool relaxed,
+                                     double shiftScaleYMult, double speedMult,
+                                     float maxDeviation, bool relaxed, double defect,
                                      unsigned int timestamp)
         : _code(code),
           _relaxed(relaxed),
+          _defect(defect),
           _id(++counter),
           _stepDetector(_id),
           _shiftScaleXMult(shiftScaleXMult),
@@ -29,6 +30,7 @@ void SwypeCodeDetector::Init(SwipeCode &code, double speedMult, float maxDeviati
                              bool delayStart, double shiftScaleXMult, double shiftScaleYMult) {
     _code = code;
     _relaxed = relaxed;
+    _defect = _relaxed ? DEFECT : DEFECT_CLIENT;
     _stepDetector.Configure(speedMult, maxDeviation, relaxed);
     _stepDetector.SetDirection(_code._directions[0]);
     _currentStep = 0;
@@ -102,7 +104,7 @@ VectorExplained SwypeCodeDetector::ShiftToBaseFrame(cv::Mat &frame_i, uint times
                                               hann); // we calculate a phase offset vector
     VectorExplained scaledShift;
     scaledShift.SetMul(shift, _shiftScaleXMult, _shiftScaleYMult);
-    scaledShift.setRelativeDefect(_relaxed ? DEFECT : DEFECT_CLIENT);
+    scaledShift.setRelativeDefect(_defect);
     scaledShift._timestamp = timestamp;
 
     log2(timestamp, shift, scaledShift);
