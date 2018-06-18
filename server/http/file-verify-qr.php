@@ -25,7 +25,7 @@ function uploadResult($isSuccess, $fileName, $typeText, $hash, $datetime_ts, $er
 /**
  * @param JsonRpc\Client $gethClient
  * @param string $hash
- * @return array
+ * @return object
  */
 function getBlockByHash(&$gethClient, $hash)
 {
@@ -68,17 +68,6 @@ function getBlockByHash(&$gethClient, $hash)
  */
 function worker($file, $fileName)
 {
-    $mvpHelloInfo = json_decode(httpPost(MVP_CGI_BIN_URL . '/hello'), true);
-    if (!$mvpHelloInfo['contractAddress']) {
-        return [
-            'isSuccess' => false,
-            'typeText' => '',
-            'hash' => '',
-            'error' => 'Sorry, contract not available now'
-        ];
-    }
-    $contract = $mvpHelloInfo['contractAddress'];
-
     $hash = hash_file('sha256', $file);
     $result = exec("searchqrcode $file --orig-file-name '$fileName' 2> /dev/null", $output, $return_code);
 
@@ -133,7 +122,7 @@ function worker($file, $fileName)
                 'error' => 'wrong block hash'
             ];
         }
-        if ($gethClient->result->to != $contract) {
+        if ($gethClient->result->to !== CONTRACT_ADDRESS) {
             return [
                 'isSuccess' => false,
                 'typeText' => '',
