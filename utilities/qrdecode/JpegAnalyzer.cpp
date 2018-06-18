@@ -40,6 +40,22 @@ Analyzer::Result JpegAnalyzer::analyzeFile()
 
     jpeg_read_header(&jpeg, true);
 
+    if(_config.getScaleWidth()!=0)
+    {
+        jpeg.scale_num=1;
+        jpeg.scale_denom=1;
+
+        auto maxdim=std::max(jpeg.image_width, jpeg.image_height);
+        while(maxdim>_config.getScaleWidth())
+        {
+            maxdim/=2;
+            jpeg.scale_denom*=2;
+        }
+
+        if(_config.getVerbosity()>0)
+            fprintf(stderr, "Requested JPEG scale factor: %u/%u\n", jpeg.scale_num, jpeg.scale_denom);
+    }
+
     jpeg.out_color_space=JCS_GRAYSCALE;
     jpeg_start_decompress(&jpeg);
 
