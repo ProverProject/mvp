@@ -654,6 +654,7 @@
 				DEVELOPMENT_TEAM = 8CCN58UW97;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PROVERClapperboard/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nordavind.PROVERClapperboardMVP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -674,6 +675,7 @@
 				DEVELOPMENT_TEAM = 8CCN58UW97;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PROVERClapperboard/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nordavind.PROVERClapperboardMVP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
