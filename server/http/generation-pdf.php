@@ -67,6 +67,10 @@ function generationPdf($fileName, $hash, $swype, $startTime, $endTime) {
 
 function templateHTML($fileName, $hash, $swype, $startTime, $endTime, $fileNameSwypeCode, $fileNameHash) {
     $html = <<<EOD
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
         <style>
     * {
         font-family: "Open Sans", sans-serif;
@@ -222,6 +226,7 @@ function templateHTML($fileName, $hash, $swype, $startTime, $endTime, $fileNameS
         </div>
     </div>
 </div>
+</body>
 EOD;
 
     return $html;
@@ -284,6 +289,10 @@ function generationPdfQr($fileName, $inputStr, $hash, $time) {
 
 function templateHTMLQr($inputStr, $hash, $time, $qr_img) {
     $html = <<<EOD
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
         <style>
     * {
         font-family: "Open Sans", sans-serif;
@@ -430,6 +439,7 @@ function templateHTMLQr($inputStr, $hash, $time, $qr_img) {
         </div>
     </div>
 </div>
+</body>
 EOD;
     
     return $html;
