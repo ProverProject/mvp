@@ -14,12 +14,18 @@ SwypeDetect::SwypeDetect() // initialization
 
 SwypeDetect::~SwypeDetect() {
     ocl::setUseOpenCL(false);
+    if (rgbBuffer != NULL)
+        free(rgbBuffer);
 }
 
 void SwypeDetect::init(double sourceAspectRatio, int detectorWidth, int detectorHeight) {
     _videoAspect = sourceAspectRatio > 1 ? sourceAspectRatio : 1.0 / sourceAspectRatio;
     SetDetectorSize(detectorWidth, detectorHeight);
     setRelaxed(true);
+    if (rgbBuffer != NULL)
+        free(rgbBuffer);
+    rgbBufferSize = detectorWidth * detectorHeight;
+    rgbBuffer = (jint *) (malloc(4 * rgbBufferSize));
 }
 
 void SwypeDetect::SetDetectorSize(int detectorWidth, int detectorHeight) {

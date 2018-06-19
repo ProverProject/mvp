@@ -135,6 +135,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
+#include <jni.h>
 #include "opencv2/core/ocl.hpp"
 #include "VectorExplained.h"
 #include "SwypeStepDetector.h"
@@ -185,6 +186,16 @@ public:
                        int &debug);
 
     void setRelaxed(bool relaxed);
+
+    jint *getRgbBuffer(int width, int height) {
+        if (rgbBufferSize != width * height) {
+            if (rgbBuffer != NULL)
+                free(rgbBuffer);
+            rgbBufferSize = width * height;
+            rgbBuffer = (jint *) (malloc(4 * rgbBufferSize));
+        }
+        return rgbBuffer;
+    };
     // frame - pointer to a buffer with a frame
     // state - state S
     // index - if state==3, the index  of the last entered swype number
@@ -233,4 +244,6 @@ private:
 
     unsigned int _lastDetectorAdded = 0;
 
+    jint *rgbBuffer = NULL;
+    unsigned int rgbBufferSize = 0;
 };

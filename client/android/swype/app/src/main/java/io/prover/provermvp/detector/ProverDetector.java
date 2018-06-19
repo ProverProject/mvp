@@ -40,6 +40,7 @@ public class ProverDetector {
     private boolean swypeCodeConfirmed = false;
     private long nativeHandler;
     private String swypeCode;
+    private byte[] planeY, planeU, planeV;
 
     public ProverDetector(CameraController cameraController) {
         this.cameraController = cameraController;
@@ -86,8 +87,15 @@ public class ProverDetector {
         if (nativeHandler != 0) {
             long time = System.currentTimeMillis();
             if (frame.image != null) {
-                Image.Plane plane = frame.image.getPlanes()[0];
-                detectFrameY_8BufStrided(nativeHandler, plane.getBuffer(), plane.getRowStride(), plane.getPixelStride(), width, height, frame.timeStamp, detectionResult);
+                Image.Plane planeY = frame.image.getPlanes()[0];
+/*                Image.Plane planeU = frame.image.getPlanes()[1];
+                Image.Plane planeV = frame.image.getPlanes()[2];
+                detectFrameColored(nativeHandler,
+                        planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(),
+                        planeU.getBuffer(), planeU.getRowStride(), planeU.getPixelStride(),
+                        planeV.getBuffer(), planeV.getRowStride(), planeV.getPixelStride(),
+                        width, height, frame.timeStamp, detectionResult);//*/
+                detectFrameY_8BufStrided(nativeHandler, planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(), width, height, frame.timeStamp, detectionResult);
             } else if (frame.data != null) {
                 detectFrameNV21(nativeHandler, frame.data, width, height, frame.timeStamp, detectionResult);
             }
@@ -150,6 +158,23 @@ public class ProverDetector {
      */
     private native void setSwype(long nativeHandler, String swype);
 
+    private void ensureBuffers(int width, int height) {
+        int size = width * height;
+        if (planeY == null || planeY.length != size)
+            planeY = new byte[size];
+        size = size / 4;
+        if (planeU == null || planeU.length != size)
+            planeU = new byte[size];
+        if (planeV == null || planeV.length != size)
+            planeV = new byte[size];
+    }
+
+    private void parsePaddedPlane(Image.Plane plane, int width, int height, byte[] result) {
+        ByteBuffer planeBuf = plane.getBuffer();
+        int rowStride = plane.getRowStride();
+        int pixelStride = plane.getPixelStride();
+        parsePaddedPlane(planeBuf, rowStride, pixelStride, width, height, result);
+    }
 
     /**
      * detect single frame
@@ -163,5 +188,14 @@ public class ProverDetector {
 
     private native void detectFrameY_8BufStrided(long nativeHandler, ByteBuffer planeY, int rowStride, int pixelStride, int width, int height, int timestamp, int[] result);
 
+    private native void detectFrameColored(long nativeHandler, ByteBuffer planeY, int yRowStride, int yPixelStride,
+                                           ByteBuffer planeU, int uRowStride, int uPixelStride,
+                                           ByteBuffer planeV, int vRowStride, int vPixelStride,
+                                           int width, int height, int timestamp, int[] result);
+
     private native void releaseNativeHandler(long nativeHandler);
+
+    private native void parsePaddedPlane(ByteBuffer plane, int rowStride, int pixelStride, int width, int height, byte[] result);
+
+    private native void yuvToRgb(byte[] y, byte[] u, byte[] v, int[] rgb, int width, int height);
 }
