@@ -33,7 +33,7 @@
 		1A8A318C20D15A1F00BB7E97 /* Response+ObjectMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A317420D15A1F00BB7E97 /* Response+ObjectMapper.swift */; };
 		1A8A318E20D15EB200BB7E97 /* String+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A318D20D15EB200BB7E97 /* String+Additions.swift */; };
 		1A8A319020D15F0000BB7E97 /* NSData+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A318F20D15F0000BB7E97 /* NSData+Additions.swift */; };
-		1A8A319220D15F5A00BB7E97 /* Array<UInt8>+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A319120D15F5A00BB7E97 /* Array<UInt8>+Additions.swift */; };
+		1A8A319220D15F5A00BB7E97 /* Sequence+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A319120D15F5A00BB7E97 /* Sequence+Additions.swift */; };
 		1A8A319420D15F9400BB7E97 /* CIImage+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A319320D15F9300BB7E97 /* CIImage+Additions.swift */; };
 		1A9706FE20D5A13F003E8EF4 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9706F120D5A13C003E8EF4 /* MessageModel.swift */; };
 		1A9706FF20D5A13F003E8EF4 /* QRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9706F220D5A13C003E8EF4 /* QRModel.swift */; };
@@ -264,7 +264,7 @@
 		1A8A317420D15A1F00BB7E97 /* Response+ObjectMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Response+ObjectMapper.swift"; sourceTree = "<group>"; };
 		1A8A318D20D15EB200BB7E97 /* String+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Additions.swift"; sourceTree = "<group>"; };
 		1A8A318F20D15F0000BB7E97 /* NSData+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSData+Additions.swift"; sourceTree = "<group>"; };
-		1A8A319120D15F5A00BB7E97 /* Array<UInt8>+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array<UInt8>+Additions.swift"; sourceTree = "<group>"; };
+		1A8A319120D15F5A00BB7E97 /* Sequence+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sequence+Additions.swift"; sourceTree = "<group>"; };
 		1A8A319320D15F9300BB7E97 /* CIImage+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CIImage+Additions.swift"; sourceTree = "<group>"; };
 		1A9706F120D5A13C003E8EF4 /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		1A9706F220D5A13C003E8EF4 /* QRModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRModel.swift; sourceTree = "<group>"; };
@@ -677,9 +677,9 @@
 		1AACAB3920D1B2070018AAFA /* Additions */ = {
 			isa = PBXGroup;
 			children = (
-				1A8A319120D15F5A00BB7E97 /* Array<UInt8>+Additions.swift */,
 				1A8A319320D15F9300BB7E97 /* CIImage+Additions.swift */,
 				1A8A318F20D15F0000BB7E97 /* NSData+Additions.swift */,
+				1A8A319120D15F5A00BB7E97 /* Sequence+Additions.swift */,
 				1A8A318D20D15EB200BB7E97 /* String+Additions.swift */,
 			);
 			path = Additions;
@@ -1372,7 +1372,7 @@
 				1A97070120D5A13F003E8EF4 /* AccountDataModel.swift in Sources */,
 				1A8A318220D15A1F00BB7E97 /* seed.c in Sources */,
 				9AFB3C9A2080AD69003F72AA /* APIError.swift in Sources */,
-				1A8A319220D15F5A00BB7E97 /* Array<UInt8>+Additions.swift in Sources */,
+				1A8A319220D15F5A00BB7E97 /* Sequence+Additions.swift in Sources */,
 				9AEF62DF20736B40006C59DD /* AppDelegate.swift in Sources */,
 				9A9DB7A1207392AA00E29A07 /* AsyncOperation.swift in Sources */,
 				9AF364A520BBF24600A6A968 /* AudioRecorder.swift in Sources */,
