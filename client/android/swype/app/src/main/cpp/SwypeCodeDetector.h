@@ -1,32 +1,28 @@
 //
-// Created by babay on 06.01.2018.
+// Created by babay on 20.06.2018.
 //
 
-#ifndef PROVER_MVP_ANDROID_SWYPECODEDETECTOR_H
-#define PROVER_MVP_ANDROID_SWYPECODEDETECTOR_H
+#ifndef SWYPE_SWYPECODEDETECTORBASE_H
+#define SWYPE_SWYPECODEDETECTORBASE_H
 
 
+#include <opencv2/core/mat.hpp>
 #include "SwypeStepDetector.h"
 #include "SwipeCode.h"
 
 class SwypeCodeDetector {
 public:
+
+    virtual ~SwypeCodeDetector() {};
+
     SwypeCodeDetector() : _id(++counter), _stepDetector(_id) {};
 
     SwypeCodeDetector(SwipeCode &code, double shiftScaleXMult,
-                          double shiftScaleYMult, double speedMult,
-                          float maxDeviation, bool relaxed, double defect,
-                          unsigned int timestamp);
-
-    void Init(SwipeCode &code, double speedMult, float maxDeviation, bool relaxed,
-              unsigned int timestamp,
-              bool delayStart, double shiftScaleXMult, double shiftScaleYMult);
-
-    void NextFrame(cv::Mat &frame_i, uint timestamp);
+                      double shiftScaleYMult, double speedMult,
+                      float maxDeviation, bool relaxed, double defect,
+                      unsigned int timestamp);
 
     void FillResult(int &status, int &index, int &x, int &y, int &debug);
-
-    void SetBaseFrame(cv::Mat &frame);
 
     /*
      *    1 -- swype code completed
@@ -39,11 +35,11 @@ public:
 
     unsigned int _id;
 
-private:
+    void Init(SwipeCode &code, double speedMult, float maxDeviation, bool relaxed,
+              unsigned int timestamp,
+              bool delayStart, double shiftScaleXMult, double shiftScaleYMult);
 
-    VectorExplained ShiftToBaseFrame(cv::Mat &frame_i, uint timestamp);
-
-
+protected:
     void log2(uint timestamp, const cv::Point2d &shift, VectorExplained &scaledShift);
 
     SwipeCode _code;
@@ -59,14 +55,13 @@ private:
 
     static unsigned int counter;
 
-    cv::UMat curFrameFt;
-    cv::UMat baseFt;
-    cv::UMat hann;
 
     double _shiftScaleXMult = 0.0;
     double _shiftScaleYMult = 0.0;
 
     double _defect;
+
 };
 
-#endif //PROVER_MVP_ANDROID_SWYPECODEDETECTOR_H
+
+#endif //SWYPE_SWYPECODEDETECTORBASE_H

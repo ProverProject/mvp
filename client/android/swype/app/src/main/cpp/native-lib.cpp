@@ -260,7 +260,7 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env,
                                                                     jint vPixelStride, jint width,
                                                                     jint height, jint timestamp,
                                                                     jintArray result_) {
-    jint *result = env->GetIntArrayElements(result_, NULL);
+    jint *res = env->GetIntArrayElements(result_, NULL);
 
     jbyte *frameY = (jbyte *) (parsePlane(env, planeY, yRowStride, yPixelStride,
                                           width, height));
@@ -273,7 +273,9 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env,
         SwypeDetect *detector = (SwypeDetect *) nativeHandler;
         jint *argb = detector->getRgbBuffer(width, height);
         yuvToRgb(frameY, frameU, frameV, argb, width, height);
+        detector->processFrameArgb(argb, width, height, (uint) timestamp, res[0], res[1], res[2],
+                                   res[3], res[4]);
     }
 
-    env->ReleaseIntArrayElements(result_, result, 0);
+    env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
 }
