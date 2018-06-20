@@ -135,12 +135,14 @@
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
+#include <jni.h>
 #include "opencv2/core/ocl.hpp"
 #include "VectorExplained.h"
 #include "SwypeStepDetector.h"
 #include "CircleDetector.h"
-#include "SwypeCodeDetector.h"
+#include "SwypeCodeDetectorBaseFrame.h"
 #include "DetectorState.h"
+#include "ColoredQuantum.h"
 
 
 class SwypeDetect {
@@ -185,11 +187,21 @@ public:
                        int &debug);
 
     void setRelaxed(bool relaxed);
+
+    jint *getRgbBuffer(int width, int height) {
+        return _colorQuantum.getRgbBuffer(width, height);
+    };
+
     // frame - pointer to a buffer with a frame
     // state - state S
     // index - if state==3, the index  of the last entered swype number
     // x - if state==3, the X coordinate for visualisation
     // y - if state==3, the Y coordinate for visualisation
+    void
+    processFrameArgb(jint *argb, jint width, jint height, uint timestamp, int &outState, int &index,
+                     int &x, int &y,
+                     int &debug);
+
 private:
     void SetDetectorSize(int detectorWidth, int detectorHeight);
 
@@ -226,11 +238,12 @@ private:
     double _yMult = 0.0;
     bool _relaxed;
 
-    std::list<SwypeCodeDetector> _detectors;
-    SwypeCodeDetector _detector;
+    std::list<SwypeCodeDetectorBaseFrame> _detectors;
+    SwypeCodeDetectorBaseFrame _detector;
 
     unsigned int _maxDetectors = 1;
 
     unsigned int _lastDetectorAdded = 0;
 
+    ColoredQuantum _colorQuantum = ColoredQuantum(0xAA, 0xFF, 0x55);
 };

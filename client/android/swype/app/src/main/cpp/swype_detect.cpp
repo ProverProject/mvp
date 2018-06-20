@@ -1,5 +1,6 @@
 #include "swype_detect.h"
 #include "common.h"
+#include "SwypeCodeDetector.h"
 
 using namespace cv;
 using namespace std;
@@ -249,4 +250,12 @@ void SwypeDetect::AddDetector(unsigned int timestamp, cv::Mat &baseFrame, double
         }
     }
     LOGI_NATIVE("Detectors: %d, t %d", (int) _detectors.size(), timestamp);
+}
+
+void
+SwypeDetect::processFrameArgb(jint *argb, jint width, jint height, uint timestamp, int &outState,
+                              int &index, int &x, int &y, int &debug) {
+    unsigned char *frame = (unsigned char *) argb;
+    _colorQuantum.coloredQuantumToSingleByte(argb, frame, width, height);
+    processFrame(frame, width, height, timestamp, outState, index, x, y, debug);
 }

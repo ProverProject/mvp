@@ -32,6 +32,33 @@ void parsePixelPaddedPlane(const unsigned char *frameData, unsigned int width, u
     }
 }
 
+void *
+parsePlane(JNIEnv *env, jobject plane, jint rowStride, jint pixelStride, jint width, jint height) {
+    int rowWidth = width * pixelStride;
+    int rowPadding = rowStride - rowWidth;
+    int pixelPadding = pixelStride - 1;
+    jlong extectedBufferSize = height * rowStride - rowPadding - pixelPadding;
+    jlong len = env->GetDirectBufferCapacity(plane);
+
+    if (len < extectedBufferSize) {
+        LOGE_NATIVE("detector buffers sizes: %zd, expected: %zd", len, extectedBufferSize);
+        return NULL;
+    }
+
+    unsigned char *frameData = (unsigned char *) env->GetDirectBufferAddress(plane);
+
+    if (rowStride > width) {
+        if (pixelStride == 1) {
+            parseRowPaddedPlane(frameData, (unsigned int) width, (unsigned int) height,
+                                (unsigned int) rowStride, frameData);
+        } else {
+            parsePixelPaddedPlane(frameData, (unsigned int) width, (unsigned int) height,
+                                  (unsigned int) rowStride, (unsigned int) pixelStride, frameData);
+        }
+    }
+    return frameData;
+}
+
 extern "C" {
 
 JNIEXPORT jlong JNICALL
@@ -103,35 +130,14 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameY_18BufStrided(JNIEn
                                                                            jintArray result_) {
     jint *res = env->GetIntArrayElements(result_, NULL);
 
-    int rowWidth = width * pixelStride;
-    int rowPadding = rowStride - rowWidth;
-    int pixelPadding = pixelStride - 1;
-    jlong extectedBufferSize = height * rowStride - rowPadding - pixelPadding;
-    jlong len = env->GetDirectBufferCapacity(planeY);
+    unsigned char *frameData = (unsigned char *) (parsePlane(env, planeY, rowStride, pixelStride,
+                                                             width, height));
 
-    if (len < extectedBufferSize) {
-        LOGE_NATIVE("detector buffers sizes: %zd, expected: %zd", len, extectedBufferSize);
-        res[0] = static_cast<jint>(len);
-        res[1] = static_cast<jint>(extectedBufferSize);
-        env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
-        return;
+    if (frameData != NULL) {
+        SwypeDetect *detector = (SwypeDetect *) nativeHandler;
+        detector->processFrame(frameData, width, height, (uint) timestamp, res[0], res[1], res[2],
+                               res[3], res[4]);
     }
-
-    unsigned char *frameData = (unsigned char *) env->GetDirectBufferAddress(planeY);
-
-    if (rowStride > width) {
-        if (pixelStride == 1) {
-            parseRowPaddedPlane(frameData, (unsigned int) width, (unsigned int) height,
-                                (unsigned int) rowStride, frameData);
-        } else {
-            parsePixelPaddedPlane(frameData, (unsigned int) width, (unsigned int) height,
-                                  (unsigned int) rowStride, (unsigned int) pixelStride, frameData);
-        }
-    }
-
-    SwypeDetect *detector = (SwypeDetect *) nativeHandler;
-    detector->processFrame(frameData, width, height, (uint) timestamp, res[0], res[1], res[2],
-                           res[3], res[4]);
 
     env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
 }
@@ -150,4 +156,126 @@ Java_io_prover_provermvp_detector_ProverDetector_releaseNativeHandler(JNIEnv *en
     }
 }
 
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_io_prover_provermvp_detector_ProverDetector_parsePaddedPlane(JNIEnv *env, jobject instance,
+                                                                  jobject plane, jint rowStride,
+                                                                  jint pixelStride, jint width,
+                                                                  jint height, jbyteArray result_) {
+    jbyte *res = env->GetByteArrayElements(result_, NULL);
+
+    int rowWidth = width * pixelStride;
+    int rowPadding = rowStride - rowWidth;
+    int pixelPadding = pixelStride - 1;
+    jlong extectedBufferSize = height * rowStride - rowPadding - pixelPadding;
+    jlong len = env->GetDirectBufferCapacity(plane);
+
+    if (len < extectedBufferSize) {
+        LOGE_NATIVE("detector buffers sizes: %zd, expected: %zd", len, extectedBufferSize);
+        res[0] = static_cast<jbyte>(len);
+        res[1] = static_cast<jbyte >(extectedBufferSize);
+        env->ReleaseByteArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
+        return;
+    }
+
+    unsigned char *frameData = (unsigned char *) env->GetDirectBufferAddress(plane);
+
+    if (rowStride > width) {
+        if (pixelStride == 1) {
+            parseRowPaddedPlane(frameData, (unsigned int) width, (unsigned int) height,
+                                (unsigned int) rowStride, (unsigned char *) res);
+        } else {
+            parsePixelPaddedPlane(frameData, (unsigned int) width, (unsigned int) height,
+                                  (unsigned int) rowStride, (unsigned int) pixelStride,
+                                  (unsigned char *) res);
+        }
+    } else {
+        memcpy(res, frameData, static_cast<size_t>(len));
+    }
+
+    env->ReleaseByteArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
+}
+
+inline int clamp262143(int value) {
+    return value < 0 ? 0 : value > 262143 ? 262143 : value;
+}
+
+void yuvToRgb(jbyte *yArr, jbyte *uArr, jbyte *vArr, jint *argb, int width, int height) {
+    int r, g, b, y1192, y, i, uvp, u, v;
+    int halfWidth = width >> 1;
+    for (int j = 0; j < height; j++) {
+        uvp = (j >> 1) * halfWidth;
+        u = 0;
+        v = 0;
+        for (i = 0; i < width; i++, ++yArr) {
+            y = (0xff & ((int) (*yArr))) - 16;
+            if (y < 0) y = 0;
+            if ((i & 1) == 0) {
+                u = (0xff & uArr[uvp]) - 128;
+                v = (0xff & vArr[uvp]) - 128;
+                ++uvp;
+            }
+            y1192 = 1192 * y;
+            r = clamp262143((y1192 + 1634 * v));
+            g = clamp262143((y1192 - 833 * v - 400 * u));
+            b = clamp262143((y1192 + 2066 * u));
+
+            *(argb++) =
+                    0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
+        }
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_io_prover_provermvp_detector_ProverDetector_yuvToRgb(JNIEnv *env, jobject instance,
+                                                          jbyteArray y_, jbyteArray u_,
+                                                          jbyteArray v_, jintArray argb_,
+                                                          jint width, jint height) {
+    jbyte *y = env->GetByteArrayElements(y_, NULL);
+    jbyte *u = env->GetByteArrayElements(u_, NULL);
+    jbyte *v = env->GetByteArrayElements(v_, NULL);
+    jint *argb = env->GetIntArrayElements(argb_, NULL);
+
+    yuvToRgb(y, u, v, argb, width, height);
+
+    env->ReleaseByteArrayElements(y_, y, JNI_ABORT);
+    env->ReleaseByteArrayElements(u_, u, JNI_ABORT);
+    env->ReleaseByteArrayElements(v_, v, JNI_ABORT);
+    env->ReleaseIntArrayElements(argb_, argb, 0);
+}
+
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env, jobject instance,
+                                                                    jlong nativeHandler,
+                                                                    jobject planeY, jint yRowStride,
+                                                                    jint yPixelStride,
+                                                                    jobject planeU, jint uRowStride,
+                                                                    jint uPixelStride,
+                                                                    jobject planeV, jint vRowStride,
+                                                                    jint vPixelStride, jint width,
+                                                                    jint height, jint timestamp,
+                                                                    jintArray result_) {
+    jint *res = env->GetIntArrayElements(result_, NULL);
+
+    jbyte *frameY = (jbyte *) (parsePlane(env, planeY, yRowStride, yPixelStride,
+                                          width, height));
+    jbyte *frameU = (jbyte *) (parsePlane(env, planeU, uRowStride, uPixelStride,
+                                          width, height));
+    jbyte *frameV = (jbyte *) (parsePlane(env, planeV, vRowStride, vPixelStride,
+                                          width, height));
+
+    if (frameY != NULL && frameV != NULL && frameU != NULL) {
+        SwypeDetect *detector = (SwypeDetect *) nativeHandler;
+        jint *argb = detector->getRgbBuffer(width, height);
+        yuvToRgb(frameY, frameU, frameV, argb, width, height);
+        detector->processFrameArgb(argb, width, height, (uint) timestamp, res[0], res[1], res[2],
+                                   res[3], res[4]);
+    }
+
+    env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
 }
