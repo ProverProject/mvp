@@ -255,7 +255,7 @@ function generationPdfQr($fileName, $inputStr, $hash, $time) {
     QRcode::png($inputStr, $pathNameQRcode, $errorCorrectionLevel, $matrixPointSize, 2);
     $pathQRcode = generationProverQRcode($tmpPath, $fileNameQRcode);
 
-    $htmlPage = templateHTMLQr($inputStr, $hash, $time, $pathQRcode);
+    $htmlPage = templateHTMLQr($fileName, $inputStr, $hash, $time, $pathQRcode);
     $nameConfigFileHTML = $tmpPath . $fileName . '.html';
     file_put_contents($nameConfigFileHTML, $htmlPage);
     chmod($nameConfigFileHTML, 0777);
@@ -287,7 +287,7 @@ function generationPdfQr($fileName, $inputStr, $hash, $time) {
     rmdir($tmpPath);
 }
 
-function templateHTMLQr($inputStr, $hash, $time, $qr_img) {
+function templateHTMLQr($fileName, $inputStr, $hash, $time, $qr_img) {
     $html = <<<EOD
     <head>
         <meta charset="utf-8">
@@ -344,7 +344,7 @@ function templateHTMLQr($inputStr, $hash, $time, $qr_img) {
         margin: 10px 0;
     }
     .content .content-text {
-        margin-top: 100px;
+        margin-top: 50px;
     }
     .content .characteristics:after {
         content: "";
@@ -373,7 +373,7 @@ function templateHTMLQr($inputStr, $hash, $time, $qr_img) {
         background: url("https://prover.io/assets/images/pdf_template/stamp@3x.png") center no-repeat;
         height: 140px;
         background-size: contain;
-        margin-top: 80px;
+        margin-top: 35px;
         clear: both;
     }
     .content .content-link p {
@@ -419,6 +419,8 @@ function templateHTMLQr($inputStr, $hash, $time, $qr_img) {
     <div class="content">
         <img class="logo" src="https://prover.io/assets/images/pdf_template/logo@3x.png">
         <h1>Certificate <br> of authenticity</h1>
+        <p class="content__filename">Video file name</p>
+        <h3>$fileName</h3>
         <p class="content__filename">File hash</p>
         <p class="center">$hash</p>
 
