@@ -246,7 +246,7 @@ Java_io_prover_provermvp_detector_ProverDetector_yuvToRgb(JNIEnv *env, jobject i
     env->ReleaseIntArrayElements(argb_, argb, 0);
 }
 
-
+/*
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -278,4 +278,49 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env,
     }
 
     env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
+}
+*/
+extern "C"
+JNIEXPORT void JNICALL
+Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env, jobject instance,
+                                                                    jlong nativeHandler,
+                                                                    jobject planeY, jint yRowStride,
+                                                                    jint yPixelStride,
+                                                                    jobject planeU, jint uRowStride,
+                                                                    jint uPixelStride,
+                                                                    jobject planeV, jint vRowStride,
+                                                                    jint vPixelStride, jint width,
+                                                                    jint height, jint timestamp,
+                                                                    jintArray result_,
+                                                                    jbyteArray debugImage_) {
+    jbyte *debugImage = env->GetByteArrayElements(debugImage_, NULL);
+    jint *res = env->GetIntArrayElements(result_, NULL);
+
+    jbyte *frameY = (jbyte *) (parsePlane(env, planeY, yRowStride, yPixelStride,
+                                          width, height));
+    jbyte *frameU = (jbyte *) (parsePlane(env, planeU, uRowStride, uPixelStride,
+                                          width / 2, height / 2));
+    jbyte *frameV = (jbyte *) (parsePlane(env, planeV, vRowStride, vPixelStride,
+                                          width / 2, height / 2));
+
+    if (frameY != NULL && frameV != NULL && frameU != NULL) {
+        SwypeDetect *detector = (SwypeDetect *) nativeHandler;
+        jint *argb = detector->getRgbBuffer(width, height);
+
+        yuvToRgb(frameY, frameU, frameV, argb, width, height);
+
+
+        detector->processFrameArgb(argb, width, height, (uint) timestamp, res[0], res[1], res[2],
+                                   res[3], res[4]);
+
+        memcpy(debugImage, argb, width * height * 4);
+
+    } else {
+        debugImage[0] = 12;
+        debugImage[1] = 22;
+    }
+
+
+    env->ReleaseIntArrayElements(result_, res, JNI_COMMIT_AND_RELEASE);
+    env->ReleaseByteArrayElements(debugImage_, debugImage, JNI_COMMIT_AND_RELEASE);
 }

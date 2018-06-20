@@ -41,7 +41,7 @@ public:
         int r, g, b;
 
         for (int i = 0; i < size; ++i) {
-            jint value = *argb;
+            jint value = argb[i];
             r = static_cast<unsigned char>((value & 0xff0000) >> 16);
             g = static_cast<unsigned char>((value & 0xff00) >> 8);
             b = static_cast<unsigned char>(value & 0xff);

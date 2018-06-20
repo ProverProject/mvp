@@ -2,12 +2,14 @@ package io.prover.provermvp.detector;
 
 import android.media.Image;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.util.Locale;
 
+import io.prover.common.util.BitmapHelper;
 import io.prover.provermvp.BuildConfig;
 import io.prover.provermvp.camera.Size;
 import io.prover.provermvp.controller.CameraController;
@@ -79,6 +81,8 @@ public class ProverDetector {
         Log.d(TAG, String.format("detect3 average detect time: %f", detectionTimeSum / (double) detectionCalls));
     }
 
+    byte[] temp = null;
+    int saveFrame = 0;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void detectFrame(Frame frame) {
         int width = frame.width;
@@ -87,15 +91,21 @@ public class ProverDetector {
         if (nativeHandler != 0) {
             long time = System.currentTimeMillis();
             if (frame.image != null) {
+                if (temp == null || temp.length != width * height * 4)
+                    temp = new byte[width * height * 4];
                 Image.Plane planeY = frame.image.getPlanes()[0];
-/*                Image.Plane planeU = frame.image.getPlanes()[1];
+                Image.Plane planeU = frame.image.getPlanes()[1];
                 Image.Plane planeV = frame.image.getPlanes()[2];
                 detectFrameColored(nativeHandler,
                         planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(),
                         planeU.getBuffer(), planeU.getRowStride(), planeU.getPixelStride(),
                         planeV.getBuffer(), planeV.getRowStride(), planeV.getPixelStride(),
-                        width, height, frame.timeStamp, detectionResult);//*/
-                detectFrameY_8BufStrided(nativeHandler, planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(), width, height, frame.timeStamp, detectionResult);
+                        width, height, frame.timeStamp, detectionResult, temp);//*/
+                if (saveFrame > 0) {
+                    BitmapHelper.saveGrayscale(temp, width, height, "temp" + saveFrame + ".png");
+                    --saveFrame;
+                }
+                //detectFrameY_8BufStrided(nativeHandler, planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(), width, height, frame.timeStamp, detectionResult);
             } else if (frame.data != null) {
                 detectFrameNV21(nativeHandler, frame.data, width, height, frame.timeStamp, detectionResult);
             }
@@ -191,7 +201,7 @@ public class ProverDetector {
     private native void detectFrameColored(long nativeHandler, ByteBuffer planeY, int yRowStride, int yPixelStride,
                                            ByteBuffer planeU, int uRowStride, int uPixelStride,
                                            ByteBuffer planeV, int vRowStride, int vPixelStride,
-                                           int width, int height, int timestamp, int[] result);
+                                           int width, int height, int timestamp, int[] result, @Nullable byte[] debugImage);
 
     private native void releaseNativeHandler(long nativeHandler);
 
