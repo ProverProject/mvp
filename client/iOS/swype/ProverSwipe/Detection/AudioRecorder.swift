@@ -11,10 +11,9 @@ class AudioRecorder: NSObject, AVAudioRecorderDelegate, Recorder {
     
     weak var delegate: AudioRecorderDelegate!
     
-    private var audioFileURL: URL {
-        return FileManager.default.temporaryDirectory.appendingPathComponent("audio_track.mp4")
-    }
-    
+    private let audioFileURL =
+            FileManager.default.temporaryDirectory.appendingPathComponent("audio_track.mp4")
+
     init(delegate: AudioRecorderDelegate) {
         self.delegate = delegate
         
@@ -35,7 +34,6 @@ class AudioRecorder: NSObject, AVAudioRecorderDelegate, Recorder {
     
     func startRecord() {
         
-        checkOutput()
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 12000,
@@ -57,15 +55,5 @@ class AudioRecorder: NSObject, AVAudioRecorderDelegate, Recorder {
         audioRecorder.stop()
         audioRecorder = nil
         handler(audioFileURL)
-    }
-    
-    private func checkOutput() {
-        if FileManager.default.fileExists(atPath: audioFileURL.relativePath) {
-            do {
-                try FileManager.default.removeItem(at: audioFileURL)
-            } catch {
-                print("[AudioRecorder] FileManager can't delete file at \(audioFileURL)")
-            }
-        }
     }
 }

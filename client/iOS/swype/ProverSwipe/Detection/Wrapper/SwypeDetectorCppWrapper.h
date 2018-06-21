@@ -9,7 +9,7 @@
 #undef TEMP_NO
 #endif
 
-@interface SwypeDetector: NSObject
+@interface SwypeDetectorCppWrapper: NSObject
 
 - (instancetype) init;
 

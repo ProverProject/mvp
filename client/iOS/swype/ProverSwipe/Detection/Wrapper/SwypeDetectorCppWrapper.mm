@@ -1,13 +1,13 @@
-#import "SwypeDetector.h"
+#import "SwypeDetectorCppWrapper.h"
 #import <CoreImage/CoreImage.h>
 #import <UIKit/UIKit.h>
 
-@interface SwypeDetector()
+@interface SwypeDetectorCppWrapper()
 @property (nonatomic, assign) SwypeDetect detector;
 @property (nonatomic, assign) BOOL isFirstFrame;
 @end
 
-@implementation SwypeDetector
+@implementation SwypeDetectorCppWrapper
 
 - (instancetype)init {
     self = [super init];

@@ -156,7 +156,7 @@
 		9A19C11420B04DFD005FCD04 /* NSLayoutConstraint+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A19C11320B04DFD005FCD04 /* NSLayoutConstraint+extension.swift */; };
 		9A19C11620B050B8005FCD04 /* CAShapeLayer+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A19C11520B050B8005FCD04 /* CAShapeLayer+extension.swift */; };
 		9A2EA9D62074DFCA00910CFB /* UpdateBalanceBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EA9D52074DFCA00910CFB /* UpdateBalanceBehaviour.swift */; };
-		9A2EA9FB2074EC1D00910CFB /* Detector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EA9FA2074EC1D00910CFB /* Detector.swift */; };
+		9A2EA9FB2074EC1D00910CFB /* SwypeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EA9FA2074EC1D00910CFB /* SwypeDetector.swift */; };
 		9A2EAA0F2074ECE400910CFB /* VectorExplained.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EA9FF2074ECE100910CFB /* VectorExplained.cpp */; };
 		9A2EAA102074ECE400910CFB /* SwypeStepDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA012074ECE100910CFB /* SwypeStepDetector.cpp */; };
 		9A2EAA112074ECE400910CFB /* BoundsChecker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA042074ECE200910CFB /* BoundsChecker.cpp */; };
@@ -164,7 +164,7 @@
 		9A2EAA132074ECE400910CFB /* SwypeCodeDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA082074ECE200910CFB /* SwypeCodeDetector.cpp */; };
 		9A2EAA142074ECE400910CFB /* Vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA0C2074ECE300910CFB /* Vector.cpp */; };
 		9A2EAA152074ECE400910CFB /* CircleDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA0E2074ECE400910CFB /* CircleDetector.cpp */; };
-		9A2EAA1D2074EEB100910CFB /* SwypeDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA1B2074EEB100910CFB /* SwypeDetector.mm */; };
+		9A2EAA1D2074EEB100910CFB /* SwypeDetectorCppWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA1B2074EEB100910CFB /* SwypeDetectorCppWrapper.mm */; };
 		9A2EAA262074F5F100910CFB /* SwypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA252074F5F100910CFB /* SwypeViewController.swift */; };
 		9A43F90120B2D80200DB3E02 /* BaseNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A43F90020B2D80200DB3E02 /* BaseNavigationBar.swift */; };
 		9A63763E20B2AC4400F07704 /* UIButtom+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A63763D20B2AC4400F07704 /* UIButtom+extension.swift */; };
@@ -201,8 +201,8 @@
 		9AEF62E420736B40006C59DD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E220736B40006C59DD /* Main.storyboard */; };
 		9AEF62E620736B41006C59DD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E520736B41006C59DD /* Images.xcassets */; };
 		9AEF62E920736B41006C59DD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E720736B41006C59DD /* LaunchScreen.storyboard */; };
-		9AF02BA620B59B9A00C5BC3A /* VideoDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF02BA520B59B9A00C5BC3A /* VideoDetector.swift */; };
-		9AF364A320BBF21400A6A968 /* DetectionProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A220BBF21400A6A968 /* DetectionProtocols.swift */; };
+		9AF02BA620B59B9A00C5BC3A /* MovieRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF02BA520B59B9A00C5BC3A /* MovieRecorder.swift */; };
+		9AF364A320BBF21400A6A968 /* SwypeDetectionProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */; };
 		9AF364A520BBF24600A6A968 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A420BBF24600A6A968 /* AudioRecorder.swift */; };
 		9AF364A720BC141C00A6A968 /* Merger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A620BC141C00A6A968 /* Merger.swift */; };
 		9AFB3C9A2080AD69003F72AA /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFB3C992080AD69003F72AA /* APIError.swift */; };
@@ -389,7 +389,7 @@
 		9A19C11320B04DFD005FCD04 /* NSLayoutConstraint+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+extension.swift"; sourceTree = "<group>"; };
 		9A19C11520B050B8005FCD04 /* CAShapeLayer+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAShapeLayer+extension.swift"; sourceTree = "<group>"; };
 		9A2EA9D52074DFCA00910CFB /* UpdateBalanceBehaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateBalanceBehaviour.swift; sourceTree = "<group>"; };
-		9A2EA9FA2074EC1D00910CFB /* Detector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Detector.swift; sourceTree = "<group>"; };
+		9A2EA9FA2074EC1D00910CFB /* SwypeDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwypeDetector.swift; sourceTree = "<group>"; };
 		9A2EA9FC2074ECE100910CFB /* SwypeStepDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwypeStepDetector.h; sourceTree = "<group>"; };
 		9A2EA9FD2074ECE100910CFB /* BoundsChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoundsChecker.h; sourceTree = "<group>"; };
 		9A2EA9FE2074ECE100910CFB /* Area.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Area.h; sourceTree = "<group>"; };
@@ -409,8 +409,8 @@
 		9A2EAA0C2074ECE300910CFB /* Vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector.cpp; sourceTree = "<group>"; };
 		9A2EAA0D2074ECE300910CFB /* SwypeCodeDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwypeCodeDetector.h; sourceTree = "<group>"; };
 		9A2EAA0E2074ECE400910CFB /* CircleDetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CircleDetector.cpp; sourceTree = "<group>"; };
-		9A2EAA1B2074EEB100910CFB /* SwypeDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SwypeDetector.mm; sourceTree = "<group>"; };
-		9A2EAA1C2074EEB100910CFB /* SwypeDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwypeDetector.h; sourceTree = "<group>"; };
+		9A2EAA1B2074EEB100910CFB /* SwypeDetectorCppWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SwypeDetectorCppWrapper.mm; sourceTree = "<group>"; };
+		9A2EAA1C2074EEB100910CFB /* SwypeDetectorCppWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwypeDetectorCppWrapper.h; sourceTree = "<group>"; };
 		9A2EAA252074F5F100910CFB /* SwypeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwypeViewController.swift; sourceTree = "<group>"; };
 		9A43F90020B2D80200DB3E02 /* BaseNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationBar.swift; sourceTree = "<group>"; };
 		9A63763D20B2AC4400F07704 /* UIButtom+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButtom+extension.swift"; sourceTree = "<group>"; };
@@ -449,8 +449,8 @@
 		9AEF62E520736B41006C59DD /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9AEF62E820736B41006C59DD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9AEF62EA20736B41006C59DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9AF02BA520B59B9A00C5BC3A /* VideoDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetector.swift; sourceTree = "<group>"; };
-		9AF364A220BBF21400A6A968 /* DetectionProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionProtocols.swift; sourceTree = "<group>"; };
+		9AF02BA520B59B9A00C5BC3A /* MovieRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRecorder.swift; sourceTree = "<group>"; };
+		9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwypeDetectionProtocols.swift; sourceTree = "<group>"; };
 		9AF364A420BBF24600A6A968 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		9AF364A620BC141C00A6A968 /* Merger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Merger.swift; sourceTree = "<group>"; };
 		9AFB3C992080AD69003F72AA /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
@@ -805,10 +805,10 @@
 				9A2EA9DE2074EB9300910CFB /* CPP */,
 				9A2EA9DA2074EB7E00910CFB /* Wrapper */,
 				9AF364A420BBF24600A6A968 /* AudioRecorder.swift */,
-				9AF364A220BBF21400A6A968 /* DetectionProtocols.swift */,
-				9A2EA9FA2074EC1D00910CFB /* Detector.swift */,
 				9AF364A620BC141C00A6A968 /* Merger.swift */,
-				9AF02BA520B59B9A00C5BC3A /* VideoDetector.swift */,
+				9AF02BA520B59B9A00C5BC3A /* MovieRecorder.swift */,
+				9A2EA9FA2074EC1D00910CFB /* SwypeDetector.swift */,
+				9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */,
 				9A89F3CB207CA06D00E31F57 /* VideoRecorder.swift */,
 			);
 			path = Detection;
@@ -817,8 +817,8 @@
 		9A2EA9DA2074EB7E00910CFB /* Wrapper */ = {
 			isa = PBXGroup;
 			children = (
-				9A2EAA1C2074EEB100910CFB /* SwypeDetector.h */,
-				9A2EAA1B2074EEB100910CFB /* SwypeDetector.mm */,
+				9A2EAA1C2074EEB100910CFB /* SwypeDetectorCppWrapper.h */,
+				9A2EAA1B2074EEB100910CFB /* SwypeDetectorCppWrapper.mm */,
 			);
 			path = Wrapper;
 			sourceTree = "<group>";
@@ -1387,11 +1387,11 @@
 				1A97070620D5A13F003E8EF4 /* BlockModel.swift in Sources */,
 				1A8A318620D15A1F00BB7E97 /* sc.c in Sources */,
 				9A9DB78720737EF600E29A07 /* DependencyStore.swift in Sources */,
-				9AF364A320BBF21400A6A968 /* DetectionProtocols.swift in Sources */,
+				9AF364A320BBF21400A6A968 /* SwypeDetectionProtocols.swift in Sources */,
 				1A97070320D5A13F003E8EF4 /* MultisigCosignatoryModificationModel.swift in Sources */,
 				1AF1FFA620C32F2D00176F53 /* Wallet.swift in Sources */,
 				1A58439A20C96B6D00C8FA14 /* Keychain.swift in Sources */,
-				9A2EA9FB2074EC1D00910CFB /* Detector.swift in Sources */,
+				9A2EA9FB2074EC1D00910CFB /* SwypeDetector.swift in Sources */,
 				9A9DB78920737F3700E29A07 /* EthereumWallet.swift in Sources */,
 				1A9706FF20D5A13F003E8EF4 /* QRModel.swift in Sources */,
 				1A8A317920D15A1F00BB7E97 /* UInt32+CircularShift.swift in Sources */,
@@ -1434,7 +1434,7 @@
 				9AEB614B20AD89C600A7341B /* SubmitMediaResponce.swift in Sources */,
 				9A2EAA122074ECE400910CFB /* swype_detect.cpp in Sources */,
 				9A2EAA132074ECE400910CFB /* SwypeCodeDetector.cpp in Sources */,
-				9A2EAA1D2074EEB100910CFB /* SwypeDetector.mm in Sources */,
+				9A2EAA1D2074EEB100910CFB /* SwypeDetectorCppWrapper.mm in Sources */,
 				9AE7B4F620B0039F00DF0E93 /* SwypePoint.swift in Sources */,
 				1A97071220D5AB39003E8EF4 /* TransactionExceptions.swift in Sources */,
 				9AFB3CA22080C29C003F72AA /* SwypeResponce.swift in Sources */,
@@ -1464,7 +1464,7 @@
 				9A2EAA0F2074ECE400910CFB /* VectorExplained.cpp in Sources */,
 				1A8A319020D15F0000BB7E97 /* NSData+Additions.swift in Sources */,
 				9A89F3CC207CA06D00E31F57 /* VideoRecorder.swift in Sources */,
-				9AF02BA620B59B9A00C5BC3A /* VideoDetector.swift in Sources */,
+				9AF02BA620B59B9A00C5BC3A /* MovieRecorder.swift in Sources */,
 				9A66098F2084CD6C00E7F071 /* VideoSubmitter.swift in Sources */,
 				1AACAB2820D17C390018AAFA /* AccountModel.swift in Sources */,
 				1A97070820D5A13F003E8EF4 /* TransferTransactionModel.swift in Sources */,

@@ -1,15 +1,15 @@
 import Foundation
 import UIKit
 
-protocol DetectorStateDelegate: class {
-    func updateFromDetector(detectorState: Detector.State, index: Int)
+protocol SwypeDetectorStateDelegate: class {
+    func updateFromDetector(detectorState: SwypeDetector.State, index: Int)
 }
 
-protocol DetectorCoordinateDelegate: class {
+protocol SwypeDetectorCoordinateDelegate: class {
     func updateTargetCoordinate(x: CGFloat, y: CGFloat, for point: SwypePoint)
 }
 
-class Detector {
+class SwypeDetector {
     
     // MARK: - Public properties
     
@@ -22,16 +22,16 @@ class Detector {
     private var points = [Int]()
     private var nextPointIndex: Int32 = 0 {
         didSet {
-            print("[Detector] search point with index \(nextPointIndex) value: \(points[Int(nextPointIndex)])")
+            print("[SwypeDetector] search point with index \(nextPointIndex) value: \(points[Int(nextPointIndex)])")
             stateDelegate?.updateFromDetector(detectorState: detectorState, index: Int(nextPointIndex))
         }
     }
     
     private var _detectoState: State = .notStart {
         didSet {
-            print("[Detector] _detectoState: \(_detectoState)")
+            print("[SwypeDetector] _detectoState: \(_detectoState)")
             stateDelegate?.updateFromDetector(detectorState: detectorState, index: Int(index))
-            print("[Detector] index: \(index)")
+            print("[SwypeDetector] index: \(index)")
         }
     }
     private var detectorState: State = .notStart {
@@ -42,19 +42,19 @@ class Detector {
                 _detectoState = detectorState
             }
             
-            print("[Detector] move to state: \(self.state)")
+            print("[SwypeDetector] move to state: \(self.state)")
             
             switch detectorState {
             case .waitCircle:
-                print("[Detector] wait circle")
+                print("[SwypeDetector] wait circle")
                 let swypeString = points.reduce(into: "", { (result, number) in
                     result += String(number)
                 })
-                detector?.setSwype(swypeString)
+                wrapper?.setSwype(swypeString)
             case .waitSwypeCode:
-                print("[Detector] wait swype code")
+                print("[SwypeDetector] wait swype code")
             case .prepareForStart:
-                print("[Detector] prepare for start")
+                print("[SwypeDetector] prepare for start")
             case .working:
                 if index != nextPointIndex {
                     nextPointIndex = index
@@ -68,9 +68,9 @@ class Detector {
                                             for: SwypePoint.point(from: vector))
                 
             case .finish:
-                print("[Detector] finish work")
+                print("[SwypeDetector] finish work")
             case .notStart:
-                print("[Detector] not start")
+                print("[SwypeDetector] not start")
             }
         }
     }
@@ -79,7 +79,7 @@ class Detector {
     private var state: Int32 = 0 {
         didSet {
             if state != Int32(detectorState.rawValue) || detectorState == .working {
-                print("[Detector] didSet private var state: Int32 = \(state)")
+                print("[SwypeDetector] didSet private var state: Int32 = \(state)")
                 detectorState = State(rawValue: Int(state))!
             }
         }
@@ -90,23 +90,23 @@ class Detector {
     private var debug: Int32 = 0
     
     // MARK: - Dependencies
-    private var detector = SwypeDetector()
-    private weak var stateDelegate: DetectorStateDelegate?
-    private weak var coordinateDelegate: DetectorCoordinateDelegate?
+    private var wrapper = SwypeDetectorCppWrapper()
+    private weak var stateDelegate: SwypeDetectorStateDelegate?
+    private weak var coordinateDelegate: SwypeDetectorCoordinateDelegate?
     
     // MARK: - Lifecycle
-    init(stateDelegate: DetectorStateDelegate, coordinateDelegate: DetectorCoordinateDelegate) {
+    init(stateDelegate: SwypeDetectorStateDelegate, coordinateDelegate: SwypeDetectorCoordinateDelegate) {
         self.stateDelegate = stateDelegate
         self.coordinateDelegate = coordinateDelegate
         coordinateDelegate.updateTargetCoordinate(x: 0, y: 0, for: .five)
-        print("[Detector] init private var state: Int32 = \(state)")
-        print("[Detector] init private var detectorState: State = \(detectorState)")
+        print("[SwypeDetector] init private var state: Int32 = \(state)")
+        print("[SwypeDetector] init private var detectorState: State = \(detectorState)")
     }
     
     // MARK: - Process frame
     func process(_ imageBuffer: CVImageBuffer, timestamp: CMTime) {
         
-        detector?.processFrame(imageBuffer,
+        wrapper?.processFrame(imageBuffer,
                                timestamp: uint(CMTimeGetSeconds(timestamp) * 1000),
                                state: &state,
                                index: &index,
@@ -117,7 +117,7 @@ class Detector {
 }
 
 // MARK: - Embedded types
-extension Detector {
+extension SwypeDetector {
     
     enum State: Int {
         case waitCircle = 0

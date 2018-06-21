@@ -78,7 +78,7 @@ private extension TargetView {
 }
 
 // MARK: - DetectorCoordinateDelegate
-extension TargetView: DetectorCoordinateDelegate {
+extension TargetView: SwypeDetectorCoordinateDelegate {
     
     func updateTargetCoordinate(x: CGFloat, y: CGFloat, for point: SwypePoint) {
         drawLine(to: point)

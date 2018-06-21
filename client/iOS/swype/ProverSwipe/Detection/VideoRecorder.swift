@@ -10,8 +10,8 @@ class VideoRecorder: NSObject {
     
     // MARK: - Public properties
     weak var delegate: VideoRecorderDelegate?
-    var recordVideo = false
-    var rotateVideo = false
+    var record = false
+    var rotate = false
     
     // MARK: - Private properties
     private var currentDeviceOrientation = UIDeviceOrientation.portrait
@@ -48,9 +48,8 @@ class VideoRecorder: NSObject {
     private var isRecording = false
     private var running = false
     
-    private var videoFileURL: URL {
-        return FileManager.default.temporaryDirectory.appendingPathComponent("video_track.mp4")
-    }
+    private let videoFileURL =
+            FileManager.default.temporaryDirectory.appendingPathComponent("video_track.mp4")
     
     // MARK: - Initiallization
     init(withParent parent: UIView) {
@@ -63,17 +62,17 @@ class VideoRecorder: NSObject {
 // MARK: - Public methods
 extension VideoRecorder {
     
-    @objc func start() {
+    @objc func startCapture() {
         guard !running else { return }
         running = true
         
         if !Thread.isMainThread {
-            performSelector(onMainThread: #selector(start), with: nil, waitUntilDone: false)
+            performSelector(onMainThread: #selector(startCapture), with: nil, waitUntilDone: false)
         }
         if cameraAvailable { startCaptureSession() }
     }
     
-    func stop() {
+    func stopCapture() {
         
         guard running else { return }
         running = false
@@ -107,34 +106,24 @@ extension VideoRecorder {
     }
     
     func startRecord() {
-        
-        guard recordVideo else { return }
+        guard record else { return }
         isRecording = true
-        
-        createVideoFileOutput()
-        
-        if FileManager.default.fileExists(atPath: videoFileURL.relativePath) {
-            do {
-                try FileManager.default.removeItem(at: videoFileURL)
-            } catch {
-                print("[VideoCamera] FileManager can't delete file at \(videoFileURL)")
-            }
-        }
+
+        createVideoOutput()
     }
     
     func stopRecord(handler: @escaping (URL) -> Void = {_ in }) {
         
-        guard recordVideo else { return }
+        guard record else { return }
         isRecording = false
         
-        if let writter = recordAssetWriter {
-            if writter.status == .writing {
-                writter.finishWriting { [weak self] in
-                    guard let videoFileURL = self?.videoFileURL else { return }
-                    handler(videoFileURL)
+        if let writer = recordAssetWriter {
+            if writer.status == .writing {
+                writer.finishWriting { [unowned self] in
+                    handler(self.videoFileURL)
                 }
             } else {
-                print("[VideoCamera] Camera Recording Error: asset writer status is not writing")
+                print("[VideoRecorder] Recording Error: asset writer status is not writing")
             }
             recordAssetWriter = nil
         }
@@ -169,7 +158,7 @@ private extension VideoRecorder {
         } else if captureSession!.canSetSessionPreset(.low) {
             captureSession!.sessionPreset = .low
         } else {
-            print("[Camera] Error: could not set session preset")
+            print("[VideoRecorder] Error: could not set session preset")
         }
     }
     
@@ -202,7 +191,7 @@ private extension VideoRecorder {
             
             captureSession.addInput(input)
         } catch {
-            print("Error when creating capture device \(error.localizedDescription)")
+            print("[VideoRecorder] Error when creating capture device \(error.localizedDescription)")
         }
         
         captureSession.commitConfiguration()
@@ -261,7 +250,7 @@ private extension VideoRecorder {
         parentView.layer.addSublayer(captureVideoPreviewLayer!)
     }
     
-    func createVideoFileOutput() {
+    func createVideoOutput() {
 
         // Video File Output in H.264, via AVAsserWriter
         var outputSettings = [AVVideoWidthKey: 720,
@@ -274,19 +263,21 @@ private extension VideoRecorder {
         }
         
         recordAssetWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings)
+
         let pixelBufferFormat = kCVPixelFormatType_32BGRA
         let attributes = [kCVPixelBufferPixelFormatTypeKey as String: pixelBufferFormat]
+
         recordPixelBufferAdaptor =
             AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: recordAssetWriterInput!,
                                                  sourcePixelBufferAttributes: attributes)
         
         do {
             recordAssetWriter = try AVAssetWriter(url: videoFileURL, fileType: .mp4)
-            recordAssetWriter?.add(recordAssetWriterInput!)
-            recordAssetWriterInput?.expectsMediaDataInRealTime = true
+            recordAssetWriter!.add(recordAssetWriterInput!)
+            recordAssetWriterInput!.expectsMediaDataInRealTime = true
   
         } catch {
-            print("Camera unable to create AVAssetWriter: \(error.localizedDescription)")
+            print("[VideoRecorder] Camera unable to create AVAssetWriter: \(error.localizedDescription)")
         }
     }
     
@@ -296,12 +287,9 @@ private extension VideoRecorder {
     
     func updateOrientation() {
 
-        guard rotateVideo else { return }
+        guard rotate else { return }
         
-        customPreviewLayer?
-            .bounds = CGRect(origin: .zero,
-                             size: CGSize(width: parentView.frame.size.width,
-                                          height: parentView.frame.size.height))
+        customPreviewLayer?.bounds = CGRect(origin: .zero, size: parentView.frame.size)
     }
 }
 
@@ -325,7 +313,7 @@ extension VideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard isRecording else { return }
         
         recordingCountDown -= 1
-        guard recordVideo && recordingCountDown < 0 else {
+        guard record && recordingCountDown < 0 else {
             return
         }
         
@@ -334,14 +322,14 @@ extension VideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate {
             recordAssetWriter?.startSession(atSourceTime: lastSampleTime)
             if recordAssetWriter?.status != .writing {
                 let errorDescription = recordAssetWriter?.error?.localizedDescription ?? "unknown error"
-                print("[Camera] Recording Error: asset writer status is not writing: \(errorDescription)")
+                print("[VideoRecorder] Recording Error: asset writer status is not writing: \(errorDescription)")
             }
         }
         
         if recordAssetWriterInput!.isReadyForMoreMediaData {
             let result = recordPixelBufferAdaptor!.append(imageBuffer, withPresentationTime: lastSampleTime)
             if !result {
-                print("Video Writing Error")
+                print("[VideoRecorder] Video Writing Error")
             }
         }
     }

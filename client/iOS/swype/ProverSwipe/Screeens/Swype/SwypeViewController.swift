@@ -42,7 +42,7 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     // MARK: - Dependencies
     var store: DependencyStore!
     var submitter: VideoSubmitter?
-    var videoDetector: VideoDetector!
+    var movieRecorder: MovieRecorder!
     var saver: VideoSaver?
     
     // MARK: - Private properties
@@ -69,14 +69,14 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("[SwypeViewController] viewWillAppear")
-        videoDetector.start()
+        movieRecorder.startCapture()
         balanceLabel.text = "\(store.balance)"
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("[SwypeViewController] viewDidDisappear")
-        videoDetector.stop()
+        movieRecorder.stopCapture()
     }
     
     // MARK: - Segue
@@ -139,17 +139,17 @@ private extension SwypeViewController {
         
         switch state {
         case .readyToRecord:
-            videoDetector.startRecord()
+            movieRecorder.startRecord()
         case .waitSwype:
-            videoDetector.resetDetector()
-            videoDetector.stopRecord(allowSubmit: false)
+            movieRecorder.resetSwypeDetector()
+            movieRecorder.stopRecord(allowSubmit: false)
             queue.cancelAllOperations()
         case .waitRoundMovement, .prepareForStart, .detection:
-            videoDetector.resetDetector()
-            videoDetector.stopRecord(allowSubmit: false)
+            movieRecorder.resetSwypeDetector()
+            movieRecorder.stopRecord(allowSubmit: false)
         case .finishDetection:
-            videoDetector.resetDetector()
-            videoDetector.stopRecord(allowSubmit: true)
+            movieRecorder.resetSwypeDetector()
+            movieRecorder.stopRecord(allowSubmit: true)
         case .submitVideo:
             fatalError("Record button have to be non enable")
         }
@@ -170,14 +170,14 @@ private extension SwypeViewController {
     }
     
     func startRecognize(swype: [Int]) {
-        videoDetector.setSwype(code: swype)
+        movieRecorder.setSwype(code: swype)
         state = .waitRoundMovement
         progressSwype.setSteps(number: swype.count - 1)
     }
     
     func configDependencies() {
         
-        videoDetector = VideoDetector(preview: preview,
+        movieRecorder = MovieRecorder(preview: preview,
                                       coordinateDelegate: targetView,
                                       delegate: self)
         
@@ -218,8 +218,8 @@ extension SwypeViewController {
     @objc func handleDidEnterBackground() {
         
         print("[SwypeViewController] handleDidBackground()")
-        videoDetector.stop()
-        videoDetector.resetDetector()
+        movieRecorder.stopCapture()
+        movieRecorder.resetSwypeDetector()
     }
     
     @objc func handleWillEnterForeground() {
@@ -227,7 +227,7 @@ extension SwypeViewController {
         print("[SwypeViewController] handleWillEnterForeground()")
         
         state = .readyToRecord
-        videoDetector.start()
+        movieRecorder.startCapture()
     }
 }
 
@@ -296,7 +296,7 @@ extension SwypeViewController: SwypeScreenState {
 }
 
 // MARK: - KSVideoCameraDelegate
-extension SwypeViewController: VideDetectoDelegate, VideoSaverNotifier {
+extension SwypeViewController: MovieRecorderDelegate, VideoSaverNotifier {
     
     func showAlert(text: String) {
         let alertController = UIAlertController(title: nil, message: text, preferredStyle: .alert)
@@ -325,7 +325,7 @@ extension SwypeViewController: VideDetectoDelegate, VideoSaverNotifier {
         submitter?.submit(videoURL: url,
                           with: Hexadecimal(swypeBlock)!) { [weak self] result in
                             
-                            self?.videoDetector.resetDetector()
+                            self?.movieRecorder.resetSwypeDetector()
                             self?.state = .readyToRecord
                             print("[SwypeViewController] submit result: \(result ?? "error submit")")
         }
