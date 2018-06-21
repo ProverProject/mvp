@@ -135,7 +135,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
-#include <jni.h>
+//#include <jni.h>
 #include "opencv2/core/ocl.hpp"
 #include "VectorExplained.h"
 #include "SwypeStepDetector.h"
