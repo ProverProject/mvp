@@ -99,3 +99,8 @@ void CircleDetector::SetRelaxed(bool relaxed) {
         _minAreaByP2toCircle = MIN_AREA_BY_P2_TO_CIRCLE;
     }
 }
+
+void CircleDetector::Clear() {
+    pos_ = 0;
+    total_ = 0;
+}

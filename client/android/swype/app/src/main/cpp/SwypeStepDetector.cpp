@@ -36,10 +36,10 @@ void SwypeStepDetector::Reset() {
     _count = 0;
 }
 
-void SwypeStepDetector::Configure(double speedMult, float maxDeviation, bool relaxed) {
+void SwypeStepDetector::Configure(double speedMult, float targetRadius, bool relaxed) {
     _speedMultX = speedMult;
     _speedMultY = speedMult;
-    _defaultTargetRadius = maxDeviation;
+    _defaultTargetRadius = targetRadius;
     _relaxed = relaxed;
 }
 

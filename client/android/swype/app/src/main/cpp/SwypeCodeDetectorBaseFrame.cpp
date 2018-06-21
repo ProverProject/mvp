@@ -7,16 +7,14 @@
 #include "swype_detect.h"
 #include "SwypeCodeDetector.h"
 
-
 void SwypeCodeDetectorBaseFrame::NextFrame(cv::Mat &frame, uint timestamp) {
     if (timestamp >= _startTimestamp) {
-        if (baseFt.empty()) {
+        if (_shiftDetector.IsBaseFrameEmpty()) {
             _status = 0;
-            SetBaseFrame(frame);
-            return;
+            _shiftDetector.SetBaseFrame(frame);
         }
 
-        VectorExplained shift = ShiftToBaseFrame(frame, timestamp);
+        VectorExplained shift = _shiftDetector.ShiftToBaseFrame(frame, timestamp);
         if (shift._timestamp > _maxTimestamp) {
             _status = -2;
         } else if (shift._mod <= 0) {
@@ -37,28 +35,6 @@ void SwypeCodeDetectorBaseFrame::NextFrame(cv::Mat &frame, uint timestamp) {
     }
 }
 
-VectorExplained SwypeCodeDetectorBaseFrame::ShiftToBaseFrame(cv::Mat &frame_i, uint timestamp) {
-    frame_i.convertTo(curFrameFt, CV_64F);// converting frames to CV_64F type
-
-    if (hann.empty()) {
-        createHanningWindow(hann, curFrameFt.size(), CV_64F);
-    }
-
-    const cv::Point2d &shift = phaseCorrelate(baseFt, curFrameFt,
-                                              hann); // we calculate a phase offset vector
-    VectorExplained scaledShift;
-    scaledShift.SetMul(shift, _shiftScaleXMult, _shiftScaleYMult);
-    scaledShift.setRelativeDefect(_defect);
-    scaledShift._timestamp = timestamp;
-
-    log2(timestamp, shift, scaledShift);
-
-    return scaledShift;
-}
-
 void SwypeCodeDetectorBaseFrame::SetBaseFrame(cv::Mat &frame_i) {
-    frame_i.convertTo(baseFt, CV_64F);// converting frames to CV_64F type
-    if (hann.empty()) {
-        createHanningWindow(hann, baseFt.size(), CV_64F);
-    }
+    _shiftDetector.SetBaseFrame(frame_i);
 }

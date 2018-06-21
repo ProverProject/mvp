@@ -143,6 +143,8 @@
 #include "SwypeCodeDetectorBaseFrame.h"
 #include "DetectorState.h"
 #include "ColoredQuantum.h"
+#include "ShiftDetector.h"
+#include "SwypeCodeDetectorDelta.h"
 
 
 class SwypeDetect {
@@ -203,18 +205,12 @@ public:
                      int &debug);
 
 private:
-    void SetDetectorSize(int detectorWidth, int detectorHeight);
 
     void MoveToState(int state, uint timestamp);
 
-    VectorExplained ShiftToPrevFrame2(cv::Mat &frame_i, uint timestamp);
+    void AddDetector(unsigned int timestamp, cv::Mat &baseFrame);
 
-    void SetBaseFrame(cv::Mat &frame_i);
-
-    void log1(uint timestamp, cv::Point2d &shift, VectorExplained &scaledShift,
-              VectorExplained &windowedShift);
-
-    void AddDetector(unsigned int timestamp, cv::Mat &baseFrame, double defect);
+    void DetectCircle(cv::Mat &frame_i, uint timestamp);
 
     SwipeCode swypeCode;//we have swype code or we will wait swype code
 
@@ -222,23 +218,18 @@ private:
 
     DetectorState _state;
 
-    cv::UMat buf1ft;
-    cv::UMat buf2ft;
-    cv::UMat baseFt;
-    cv::UMat hann;
+    ShiftDetector _shiftDetector;
 
     CircleDetector _circleDetector;
 
-    bool _tickTock = false;
-
-    double _videoAspect = 0.0;
-    int _detectorWidth = 0;
-    int _detecttorHeight = 0;
-    double _xMult = 0.0;
-    double _yMult = 0.0;
     bool _relaxed;
 
+#ifdef USE_PER_FRAME_SHIFT
+    std::list<SwypeCodeDetectorDelta> _detectors;
+#else
     std::list<SwypeCodeDetectorBaseFrame> _detectors;
+#endif
+
     SwypeCodeDetectorBaseFrame _detector;
 
     unsigned int _maxDetectors = 1;

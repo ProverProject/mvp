@@ -32,7 +32,7 @@ public:
      * @param height
      * @param speedMult
      */
-    void Configure(double speedMult, float maxDeviation, bool relaxed);
+    void Configure(double speedMult, float targetRadius, bool relaxed);
 
     /**
      * configures to start movement in specified direction

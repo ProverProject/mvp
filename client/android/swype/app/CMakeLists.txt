@@ -26,7 +26,9 @@ add_library( native-lib SHARED
              src/main/cpp/CircleDetector.cpp
              src/main/cpp/BoundsChecker.cpp
              src/main/cpp/SwypeCodeDetectorBaseFrame.cpp
+             src/main/cpp/SwypeCodeDetectorDelta.cpp
              src/main/cpp/SwypeCodeDetector.cpp
+             src/main/cpp/ShiftDetector.cpp
 
 #             src/main/cpp/keccak.c src/main/cpp/rlp.c  src/main/cpp/sign_eth_tx.c src/main/cpp/secp256k1/src/secp256k1.c
               )
