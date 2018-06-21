@@ -196,6 +196,7 @@ int main(int argc, char *argv[])
         {"png",       no_argument,       0,  0 }, // #5
         {"user",      required_argument, 0,  0 }, // #6
         {"verbose",   no_argument,       0, 'v'},
+        {"rgb",       no_argument,       0,  0 }, // #8
         {0,           0,                 0,  0 }
     };
 
@@ -210,6 +211,7 @@ int main(int argc, char *argv[])
     std::string blockhash;
     std::string user;
     bool savePng=false;
+    bool experimentalRgbMode=false;
     ::logLevel=0;
 
     while((opt=getopt_long(argc, argv, "w:h:v", long_options, &option_index))!=-1)
@@ -242,6 +244,9 @@ int main(int argc, char *argv[])
                 break;
             case 6:
                 user=optarg;
+                break;
+            case 8:
+                experimentalRgbMode=true;
                 break;
             }
             break;
@@ -292,7 +297,8 @@ int main(int argc, char *argv[])
         pixelFormat,
         timeBase,
         targetWidth,
-        targetHeight);
+        targetHeight,
+        experimentalRgbMode);
 
     AVCodec *codec=avcodec_find_decoder(reader.getCodecParameters()->codec_id);
     if(!codec)
@@ -347,25 +353,40 @@ int main(int argc, char *argv[])
 
             processor.processImage(frame);
 
-            if(frame->width!=frame->linesize[0])
-            {
-                for(int y=1; y<frame->height; ++y)
-                {
-                    std::memmove(frame->data[0]+y*frame->width, frame->data[0]+y*frame->linesize[0], frame->width);
-                }
-            }
-
-            if(savePng)
-            {
-                char filename[20];
-                snprintf(filename, 20, "%04d.%03d.png", timestamp/1000, timestamp%1000);
-                debug_save_image_to_png(frame->data[0], frame->width, frame->height, filename);
-            }
-
             int state=-1, index=-1, x=-1, y=-1;
             int debug=-1;
 
-            detector.processFrame(frame->data[0], frame->width, frame->height, timestamp, state, index, x, y, debug);
+            if(experimentalRgbMode)
+            {
+                if(frame->width*4!=frame->linesize[0])
+                {
+                    for(int y=1; y<frame->height; ++y)
+                    {
+                        std::memmove(frame->data[0]+y*frame->width*4, frame->data[0]+y*frame->linesize[0], frame->width*4);
+                    }
+                }
+
+                detector.processFrameArgb((uint32_t *)frame->data[0], frame->width, frame->height, timestamp, state, index, x, y, debug);
+            }
+            else
+            {
+                if(frame->width!=frame->linesize[0])
+                {
+                    for(int y=1; y<frame->height; ++y)
+                    {
+                        std::memmove(frame->data[0]+y*frame->width, frame->data[0]+y*frame->linesize[0], frame->width);
+                    }
+                }
+
+                if(savePng)
+                {
+                    char filename[20];
+                    snprintf(filename, 20, "%04d.%03d.png", timestamp/1000, timestamp%1000);
+                    debug_save_image_to_png(frame->data[0], frame->width, frame->height, filename);
+                }
+
+                detector.processFrame(frame->data[0], frame->width, frame->height, timestamp, state, index, x, y, debug);
+            }
 
             if(state==3 && swypeBeginTimestamp==-1)
                 swypeBeginTimestamp=timestamp;

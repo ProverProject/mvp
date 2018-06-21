@@ -19,7 +19,8 @@ ImageProcessor::ImageProcessor(
     int               pixelFormat,
     const AVRational *timeBase,
     unsigned int      targetWidth,
-    unsigned int      targetHeight) :
+    unsigned int      targetHeight,
+    bool              rgb) :
 
     _graph(NULL),
     _buffer(NULL),
@@ -29,14 +30,16 @@ ImageProcessor::ImageProcessor(
 
     const AVFilter *buffer=avfilter_get_by_name("buffer");
     const AVFilter *planeExtractor=avfilter_get_by_name("extractplanes");
+    const AVFilter *formatConverter=avfilter_get_by_name("format");
     const AVFilter *scaler=avfilter_get_by_name("scale");
     const AVFilter *buffersink=avfilter_get_by_name("buffersink");
 
-    if(!buffer || !planeExtractor || !scaler || !buffersink)
+    if(!buffer || !planeExtractor || !formatConverter || !scaler || !buffersink)
         return;
 
     AVFilterContext *bufferContext=NULL;
     AVFilterContext *planeExtractorContext=NULL;
+    AVFilterContext *formatConverterContext=NULL;
     AVFilterContext *scalerContext=NULL;
     AVFilterContext *buffersinkContext=NULL;
 
@@ -48,12 +51,25 @@ ImageProcessor::ImageProcessor(
         avfilter_graph_free(&graph);
         return;
     }
-    if(avfilter_graph_create_filter(&planeExtractorContext, planeExtractor, NULL, "y", NULL, graph)!=0)
+    if(!rgb)
     {
-        fprintf(stderr, "Failed to initialize \"extractplanes\" context\n");
-        avfilter_free(bufferContext);
-        avfilter_graph_free(&graph);
-        return;
+        if(avfilter_graph_create_filter(&planeExtractorContext, planeExtractor, NULL, "y", NULL, graph)!=0)
+        {
+            fprintf(stderr, "Failed to initialize \"extractplanes\" context\n");
+            avfilter_free(bufferContext);
+            avfilter_graph_free(&graph);
+            return;
+        }
+    }
+    else
+    {
+        if(avfilter_graph_create_filter(&formatConverterContext, formatConverter, NULL, "pix_fmts=rgba", NULL, graph)!=0)
+        {
+            fprintf(stderr, "Failed to initialize \"format\" context\n");
+            avfilter_free(bufferContext);
+            avfilter_graph_free(&graph);
+            return;
+        }
     }
     snprintf(configstr, 200, "w=%u:h=%u", targetWidth, targetHeight);
     if(avfilter_graph_create_filter(&scalerContext, scaler, NULL, configstr, NULL, graph)!=0)
@@ -61,6 +77,7 @@ ImageProcessor::ImageProcessor(
         fprintf(stderr, "Failed to initialize \"scale\" context\n");
         avfilter_free(bufferContext);
         avfilter_free(planeExtractorContext);
+        avfilter_free(formatConverterContext);
         avfilter_graph_free(&graph);
         return;
     }
@@ -69,19 +86,21 @@ ImageProcessor::ImageProcessor(
         fprintf(stderr, "Failed to initialize \"buffersink\" context\n");
         avfilter_free(bufferContext);
         avfilter_free(planeExtractorContext);
+        avfilter_free(formatConverterContext);
         avfilter_free(scalerContext);
         avfilter_graph_free(&graph);
         return;
     }
 
-    if(avfilter_link(bufferContext, 0, planeExtractorContext, 0)!=0 ||
-       avfilter_link(planeExtractorContext, 0, scalerContext, 0)!=0 ||
+    if(avfilter_link(bufferContext, 0, rgb?formatConverterContext:planeExtractorContext, 0)!=0 ||
+       avfilter_link(rgb?formatConverterContext:planeExtractorContext, 0, scalerContext, 0)!=0 ||
        avfilter_link(scalerContext, 0, buffersinkContext, 0)!=0 ||
        avfilter_graph_config(graph, NULL)!=0)
     {
         fprintf(stderr, "Failed to link filters\n");
         avfilter_free(bufferContext);
         avfilter_free(planeExtractorContext);
+        avfilter_free(formatConverterContext);
         avfilter_free(scalerContext);
         avfilter_free(buffersinkContext);
         avfilter_graph_free(&graph);

@@ -11,8 +11,11 @@ OBJECTS := \
     .obj/ImageProcessor.cpp.o \
     .obj/swype_detect.cpp.o \
     .obj/CircleDetector.cpp.o \
-	.obj/SwypeCodeDetector.cpp.o \
+    .obj/SwypeCodeDetector.cpp.o \
+    .obj/SwypeCodeDetectorBaseFrame.cpp.o \
+    .obj/SwypeCodeDetectorDelta.cpp.o \
     .obj/SwypeStepDetector.cpp.o \
+    .obj/ShiftDetector.cpp.o \
     .obj/Vector.cpp.o \
     .obj/VectorExplained.cpp.o \
     .obj/BoundsChecker.cpp.o \

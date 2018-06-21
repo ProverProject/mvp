@@ -20,7 +20,8 @@ public:
         int               pixelFormat,
         const AVRational *timeBase,
         unsigned int      targetWidth,
-        unsigned int      targetHeight);
+        unsigned int      targetHeight,
+        bool              rgb);
     ~ImageProcessor();
 
     bool isValid() const;
