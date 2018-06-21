@@ -22,6 +22,7 @@
 
 extern int logLevel;
 
+#define LOG_VECTORS 1
 #define LOG_CIRCLE_DETECTION 2
 #define LOG_GENERAL_DETECTION 4
 

@@ -91,20 +91,21 @@ public class ProverDetector {
         if (nativeHandler != 0) {
             long time = System.currentTimeMillis();
             if (frame.image != null) {
-                if (temp == null || temp.length != width * height * 4)
-                    temp = new byte[width * height * 4];
+
                 Image.Plane planeY = frame.image.getPlanes()[0];
                 Image.Plane planeU = frame.image.getPlanes()[1];
                 Image.Plane planeV = frame.image.getPlanes()[2];
+                if (temp == null || temp.length != width * height * 4)
+                    temp = new byte[width * height * 4];
                 detectFrameColored(nativeHandler,
                         planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(),
                         planeU.getBuffer(), planeU.getRowStride(), planeU.getPixelStride(),
                         planeV.getBuffer(), planeV.getRowStride(), planeV.getPixelStride(),
-                        width, height, frame.timeStamp, detectionResult, temp);//*/
+                        width, height, frame.timeStamp, detectionResult, temp);
                 if (saveFrame > 0) {
                     BitmapHelper.saveGrayscale(temp, width, height, "temp" + saveFrame + ".png");
                     --saveFrame;
-                }
+                }//*/
                 //detectFrameY_8BufStrided(nativeHandler, planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(), width, height, frame.timeStamp, detectionResult);
             } else if (frame.data != null) {
                 detectFrameNV21(nativeHandler, frame.data, width, height, frame.timeStamp, detectionResult);

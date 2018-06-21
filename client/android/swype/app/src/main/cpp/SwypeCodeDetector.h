@@ -17,10 +17,10 @@ public:
 
     SwypeCodeDetector() : _id(++counter), _stepDetector(_id) {};
 
-    SwypeCodeDetector(SwipeCode &code, double shiftScaleXMult,
-                      double shiftScaleYMult, double speedMult,
-                      float maxDeviation, bool relaxed, double defect,
+    SwypeCodeDetector(SwipeCode &code, double speedMult, float targetRadius, bool relaxed,
                       unsigned int timestamp);
+
+    virtual void NextFrame(cv::Mat &frame_i, uint timestamp) = 0;
 
     void FillResult(int &status, int &index, int &x, int &y, int &debug);
 
@@ -36,13 +36,11 @@ public:
     unsigned int _id;
 
     void Init(SwipeCode &code, double speedMult, float maxDeviation, bool relaxed,
-              unsigned int timestamp,
-              bool delayStart, double shiftScaleXMult, double shiftScaleYMult);
+              unsigned int timestamp, bool delayStart);
 
 protected:
-    void log2(uint timestamp, const cv::Point2d &shift, VectorExplained &scaledShift);
-
     SwipeCode _code;
+
     SwypeStepDetector _stepDetector;
 
     unsigned int _maxTimestamp = 0;
@@ -54,12 +52,6 @@ protected:
     unsigned int _startTimestamp = 0;
 
     static unsigned int counter;
-
-
-    double _shiftScaleXMult = 0.0;
-    double _shiftScaleYMult = 0.0;
-
-    double _defect;
 
 };
 

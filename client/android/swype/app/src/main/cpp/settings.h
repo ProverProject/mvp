@@ -22,4 +22,6 @@
 
 #define QUANTUM_ALPHA 16
 
+#define USE_PER_FRAME_SHIFT true
+
 #endif //PROVER_MVP_ANDROID_SETTINGS_H

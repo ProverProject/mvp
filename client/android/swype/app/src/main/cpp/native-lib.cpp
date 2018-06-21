@@ -69,7 +69,7 @@ Java_io_prover_provermvp_detector_ProverDetector_initSwype(JNIEnv *env, jobject 
     SwypeDetect *detector = new SwypeDetect();
     detector->init(videoAspectRatio, detectorWidth, detectorHeight);
     detector->setRelaxed(false);
-    logLevel = 0;//5;
+    logLevel = 7;//5;
     return (jlong) detector;
 }
 

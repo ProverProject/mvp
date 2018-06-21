@@ -32,6 +32,8 @@ public:
 
     void SetRelaxed(bool relaxed);
 
+    void Clear();
+
 private:
     ValueWithDefect CalculateArea(int amount, ValueWithDefect &perResult);
 
