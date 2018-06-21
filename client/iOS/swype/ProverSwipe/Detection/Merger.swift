@@ -20,6 +20,9 @@ class Merger: CanMerge {
         guard let videoTrack = mixComposition
             .addMutableTrack(withMediaType: .video,
                              preferredTrackID: Int32(kCMPersistentTrackID_Invalid)) else { return }
+        // Force the resulted video to be always played in landscape mode
+        videoTrack.preferredTransform = CGAffineTransform(rotationAngle: .pi*3/2)
+
         do {
             try videoTrack
                 .insertTimeRange(CMTimeRangeMake(kCMTimeZero, videoAsset.duration),

@@ -28,7 +28,6 @@ class MovieRecorder {
         videoRecorder = VideoRecorder(withParent: preview)
         videoRecorder.delegate = self
         videoRecorder.record = true
-        videoRecorder.rotate = true
 
         self.coordinateDelegate = coordinateDelegate
         resetSwypeDetector()
