@@ -89,7 +89,7 @@ void SwypeDetect::processFrame(const unsigned char *frame_i, int width_i, int he
 }
 
 void
-SwypeDetect::processFrameArgb(jint *argb, jint width, jint height, uint timestamp, int &outState,
+SwypeDetect::processFrameArgb(uint32_t *argb, int width, int height, uint timestamp, int &outState,
                               int &index, int &x, int &y, int &debug) {
     unsigned char *frame = (unsigned char *) argb;
     _colorQuantum.coloredQuantumToSingleByte(argb, frame, width, height);

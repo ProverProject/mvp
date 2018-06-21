@@ -184,13 +184,9 @@ public:
                       uint timestamp, int &state, int &index, int &x, int &y,
                       int &debug);
 
-    void processFrame3(const unsigned char *frame_i, int width_i, int height_i,
-                       uint timestamp, int &outState, int &index, int &x, int &y,
-                       int &debug);
-
     void setRelaxed(bool relaxed);
 
-    jint *getRgbBuffer(int width, int height) {
+    uint32_t *getRgbBuffer(int width, int height) {
         return _colorQuantum.getRgbBuffer(width, height);
     };
 
@@ -200,9 +196,9 @@ public:
     // x - if state==3, the X coordinate for visualisation
     // y - if state==3, the Y coordinate for visualisation
     void
-    processFrameArgb(jint *argb, jint width, jint height, uint timestamp, int &outState, int &index,
-                     int &x, int &y,
-                     int &debug);
+    processFrameArgb(uint32_t *argb, int width, int height, uint timestamp, int &outState,
+                     int &index,
+                     int &x, int &y, int &debug);
 
 private:
 

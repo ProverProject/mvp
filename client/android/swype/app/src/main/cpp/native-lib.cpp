@@ -201,7 +201,7 @@ inline int clamp262143(int value) {
     return value < 0 ? 0 : value > 262143 ? 262143 : value;
 }
 
-void yuvToRgb(jbyte *yArr, jbyte *uArr, jbyte *vArr, jint *argb, int width, int height) {
+void yuvToRgb(jbyte *yArr, jbyte *uArr, jbyte *vArr, uint32_t *argb, int width, int height) {
     int r, g, b, y1192, y, i, uvp, u, v;
     int halfWidth = width >> 1;
     for (int j = 0; j < height; j++) {
@@ -236,14 +236,15 @@ Java_io_prover_provermvp_detector_ProverDetector_yuvToRgb(JNIEnv *env, jobject i
     jbyte *y = env->GetByteArrayElements(y_, NULL);
     jbyte *u = env->GetByteArrayElements(u_, NULL);
     jbyte *v = env->GetByteArrayElements(v_, NULL);
-    jint *argb = env->GetIntArrayElements(argb_, NULL);
+    jint *elements = env->GetIntArrayElements(argb_, NULL);
+    uint32_t *argb = reinterpret_cast<uint32_t *>(elements);
 
     yuvToRgb(y, u, v, argb, width, height);
 
     env->ReleaseByteArrayElements(y_, y, JNI_ABORT);
     env->ReleaseByteArrayElements(u_, u, JNI_ABORT);
     env->ReleaseByteArrayElements(v_, v, JNI_ABORT);
-    env->ReleaseIntArrayElements(argb_, argb, 0);
+    env->ReleaseIntArrayElements(argb_, elements, 0);
 }
 
 /*
@@ -305,7 +306,7 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env,
 
     if (frameY != NULL && frameV != NULL && frameU != NULL) {
         SwypeDetect *detector = (SwypeDetect *) nativeHandler;
-        jint *argb = detector->getRgbBuffer(width, height);
+        uint32_t *argb = detector->getRgbBuffer(width, height);
 
         yuvToRgb(frameY, frameU, frameV, argb, width, height);
 

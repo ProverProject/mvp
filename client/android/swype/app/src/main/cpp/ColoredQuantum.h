@@ -7,7 +7,6 @@
 
 
 #include <cstddef>
-#include <jni.h>
 #include <malloc.h>
 #include <cstdlib>
 #include "settings.h"
@@ -20,28 +19,28 @@ public:
                                                                                  blue(blue) {}
 
     virtual ~ColoredQuantum() {
-        if (rgbBuffer != NULL) {
-            free(rgbBuffer);
-            rgbBuffer = NULL;
+        if (_rgbBuffer != NULL) {
+            free(_rgbBuffer);
+            _rgbBuffer = NULL;
         }
     }
 
-    jint *getRgbBuffer(int width, int height) {
+    uint32_t *getRgbBuffer(int width, int height) {
         if (rgbBufferSize != width * height) {
-            if (rgbBuffer != NULL)
-                free(rgbBuffer);
+            if (_rgbBuffer != NULL)
+                free(_rgbBuffer);
             rgbBufferSize = static_cast<unsigned int>(width * height);
-            rgbBuffer = (jint *) (malloc(4 * rgbBufferSize));
+            _rgbBuffer = (uint32_t *) (malloc(4 * rgbBufferSize));
         }
-        return rgbBuffer;
+        return _rgbBuffer;
     };
 
-    void coloredQuantumToSingleByte(jint *argb, unsigned char *target, jint width, jint height) {
+    void coloredQuantumToSingleByte(uint32_t *argb, unsigned char *target, int width, int height) {
         int size = width * height;
         int r, g, b;
 
         for (int i = 0; i < size; ++i) {
-            jint value = argb[i];
+            uint32_t value = argb[i];
             r = static_cast<unsigned char>((value & 0xff0000) >> 16);
             g = static_cast<unsigned char>((value & 0xff00) >> 8);
             b = static_cast<unsigned char>(value & 0xff);
@@ -62,7 +61,7 @@ public:
 
 private:
     unsigned int rgbBufferSize = 0;
-    jint *rgbBuffer = NULL;
+    uint32_t *_rgbBuffer = NULL;
 
     unsigned char red;
     unsigned char green;
