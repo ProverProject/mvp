@@ -17,7 +17,7 @@ function generationPdf($fileName, $hash, $swype, $startTime, $endTime) {
     $fileNameSwypeCode = $tmpPath.'swypeCode.png';
     $fileNameHash = $tmpPath.'hash.png';
     $errorCorrectionLevel = 'L';
-    $matrixPointSize = 5;
+    $matrixPointSize = 50;
 
     $date = new DateTime();
     if (!empty($startTime)) {
@@ -246,7 +246,7 @@ function generationPdfQr($fileName, $inputStr, $hash, $time) {
     $fileNameQRcode = 'qrcode.png';
     $pathNameQRcode = $tmpPath . $fileNameQRcode;
     $errorCorrectionLevel = 'L';
-    $matrixPointSize = 5;
+    $matrixPointSize = 50;
 
     $date = new DateTime();
     $date->setTimestamp($time);
