@@ -11,8 +11,7 @@ class VideoRecorder: NSObject {
     // MARK: - Public properties
     weak var delegate: VideoRecorderDelegate?
     var record = false
-    var rotate = false
-    
+
     // MARK: - Private properties
     private var currentDeviceOrientation = UIDeviceOrientation.portrait
     private var cameraAvailable: Bool
@@ -31,8 +30,7 @@ class VideoRecorder: NSObject {
     private var videoDataOutputQueue: DispatchQueue?
     
     private var parentView: UIView
-    private var customPreviewLayer: CALayer?
-    
+
     private var recordAssetWriterInput: AVAssetWriterInput?
     private var recordPixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     private var recordAssetWriter: AVAssetWriter?
@@ -93,11 +91,6 @@ extension VideoRecorder {
         
         videoDataOutput = nil
         stopRecord()
-        
-        if let layer = customPreviewLayer {
-            layer.removeFromSuperlayer()
-            customPreviewLayer = nil
-        }
     }
     
     func pause() {
@@ -221,14 +214,6 @@ private extension VideoRecorder {
             videoDataOutput?.connection(with: .video)?.videoOrientation = defaultAVCaptureVideoOrientation
         }
         
-        // create a custom preview layer
-        customPreviewLayer = CALayer()
-        customPreviewLayer?.bounds = CGRect(origin: .zero,
-                                            size: parentView.frame.size)
-        customPreviewLayer?.position = CGPoint(x: parentView.frame.size.width / 2,
-                                               y: parentView.frame.size.height / 2)
-        updateOrientation()
-        
         // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
         // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
         // see the header doc for setSampleBufferDelegate:queue: for more information
@@ -279,17 +264,6 @@ private extension VideoRecorder {
         } catch {
             print("[VideoRecorder] Camera unable to create AVAssetWriter: \(error.localizedDescription)")
         }
-    }
-    
-    func createCustomVideoPreview() {
-        parentView.layer.addSublayer(customPreviewLayer!)
-    }
-    
-    func updateOrientation() {
-
-        guard rotate else { return }
-        
-        customPreviewLayer?.bounds = CGRect(origin: .zero, size: parentView.frame.size)
     }
 }
 
