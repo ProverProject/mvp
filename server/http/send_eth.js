@@ -20,7 +20,7 @@ Array.prototype.forEach.call(getEthSections, function (getEthSection) {
                 } else {
                     resultBlock.classList.remove('error');
                     resultBlock.innerHTML = 'Success<br>' +
-                        '<a href="https://ropsten.etherscan.io/tx/' + result.message + '" target="_blank">' +
+                        '<a class="ether-link" href="https://ropsten.etherscan.io/tx/' + result.message + '" target="_blank">' +
                         result.message +
                         '</a>';
                     sendEthBlock.style.display = 'none';

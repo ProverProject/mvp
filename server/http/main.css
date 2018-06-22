@@ -1226,6 +1226,13 @@ footer a {
     /*}*/
 /*}*/
 
+.ether-link {
+    width: 100%;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 @media screen and (max-width: 992px) {
     .container {
         width: 720px;
@@ -1454,6 +1461,14 @@ footer a {
     }
     .box.has-advanced-upload .box__success strong {
         margin-top: 10px;
+    }
+    .get-ether #get_eth_block {
+        display: inline-block;
+    }
+    #get_eth_result {
+        display: inline-block !important;
+        margin-top: 30px;
+        width: 100%;
     }
     input[type='search'],
     .get-ether #get_eth_block .btn {
