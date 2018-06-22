@@ -47,12 +47,13 @@ function generationPdf($fileName, $hash, $swype, $startTime, $endTime) {
     file_put_contents($tmpPath . '/config.json', json_encode($config, JSON_UNESCAPED_SLASHES));
     chmod($tmpPath . '/config.json', 0777);
 
+    $fileName = $fileName . '.pdf';
     $commandStartPDFConstructor =
         'LD_LIBRARY_PATH=' . pathLibPDFConstructor .
         ' xvfb-run ' . namePDFConstructor . ' ' .
         $tmpPath . 'config.json ' .
         $pdfPath .
-        $fileName . '.pdf';
+        '"' . $fileName .'"';
 
     shell_exec($commandStartPDFConstructor);
 
@@ -269,12 +270,13 @@ function generationPdfQr($fileName, $inputStr, $hash, $time) {
     file_put_contents($tmpPath . '/config.json', json_encode($config, JSON_UNESCAPED_SLASHES));
     chmod($tmpPath . '/config.json', 0777);
 
+    $fileName = $fileName . '.pdf';
     $commandStartPDFConstructor =
         'LD_LIBRARY_PATH=' . pathLibPDFConstructor .
         ' xvfb-run ' . namePDFConstructor . ' ' .
         $tmpPath . 'config.json ' .
         $pdfPath .
-        $fileName . '.pdf';
+        '"' . $fileName .'"';
 
     shell_exec($commandStartPDFConstructor);
 
