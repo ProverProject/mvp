@@ -95,7 +95,7 @@ Array.prototype.forEach.call(forms, function (form) {
         },
         triggerFormSubmit = function () {
             var event = document.createEvent('HTMLEvents');
-            event.initEvent('submit', true, false);
+            event.initEvent('submit', true, true);
             form.dispatchEvent(event);
         };
 
