@@ -22,6 +22,10 @@ allprojects {
         google()
         jcenter()
     }
+    project.ext {
+        sdkVersion = 27
+        appCompatVersion = '27.1.1'
+    }
 }
 
 task clean(type: Delete) {

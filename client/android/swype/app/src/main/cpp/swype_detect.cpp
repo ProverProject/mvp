@@ -24,7 +24,7 @@ void SwypeDetect::init(double sourceAspectRatio, int detectorWidth, int detector
 
 void SwypeDetect::setRelaxed(bool relaxed) {
     _shiftDetector.SetRelativeDefect(relaxed ? DEFECT : DEFECT_CLIENT);
-    _circleDetector.SetRelaxed(relaxed);
+    _circleDetector.SetRelaxed(relaxed); 
     _relaxed = relaxed;
     _maxDetectors = relaxed ? 32 : 1;
 }
