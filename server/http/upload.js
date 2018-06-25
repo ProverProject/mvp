@@ -160,6 +160,7 @@ Array.prototype.forEach.call(forms, function (form) {
                 msgSwypeBeginEnd = 'Nothing found';
             form.classList.add('is-success');
             var senderAddressesSpans = '';
+            successSwypeCode.innerHTML = '';
             if (response.transactions !== undefined) {
                 response.transactions.forEach(function (transaction) {
                     senderAddressesSpans +=
