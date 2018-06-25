@@ -96,7 +96,7 @@ VectorExplained ShiftDetector::ShiftToBaseFrame(cv::Mat &frame, uint timestamp) 
 
 void ShiftDetector::log1(uint timestamp, cv::Point2d &shift, VectorExplained &scaledShift,
                          VectorExplained &windowedShift) {
-    if (logLevel > 0 && windowedShift._mod > 0) {
+    if (logLevel > 0 /*&& windowedShift._mod > 0*/) {
         LOGI_NATIVE(
                 "t%d shift (%+6.2f,%+6.2f), scaled |%+.4f,%+.4f|=%.4f windowed |%+.4f,%+.4f|=%.4f_%3.0f_%d",
                 timestamp, shift.x, shift.y,

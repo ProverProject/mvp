@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
             scaleHeight=atoi(optarg);
             break;
         case 'v':
-            ++::logLevel;
+            ::logLevel=7;
             break;
         case 0:
             switch(option_index)
