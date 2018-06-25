@@ -235,7 +235,9 @@ EOD;
 }
 
 function generationPdfQr($fileName, $inputStr, $hash, $time) {
-
+    if (!$inputStr) {
+        $inputStr = ' ';
+    }
     $pdfPath = __DIR__ . '/pdf/';
     $tmpPath = __DIR__ . '/pdf/'. md5(md5($fileName) . md5(date("H:i:s"))) .'/';
     if(!file_exists($pdfPath))
