@@ -10,30 +10,24 @@ class VideoRecorder: NSObject {
     
     // MARK: - Public properties
     weak var delegate: VideoRecorderDelegate?
-    var record = false
 
     // MARK: - Private properties
     private var currentDeviceOrientation = UIDeviceOrientation.portrait
     private var cameraAvailable: Bool
     private var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer?
     
-    private var defaultAVCaptureDevicePosition = AVCaptureDevice.Position.back
     private var defaultAVCaptureVideoOrientation = AVCaptureVideoOrientation.portrait
-    private var defaultAVCaptureSessionPreset = AVCaptureSession.Preset.hd1920x1080
-    
-    private var captureSession: AVCaptureSession?
+
+    private var captureSession: AVCaptureSession!
     private var captureSessionLoaded = false
     
     private var defaultFPS = 30
     
-    private var videoDataOutput: AVCaptureVideoDataOutput?
-    private var videoDataOutputQueue: DispatchQueue?
-    
     private var parentView: UIView
 
-    private var recordAssetWriterInput: AVAssetWriterInput?
-    private var recordPixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
-    private var recordAssetWriter: AVAssetWriter?
+    private var assetWriterInput: AVAssetWriterInput?
+    private var assetWriterInputPixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
+    private var assetWriter: AVAssetWriter?
     
     // MARK: - Dependencies
     private lazy var dateFormatter: DateFormatter = {
@@ -86,43 +80,18 @@ extension VideoRecorder {
         }
         
         captureSession.stopRunning()
+
+        captureVideoPreviewLayer?.removeFromSuperlayer()
         captureVideoPreviewLayer = nil
+
         captureSessionLoaded = false
         
-        videoDataOutput = nil
         stopRecord()
     }
     
     func pause() {
         running = false
         captureSession?.stopRunning()
-    }
-    
-    func startRecord() {
-        guard record else { return }
-        isRecording = true
-
-        createVideoOutput()
-    }
-    
-    func stopRecord(handler: @escaping (URL) -> Void = {_ in }) {
-        
-        guard record else { return }
-        isRecording = false
-        
-        if let writer = recordAssetWriter {
-            if writer.status == .writing {
-                writer.finishWriting { [unowned self] in
-                    handler(self.videoFileURL)
-                }
-            } else {
-                print("[VideoRecorder] Recording Error: asset writer status is not writing")
-            }
-            recordAssetWriter = nil
-        }
-        recordAssetWriterInput = nil
-        recordPixelBufferAdaptor = nil
-        recordingCountDown = 5
     }
 }
 
@@ -132,98 +101,103 @@ private extension VideoRecorder {
     func startCaptureSession() {
         
         guard cameraAvailable, !captureSessionLoaded else { return }
-        
-        createCaptureSession()
-        createCaptureDevice()
-        createVideoDataOutput()
-        createVideoPreviewLayer()
+
+        captureSession = createCaptureSession()
+
+        captureSession.beginConfiguration()
+
+        addCaptureDeviceInput()
+        addCaptureVideoDataOutput()
+
+        captureSession.commitConfiguration()
+
+        addVideoPreviewLayer()
         
         captureSessionLoaded = true
-        captureSession?.startRunning()
+        captureSession.startRunning()
     }
     
-    func createCaptureSession() {
+    func createCaptureSession() -> AVCaptureSession {
         
-        captureSession = AVCaptureSession()
+        let captureSession = AVCaptureSession()
         // set a av capture session preset
-        if captureSession!.canSetSessionPreset(defaultAVCaptureSessionPreset) {
-            captureSession!.sessionPreset = defaultAVCaptureSessionPreset
-        } else if captureSession!.canSetSessionPreset(.low) {
-            captureSession!.sessionPreset = .low
+        if captureSession.canSetSessionPreset(.hd1920x1080) {
+            captureSession.sessionPreset = .hd1920x1080
+        } else if captureSession.canSetSessionPreset(.low) {
+            captureSession.sessionPreset = .low
         } else {
             print("[VideoRecorder] Error: could not set session preset")
         }
+
+        return captureSession
     }
     
-    func createCaptureDevice() {
+    func addCaptureDeviceInput() {
         
         let discoverySession = AVCaptureDevice
             .DiscoverySession(deviceTypes: [.builtInWideAngleCamera],
                               mediaType: .video,
-                              position: defaultAVCaptureDevicePosition)
+                              position: .back)
         
-        let device = discoverySession.devices.first!
-        
-        guard let captureSession = captureSession else { return }
-        
-        captureSession.beginConfiguration()
+        let captureDevice = discoverySession.devices.first!
         
         do {
-            let input = try AVCaptureDeviceInput(device: device)
+            let captureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
             
             // support for autofocus
-            if device.isFocusModeSupported(.autoFocus) {
-                try device.lockForConfiguration()
-                device.focusMode = .autoFocus
-                device.unlockForConfiguration()
+            if captureDevice.isFocusModeSupported(.autoFocus) {
+                try captureDevice.lockForConfiguration()
+                captureDevice.focusMode = .autoFocus
+                captureDevice.unlockForConfiguration()
             }
             
             for oldInput in captureSession.inputs {
                 captureSession.removeInput(oldInput)
             }
-            
-            captureSession.addInput(input)
+
+            if (captureSession.canAddInput(captureDeviceInput)) {
+                captureSession.addInput(captureDeviceInput)
+            }
+            else {
+                print("[VideoRecorder] Could not add the device input to capture session!")
+            }
         } catch {
             print("[VideoRecorder] Error when creating capture device \(error.localizedDescription)")
         }
-        
-        captureSession.commitConfiguration()
     }
     
-    func createVideoDataOutput() {
+    func addCaptureVideoDataOutput() {
 
-        guard let captureSession = captureSession else { return }
-        
         // Make a video data output
-        videoDataOutput = AVCaptureVideoDataOutput()
-        
+        let captureVideoDataOutput = AVCaptureVideoDataOutput()
+
         // In color mode we, BGRA format is used
         let format = Int(kCVPixelFormatType_32BGRA)
-        videoDataOutput?.videoSettings = [kCVPixelBufferPixelFormatTypeKey: format] as [String: Any]
-        
+        captureVideoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: format] as [String: Any]
+
         // discard if the data output queue is blocked (as we process the still image)
-        videoDataOutput?.alwaysDiscardsLateVideoFrames = true
-        
-        if captureSession.canAddOutput(videoDataOutput!) {
-            captureSession.addOutput(videoDataOutput!)
+        captureVideoDataOutput.alwaysDiscardsLateVideoFrames = true
+
+        if captureSession.canAddOutput(captureVideoDataOutput) {
+            captureSession.addOutput(captureVideoDataOutput)
         }
-        videoDataOutput?.connection(with: .video)?.isEnabled = true
-        
+        captureVideoDataOutput.connection(with: .video)?.isEnabled = true
+
         // set default video orientation
-        if (videoDataOutput?.connection(with: .video)?.isVideoOrientationSupported)! {
-            videoDataOutput?.connection(with: .video)?.videoOrientation = defaultAVCaptureVideoOrientation
+        if (captureVideoDataOutput.connection(with: .video)?.isVideoOrientationSupported)! {
+            captureVideoDataOutput.connection(with: .video)?.videoOrientation = defaultAVCaptureVideoOrientation
         }
-        
-        // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
-        // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
-        // see the header doc for setSampleBufferDelegate:queue: for more information
-        videoDataOutputQueue = DispatchQueue(label: "VideoDataOutputQueue")
-        videoDataOutput?.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
+
+        // create a serial dispatch queue used for the sample buffer delegate as well as when
+        // a still image is captured a serial dispatch queue must be used to guarantee that
+        // video frames will be delivered in order see the header doc for
+        // setSampleBufferDelegate:queue: for more information
+        let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutputQueue")
+        captureVideoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
     }
-    
-    func createVideoPreviewLayer() {
-        
-        captureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
+
+    func addVideoPreviewLayer() {
+        captureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         
         if (captureVideoPreviewLayer?.connection?.isVideoOrientationSupported)! {
             captureVideoPreviewLayer?.connection?.videoOrientation = defaultAVCaptureVideoOrientation
@@ -234,42 +208,65 @@ private extension VideoRecorder {
         captureVideoPreviewLayer?.videoGravity = .resizeAspectFill
         parentView.layer.addSublayer(captureVideoPreviewLayer!)
     }
-    
-    func createVideoOutput() {
+}
+
+// MARK: - Recording
+extension VideoRecorder {
+
+    func startRecord() {
+        isRecording = true
 
         // Video File Output in H.264, via AVAsserWriter
         var outputSettings = [AVVideoWidthKey: 720,
                               AVVideoHeightKey: 1280] as [String: Any]
-        
+
         if #available(iOS 11.0, *) {
             outputSettings[AVVideoCodecKey] = AVVideoCodecType.h264
         } else {
             outputSettings[AVVideoCodecKey] = AVVideoCodecH264
         }
-        
-        recordAssetWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings)
+
+        assetWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings)
 
         let pixelBufferFormat = kCVPixelFormatType_32BGRA
         let attributes = [kCVPixelBufferPixelFormatTypeKey as String: pixelBufferFormat]
 
-        recordPixelBufferAdaptor =
-            AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: recordAssetWriterInput!,
-                                                 sourcePixelBufferAttributes: attributes)
-        
+        assetWriterInputPixelBufferAdaptor =
+                AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: assetWriterInput!,
+                        sourcePixelBufferAttributes: attributes)
+
         do {
-            recordAssetWriter = try AVAssetWriter(url: videoFileURL, fileType: .mp4)
-            recordAssetWriter!.add(recordAssetWriterInput!)
-            recordAssetWriterInput!.expectsMediaDataInRealTime = true
-  
+            assetWriter = try AVAssetWriter(url: videoFileURL, fileType: .mp4)
+            assetWriter!.add(assetWriterInput!)
+            assetWriterInput!.expectsMediaDataInRealTime = true
+
         } catch {
             print("[VideoRecorder] Camera unable to create AVAssetWriter: \(error.localizedDescription)")
         }
+    }
+
+    func stopRecord(handler: @escaping (URL) -> Void = {_ in }) {
+        isRecording = false
+
+        if let writer = assetWriter {
+            if writer.status == .writing {
+                writer.finishWriting { [unowned self] in
+                    handler(self.videoFileURL)
+                }
+            } else {
+                print("[VideoRecorder] Recording Error: asset writer status is not writing")
+            }
+            assetWriter = nil
+        }
+        assetWriterInput = nil
+        assetWriterInputPixelBufferAdaptor = nil
+        recordingCountDown = 5
     }
 }
 
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate {
-    
+
     func captureOutput(_ output: AVCaptureOutput,
                        didOutput sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection) {
@@ -287,21 +284,21 @@ extension VideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard isRecording else { return }
         
         recordingCountDown -= 1
-        guard record && recordingCountDown < 0 else {
+        guard recordingCountDown < 0 else {
             return
         }
         
-        if recordAssetWriter?.status != .writing {
-            recordAssetWriter?.startWriting()
-            recordAssetWriter?.startSession(atSourceTime: lastSampleTime)
-            if recordAssetWriter?.status != .writing {
-                let errorDescription = recordAssetWriter?.error?.localizedDescription ?? "unknown error"
+        if assetWriter?.status != .writing {
+            assetWriter?.startWriting()
+            assetWriter?.startSession(atSourceTime: lastSampleTime)
+            if assetWriter?.status != .writing {
+                let errorDescription = assetWriter?.error?.localizedDescription ?? "unknown error"
                 print("[VideoRecorder] Recording Error: asset writer status is not writing: \(errorDescription)")
             }
         }
         
-        if recordAssetWriterInput!.isReadyForMoreMediaData {
-            let result = recordPixelBufferAdaptor!.append(imageBuffer, withPresentationTime: lastSampleTime)
+        if assetWriterInput!.isReadyForMoreMediaData {
+            let result = assetWriterInputPixelBufferAdaptor!.append(imageBuffer, withPresentationTime: lastSampleTime)
             if !result {
                 print("[VideoRecorder] Video Writing Error")
             }

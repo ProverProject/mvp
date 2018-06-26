@@ -12,7 +12,7 @@ class MovieRecorder {
     
     private var videoRecorder: VideoRecorder!
     private var audioRecorder: AudioRecorder!
-    private var swypeRecorder: SwypeDetector!
+    private var swypeDetector: SwypeDetector!
     private let merger = Merger()
     
     private weak var delegate: MovieRecorderDelegate!
@@ -27,7 +27,6 @@ class MovieRecorder {
         
         videoRecorder = VideoRecorder(withParent: preview)
         videoRecorder.delegate = self
-        videoRecorder.record = true
 
         self.coordinateDelegate = coordinateDelegate
         resetSwypeDetector()
@@ -41,12 +40,12 @@ class MovieRecorder {
 extension MovieRecorder {
     
     func setSwype(code: [Int]) {
-        swypeRecorder.setSwype(code: code)
+        swypeDetector.setSwype(code: code)
     }
     
     func resetSwypeDetector() {
         guard let coordinateDelegate = coordinateDelegate else { return }
-        swypeRecorder = SwypeDetector(stateDelegate: self,
+        swypeDetector = SwypeDetector(stateDelegate: self,
                                       coordinateDelegate: coordinateDelegate)
     }
 }
@@ -115,7 +114,7 @@ extension MovieRecorder: VideoRecorderDelegate {
         
         switch delegate.state {
         case .waitRoundMovement, .prepareForStart, .detection:
-            swypeRecorder.process(buffer, timestamp: timestamp)
+            swypeDetector.process(buffer, timestamp: timestamp)
         default:
             break
         }
