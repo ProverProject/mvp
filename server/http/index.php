@@ -328,9 +328,7 @@ saveClientInfo('index');
                         </div>
                     </form>
                     <p>
-                        To authenticate a file, please upload your video.
-                        Our system will verify the file hash and existence of swype code.
-                        In the case of coincidence of hashes and swype codes - the video file will be considered as authentic.
+                        To authenticate a file, please upload your video or image. Our system will verify the file hash and existence of QR code. In the case of coincidence of hashes and QR codes the video file will be considered authentic. QR code must occupy at least 10 % of the uploaded video or image.
                     </p>
                 </section>
                 <section id="clapperboard-get-ether" class="get-ether">
