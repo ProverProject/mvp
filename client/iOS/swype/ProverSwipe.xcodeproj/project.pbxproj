@@ -201,10 +201,8 @@
 		9AEF62E420736B40006C59DD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E220736B40006C59DD /* Main.storyboard */; };
 		9AEF62E620736B41006C59DD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E520736B41006C59DD /* Images.xcassets */; };
 		9AEF62E920736B41006C59DD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E720736B41006C59DD /* LaunchScreen.storyboard */; };
-		9AF02BA620B59B9A00C5BC3A /* MovieRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF02BA520B59B9A00C5BC3A /* MovieRecorder.swift */; };
+		9AF02BA620B59B9A00C5BC3A /* VideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */; };
 		9AF364A320BBF21400A6A968 /* SwypeDetectionProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */; };
-		9AF364A520BBF24600A6A968 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A420BBF24600A6A968 /* AudioRecorder.swift */; };
-		9AF364A720BC141C00A6A968 /* Merger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A620BC141C00A6A968 /* Merger.swift */; };
 		9AFB3C9A2080AD69003F72AA /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFB3C992080AD69003F72AA /* APIError.swift */; };
 		9AFB3CA02080BC97003F72AA /* GetSwypeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFB3C9F2080BC97003F72AA /* GetSwypeOperation.swift */; };
 		9AFB3CA22080C29C003F72AA /* SwypeResponce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFB3CA12080C29C003F72AA /* SwypeResponce.swift */; };
@@ -449,10 +447,8 @@
 		9AEF62E520736B41006C59DD /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9AEF62E820736B41006C59DD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9AEF62EA20736B41006C59DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9AF02BA520B59B9A00C5BC3A /* MovieRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRecorder.swift; sourceTree = "<group>"; };
+		9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcessor.swift; sourceTree = "<group>"; };
 		9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwypeDetectionProtocols.swift; sourceTree = "<group>"; };
-		9AF364A420BBF24600A6A968 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
-		9AF364A620BC141C00A6A968 /* Merger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Merger.swift; sourceTree = "<group>"; };
 		9AFB3C992080AD69003F72AA /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		9AFB3C9F2080BC97003F72AA /* GetSwypeOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetSwypeOperation.swift; sourceTree = "<group>"; };
 		9AFB3CA12080C29C003F72AA /* SwypeResponce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwypeResponce.swift; sourceTree = "<group>"; };
@@ -804,9 +800,7 @@
 			children = (
 				9A2EA9DE2074EB9300910CFB /* CPP */,
 				9A2EA9DA2074EB7E00910CFB /* Wrapper */,
-				9AF364A420BBF24600A6A968 /* AudioRecorder.swift */,
-				9AF364A620BC141C00A6A968 /* Merger.swift */,
-				9AF02BA520B59B9A00C5BC3A /* MovieRecorder.swift */,
+				9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */,
 				9A2EA9FA2074EC1D00910CFB /* SwypeDetector.swift */,
 				9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */,
 				9A89F3CB207CA06D00E31F57 /* VideoRecorder.swift */,
@@ -1375,7 +1369,6 @@
 				1A8A319220D15F5A00BB7E97 /* Sequence+Additions.swift in Sources */,
 				9AEF62DF20736B40006C59DD /* AppDelegate.swift in Sources */,
 				9A9DB7A1207392AA00E29A07 /* AsyncOperation.swift in Sources */,
-				9AF364A520BBF24600A6A968 /* AudioRecorder.swift in Sources */,
 				9A43F90120B2D80200DB3E02 /* BaseNavigationBar.swift in Sources */,
 				1A97070A20D5A13F003E8EF4 /* MultisigSignatureTransactionModel.swift in Sources */,
 				9AB3CA1A207E4370005611DC /* Bool+Extension.swift in Sources */,
@@ -1423,7 +1416,6 @@
 				9A89F3CE207CB2B900E31F57 /* Int+extension.swift in Sources */,
 				1A8A318C20D15A1F00BB7E97 /* Response+ObjectMapper.swift in Sources */,
 				1A97070720D5A13F003E8EF4 /* MultisigTransactionModel.swift in Sources */,
-				9AF364A720BC141C00A6A968 /* Merger.swift in Sources */,
 				1A97070920D5A13F003E8EF4 /* MultisigAggregateModificationTransactionModel.swift in Sources */,
 				9A19C11420B04DFD005FCD04 /* NSLayoutConstraint+extension.swift in Sources */,
 				9A8FDDCC20BEA7FB0080FB30 /* PageControll+extension.swift in Sources */,
@@ -1464,7 +1456,7 @@
 				9A2EAA0F2074ECE400910CFB /* VectorExplained.cpp in Sources */,
 				1A8A319020D15F0000BB7E97 /* NSData+Additions.swift in Sources */,
 				9A89F3CC207CA06D00E31F57 /* VideoRecorder.swift in Sources */,
-				9AF02BA620B59B9A00C5BC3A /* MovieRecorder.swift in Sources */,
+				9AF02BA620B59B9A00C5BC3A /* VideoProcessor.swift in Sources */,
 				9A66098F2084CD6C00E7F071 /* VideoSubmitter.swift in Sources */,
 				1AACAB2820D17C390018AAFA /* AccountModel.swift in Sources */,
 				1A97070820D5A13F003E8EF4 /* TransferTransactionModel.swift in Sources */,

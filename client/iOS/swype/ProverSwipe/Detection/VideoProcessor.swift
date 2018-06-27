@@ -1,6 +1,6 @@
 import UIKit
 
-protocol MovieRecorderDelegate: class {
+protocol VideoProcessorDelegate: class {
     var state: SwypeViewController.State { get }
     func processVideo(at url: URL)
     func changeState(to state: SwypeViewController.State)
@@ -8,22 +8,17 @@ protocol MovieRecorderDelegate: class {
     func save(url: URL)
 }
 
-class MovieRecorder {
+class VideoProcessor {
     
     private var videoRecorder: VideoRecorder!
-    private var audioRecorder: AudioRecorder!
     private var swypeDetector: SwypeDetector!
-    private let merger = Merger()
-    
-    private weak var delegate: MovieRecorderDelegate!
+
+    private weak var delegate: VideoProcessorDelegate!
     private weak var coordinateDelegate: SwypeDetectorCoordinateDelegate!
-    
-    private var recordedVideoURL: URL!
-    private var recordedAudioURL: URL!
     
     init(preview: UIView,
          coordinateDelegate: SwypeDetectorCoordinateDelegate,
-         delegate: MovieRecorderDelegate) {
+         delegate: VideoProcessorDelegate) {
         
         videoRecorder = VideoRecorder(withParent: preview)
         videoRecorder.delegate = self
@@ -32,12 +27,11 @@ class MovieRecorder {
         resetSwypeDetector()
         
         self.delegate = delegate
-        self.audioRecorder = AudioRecorder(delegate: self)
     }
 }
 
 // MARK: - Public methods (Detector)
-extension MovieRecorder {
+extension VideoProcessor {
     
     func setSwype(code: [Int]) {
         swypeDetector.setSwype(code: code)
@@ -51,7 +45,7 @@ extension MovieRecorder {
 }
 
 // MARK: - Public methods (Detector)
-extension MovieRecorder {
+extension VideoProcessor {
     
     func startCapture() {
         videoRecorder.startCapture()
@@ -62,51 +56,21 @@ extension MovieRecorder {
     }
     
     func startRecord() {
-        FileManager.clearTempDirectory()
-
         videoRecorder.startRecord()
-        audioRecorder.startRecord()
     }
     
     func stopRecord(allowSubmit: Bool) {
-        self.recordedVideoURL = nil
-        self.recordedAudioURL = nil
-        
         videoRecorder.stopRecord { [unowned self] recordedVideoURL in
-            self.recordedVideoURL = recordedVideoURL
-
-            if (self.recordedAudioURL != nil) {
-                self.merge(allowSubmit)
-            }
-        }
-        
-        audioRecorder.stopRecord { [unowned self] recordedAudioURL in
-            self.recordedAudioURL = recordedAudioURL
-
-            if (self.recordedVideoURL != nil) {
-                self.merge(allowSubmit)
-            }
-        }
-    }
-    
-    private func merge(_ allowSubmit: Bool) {
-        merger.merge(videoURL: recordedVideoURL, audioURL: recordedAudioURL) {
-            [unowned self] videoURL, audioURL, resultURL in
-            let fm = FileManager.default
-
-            try! fm.removeItem(at: audioURL)
-            try! fm.removeItem(at: videoURL)
-
             if (allowSubmit) {
-                self.delegate.processVideo(at: resultURL)
-                self.delegate.save(url: resultURL)
+                self.delegate.processVideo(at: recordedVideoURL)
+                self.delegate.save(url: recordedVideoURL)
             }
         }
     }
 }
 
 // MARK: - VideoCameraDelegate
-extension MovieRecorder: VideoRecorderDelegate {
+extension VideoProcessor: VideoRecorderDelegate {
     
     func process(buffer: CVImageBuffer, timestamp: CMTime) {
         
@@ -122,7 +86,7 @@ extension MovieRecorder: VideoRecorderDelegate {
 }
 
 // MARK: - DetectorStateDelegate
-extension MovieRecorder: SwypeDetectorStateDelegate {    
+extension VideoProcessor: SwypeDetectorStateDelegate {
     
     func updateFromDetector(detectorState: SwypeDetector.State, index: Int) {
         
@@ -138,12 +102,5 @@ extension MovieRecorder: SwypeDetectorStateDelegate {
         default:
             break
         }
-    }
-}
-
-// MARK: - AudioRecorderDelegate
-extension MovieRecorder: AudioRecorderDelegate {
-    func showAlert(text: String) {
-        delegate.showAlert(text: text)
     }
 }

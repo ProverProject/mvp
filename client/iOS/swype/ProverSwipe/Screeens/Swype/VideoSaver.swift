@@ -20,10 +20,8 @@ class VideoSaver: NSObject {
             case .denied:
                 self?.delegate?.showAlert(text: "Video will be saved to documents folder. If you want to save video to camera roll allow access to Photos in Settings")
                 self?.saveToDocuments(from: url, withExtension: "mp4")
-                FileManager.clearTempDirectory()
             case .notDetermined, .restricted:
                 print("[VideoDetector] authorization status: \(status)")
-                FileManager.clearTempDirectory()
             }
         }
     }
@@ -41,6 +39,6 @@ class VideoSaver: NSObject {
     }
 
     @objc private func onVideoSaved(video: String?, didFinishSavingWithError: Error?, contextInfo: Any?) {
-        FileManager.clearTempDirectory()
+
     }
 }
