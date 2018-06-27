@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion sdkVersion
         versionCode 70
-        versionName "1.5.1_color_quantum_delta"
+        versionName "1.5.1_color_quantum_delta_speed_1.5"
         //versionName "1.2.6_demo_2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

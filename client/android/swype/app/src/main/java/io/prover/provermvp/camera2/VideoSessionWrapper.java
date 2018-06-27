@@ -81,6 +81,11 @@ public class VideoSessionWrapper {
                         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                             cameraController.onFrameDone();
                         }
+
+                        @Override
+                        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
+                            super.onCaptureStarted(session, request, timestamp, frameNumber);
+                        }
                     }, mBackgroundHandler);
                 } catch (CameraAccessException e) {
                     e.printStackTrace();

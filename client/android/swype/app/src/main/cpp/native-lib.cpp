@@ -201,7 +201,7 @@ inline int clamp262143(int value) {
     return value < 0 ? 0 : value > 262143 ? 262143 : value;
 }
 
-void yuvToRgb(jbyte *yArr, jbyte *uArr, jbyte *vArr, uint32_t *argb, int width, int height) {
+void yuv420pToRgb(jbyte *yArr, jbyte *uArr, jbyte *vArr, uint32_t *argb, int width, int height) {
     int r, g, b, y1192, y, i, uvp, u, v;
     int halfWidth = width >> 1;
     for (int j = 0; j < height; j++) {
@@ -239,7 +239,7 @@ Java_io_prover_provermvp_detector_ProverDetector_yuvToRgb(JNIEnv *env, jobject i
     jint *elements = env->GetIntArrayElements(argb_, NULL);
     uint32_t *argb = reinterpret_cast<uint32_t *>(elements);
 
-    yuvToRgb(y, u, v, argb, width, height);
+    yuv420pToRgb(y, u, v, argb, width, height);
 
     env->ReleaseByteArrayElements(y_, y, JNI_ABORT);
     env->ReleaseByteArrayElements(u_, u, JNI_ABORT);
@@ -273,7 +273,7 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env,
     if (frameY != NULL && frameV != NULL && frameU != NULL) {
         SwypeDetect *detector = (SwypeDetect *) nativeHandler;
         jint *argb = detector->getRgbBuffer(width, height);
-        yuvToRgb(frameY, frameU, frameV, argb, width, height);
+        yuv420pToRgb(frameY, frameU, frameV, argb, width, height);
         detector->processFrameArgb(argb, width, height, (uint) timestamp, res[0], res[1], res[2],
                                    res[3], res[4]);
     }
@@ -308,7 +308,7 @@ Java_io_prover_provermvp_detector_ProverDetector_detectFrameColored(JNIEnv *env,
         SwypeDetect *detector = (SwypeDetect *) nativeHandler;
         uint32_t *argb = detector->getRgbBuffer(width, height);
 
-        yuvToRgb(frameY, frameU, frameV, argb, width, height);
+        yuv420pToRgb(frameY, frameU, frameV, argb, width, height);
 
 
         detector->processFrameArgb(argb, width, height, (uint) timestamp, res[0], res[1], res[2],

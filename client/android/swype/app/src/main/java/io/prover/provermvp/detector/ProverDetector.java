@@ -9,7 +9,6 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.util.Locale;
 
-import io.prover.common.util.BitmapHelper;
 import io.prover.provermvp.BuildConfig;
 import io.prover.provermvp.camera.Size;
 import io.prover.provermvp.controller.CameraController;
@@ -93,7 +92,7 @@ public class ProverDetector {
             if (frame.image != null) {
 
                 Image.Plane planeY = frame.image.getPlanes()[0];
-                Image.Plane planeU = frame.image.getPlanes()[1];
+                /*Image.Plane planeU = frame.image.getPlanes()[1];
                 Image.Plane planeV = frame.image.getPlanes()[2];
                 if (temp == null || temp.length != width * height * 4)
                     temp = new byte[width * height * 4];
@@ -106,7 +105,7 @@ public class ProverDetector {
                     BitmapHelper.saveGrayscale(temp, width, height, "temp" + saveFrame + ".png");
                     --saveFrame;
                 }//*/
-                //detectFrameY_8BufStrided(nativeHandler, planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(), width, height, frame.timeStamp, detectionResult);
+                detectFrameY_8BufStrided(nativeHandler, planeY.getBuffer(), planeY.getRowStride(), planeY.getPixelStride(), width, height, frame.timeStamp, detectionResult);
             } else if (frame.data != null) {
                 detectFrameNV21(nativeHandler, frame.data, width, height, frame.timeStamp, detectionResult);
             }

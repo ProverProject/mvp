@@ -30,6 +30,7 @@ public class Frame {
         frame.format = image.getFormat();
         frame.width = image.getWidth();
         frame.height = image.getHeight();
+        //frame.timeStamp = (int) ((image.getTimestamp() - startTimestamp) / 1_000_000L);
         return frame;
     }
 
