@@ -26,11 +26,13 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Get access to camera</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Please get acces to your photo library</string>
+	<string>Access to camera is required</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Access to microphone is required</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please get acces to your photo library</string>
+	<string>Access to the Photo Library is required</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Access to the Photo Library Additions is required</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -45,8 +47,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>My App uses the microphone to make you sound like Geddy circa &apos;76</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -9,8 +9,14 @@
 #           - AS PER https://guides.cocoapods.org/using/using-cocoapods.html NEVER IGNORE THE LOCK FILE
 Pods/
 
+### Vim swap files
+*.swp
+
+### IntelliJ AppCode ###
+.idea
+
 ### macOS ###
-*.DS_Store
+.DS_Store
 .AppleDouble
 .LSOverride
 

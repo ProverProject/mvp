@@ -3,8 +3,6 @@ import Moya
 
 class DependencyStore {
     let wallet: Wallet = EthereumWallet()
-    let wallet2: Wallet = NEMWallet()
-    
     let apiProvider = MoyaProvider<ProverAPI>()
     
     var balance = 0.0

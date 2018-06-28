@@ -1,13 +1,13 @@
 PODS:
-  - Alamofire (4.6.0)
+  - Alamofire (4.7.2)
   - BigInt (3.0.1):
     - SipHash (~> 1.2)
   - FileBrowser (1.0.0)
-  - Geth (1.8.1)
-  - KeychainSwift (10.0.0)
-  - Moya (11.0.1):
-    - Moya/Core (= 11.0.1)
-  - Moya/Core (11.0.1):
+  - Geth (1.8.8)
+  - KeychainSwift (11.0.0)
+  - Moya (11.0.2):
+    - Moya/Core (= 11.0.2)
+  - Moya/Core (11.0.2):
     - Alamofire (~> 4.1)
     - Result (~> 3.0)
   - Result (3.2.4)
@@ -20,16 +20,27 @@ DEPENDENCIES:
   - KeychainSwift
   - Moya
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - BigInt
+    - FileBrowser
+    - Geth
+    - KeychainSwift
+    - Moya
+    - Result
+    - SipHash
+
 SPEC CHECKSUMS:
-  Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
+  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   BigInt: 8e8a52161c745cd3ab78e3dc346a9fbee51e6cf6
   FileBrowser: 2ca91ff61c9ea09665eb3b8f9e64a7a77e66a0bf
-  Geth: b39574e8d037c7752f73f3e5320855581e1cf75a
-  KeychainSwift: f9f7910449a0c0fd2cabc889121530dd2c477c33
-  Moya: 3d594ada51a21cc02b18739ab578a1984f900c8a
+  Geth: 483ea44b5f930b72320218290b939ba8e2389aaf
+  KeychainSwift: bea6bd9f98af7b8d7ca4aa79fe105c00fab532db
+  Moya: a725035953bc1c0eb1be505ab903984501d82440
   Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
   SipHash: c6e9e43e9c531b5bc6602545130c26194a6d31ce
 
-PODFILE CHECKSUM: 8548ac6cc5ebb8aa6e0171882f1325c6119d59ca
+PODFILE CHECKSUM: f4bc9dc03802ffb606c953a583775924f344a53e
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

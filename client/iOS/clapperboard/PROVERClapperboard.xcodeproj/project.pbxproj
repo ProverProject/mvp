@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2D62A08A32A6AE996B5932AA /* Pods_PROVERClapperboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC2262B3C52F795DA2A04F2 /* Pods_PROVERClapperboard.framework */; };
+		1A9C2C4D20D92A3C004EA3C6 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C2C4C20D92A3C004EA3C6 /* NavigationBar.swift */; };
+		75A5572DFAD39D800F548D7D /* Pods_PROVERClapperboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA5DA41DD745A7480D066C8 /* Pods_PROVERClapperboard.framework */; };
 		9A0E848E2056BB8100624995 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0E848D2056BB8100624995 /* AsyncOperation.swift */; };
 		9A0E84902056BD9E00624995 /* GetInfoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0E848F2056BD9E00624995 /* GetInfoOperation.swift */; };
 		9A0E84922056C1C500624995 /* SubmitOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0E84912056C1C500624995 /* SubmitOperation.swift */; };
@@ -50,7 +51,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7E544281C44D61F26F00ED3F /* Pods-PROVERClapperboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PROVERClapperboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PROVERClapperboard/Pods-PROVERClapperboard.debug.xcconfig"; sourceTree = "<group>"; };
+		1A9C2C4C20D92A3C004EA3C6 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		3FA5DA41DD745A7480D066C8 /* Pods_PROVERClapperboard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PROVERClapperboard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A0E848D2056BB8100624995 /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		9A0E848F2056BD9E00624995 /* GetInfoOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetInfoOperation.swift; sourceTree = "<group>"; };
 		9A0E84912056C1C500624995 /* SubmitOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitOperation.swift; sourceTree = "<group>"; };
@@ -71,7 +73,7 @@
 		9AD6D6082057A6B700D9E1FE /* QRCodeDataOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeDataOperation.swift; sourceTree = "<group>"; };
 		9AD6D63020580F1400D9E1FE /* WalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewController.swift; sourceTree = "<group>"; };
 		9AFA5DDB205A7FBB009818EA /* ExportWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportWalletViewController.swift; sourceTree = "<group>"; };
-		A0D18F7D9F3FA28B86C15F7A /* Pods-PROVERClapperboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PROVERClapperboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-PROVERClapperboard/Pods-PROVERClapperboard.release.xcconfig"; sourceTree = "<group>"; };
+		B826588F6083079C9B68BE64 /* Pods-PROVERClapperboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PROVERClapperboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PROVERClapperboard/Pods-PROVERClapperboard.debug.xcconfig"; sourceTree = "<group>"; };
 		BA2747B12046CA5900364A1D /* PROVERClapperboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PROVERClapperboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA2747B42046CA5900364A1D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA2747B62046CA5900364A1D /* InputTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputTextViewController.swift; sourceTree = "<group>"; };
@@ -85,7 +87,7 @@
 		BACE32EB2047F33C007B8FF9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BACE32F32047F5DD007B8FF9 /* EthereumService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumService.swift; sourceTree = "<group>"; };
 		BACE32F820481414007B8FF9 /* ProverAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProverAPI.swift; sourceTree = "<group>"; };
-		BCC2262B3C52F795DA2A04F2 /* Pods_PROVERClapperboard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PROVERClapperboard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C83ABDBB2208FCB95D1D0D72 /* Pods-PROVERClapperboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PROVERClapperboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-PROVERClapperboard/Pods-PROVERClapperboard.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,7 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D62A08A32A6AE996B5932AA /* Pods_PROVERClapperboard.framework in Frameworks */,
+				75A5572DFAD39D800F548D7D /* Pods_PROVERClapperboard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,21 +109,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0654FA56A3DE13446939756B /* Frameworks */ = {
+		0A483C798FDB9069E5468634 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BCC2262B3C52F795DA2A04F2 /* Pods_PROVERClapperboard.framework */,
+				3FA5DA41DD745A7480D066C8 /* Pods_PROVERClapperboard.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3FB3B82E8DE7C3DA0B06BB06 /* Pods */ = {
+		0B836EA6EDFEA98D503FB731 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7E544281C44D61F26F00ED3F /* Pods-PROVERClapperboard.debug.xcconfig */,
-				A0D18F7D9F3FA28B86C15F7A /* Pods-PROVERClapperboard.release.xcconfig */,
+				B826588F6083079C9B68BE64 /* Pods-PROVERClapperboard.debug.xcconfig */,
+				C83ABDBB2208FCB95D1D0D72 /* Pods-PROVERClapperboard.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		1A9C2C4B20D92A17004EA3C6 /* NavigationBar */ = {
+			isa = PBXGroup;
+			children = (
+				1A9C2C4C20D92A3C004EA3C6 /* NavigationBar.swift */,
+			);
+			path = NavigationBar;
 			sourceTree = "<group>";
 		};
 		9A0E848C2056BB7200624995 /* Operation */ = {
@@ -173,6 +183,7 @@
 		9AD6D62E20580EB400D9E1FE /* Screeens */ = {
 			isa = PBXGroup;
 			children = (
+				1A9C2C4B20D92A17004EA3C6 /* NavigationBar */,
 				9AFA5DDA205A7F9C009818EA /* ExportWallet */,
 				9AD2BB7020595BAC00CD4E03 /* ImportWallet */,
 				9ACA53F3205022D5007FBAD9 /* QRCode */,
@@ -204,8 +215,8 @@
 				BA2747B32046CA5900364A1D /* PROVERClapperboard */,
 				BACE32E82047F33C007B8FF9 /* PROVERClapperboardTests */,
 				BA2747B22046CA5900364A1D /* Products */,
-				3FB3B82E8DE7C3DA0B06BB06 /* Pods */,
-				0654FA56A3DE13446939756B /* Frameworks */,
+				0B836EA6EDFEA98D503FB731 /* Pods */,
+				0A483C798FDB9069E5468634 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -284,13 +295,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BA2747C32046CA5900364A1D /* Build configuration list for PBXNativeTarget "PROVERClapperboard" */;
 			buildPhases = (
-				155301334D30D3DC135EC01A /* [CP] Check Pods Manifest.lock */,
+				05FA55EF4EB3698C2EDD67A8 /* [CP] Check Pods Manifest.lock */,
 				BA2747AD2046CA5900364A1D /* Sources */,
 				BA2747AE2046CA5900364A1D /* Frameworks */,
 				BA2747AF2046CA5900364A1D /* Resources */,
 				BA2747C62046CA6700364A1D /* ShellScript */,
-				8990BAF9D10AC368093795E3 /* [CP] Embed Pods Frameworks */,
-				DD7B5D18D476455DDFC31903 /* [CP] Copy Pods Resources */,
+				9D402BE01F75EBC00F7741E3 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -388,7 +398,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		155301334D30D3DC135EC01A /* [CP] Check Pods Manifest.lock */ = {
+		05FA55EF4EB3698C2EDD67A8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -406,7 +416,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8990BAF9D10AC368093795E3 /* [CP] Embed Pods Frameworks */ = {
+		9D402BE01F75EBC00F7741E3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -449,21 +459,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
-		DD7B5D18D476455DDFC31903 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PROVERClapperboard/Pods-PROVERClapperboard-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -494,6 +489,7 @@
 				BA2747B52046CA5900364A1D /* AppDelegate.swift in Sources */,
 				9AC6AD1420568376007C6BBF /* SubmitRequestError.swift in Sources */,
 				9A0E848E2056BB8100624995 /* AsyncOperation.swift in Sources */,
+				1A9C2C4D20D92A3C004EA3C6 /* NavigationBar.swift in Sources */,
 				9A44D52320566F400027A2D0 /* InfoReslut.swift in Sources */,
 				9A0E84942056C6A100624995 /* CheckOperation.swift in Sources */,
 				9A0E84922056C1C500624995 /* SubmitOperation.swift in Sources */,
@@ -646,7 +642,7 @@
 		};
 		BA2747C42046CA5900364A1D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7E544281C44D61F26F00ED3F /* Pods-PROVERClapperboard.debug.xcconfig */;
+			baseConfigurationReference = B826588F6083079C9B68BE64 /* Pods-PROVERClapperboard.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -654,6 +650,7 @@
 				DEVELOPMENT_TEAM = 8CCN58UW97;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PROVERClapperboard/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nordavind.PROVERClapperboardMVP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -666,7 +663,7 @@
 		};
 		BA2747C52046CA5900364A1D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A0D18F7D9F3FA28B86C15F7A /* Pods-PROVERClapperboard.release.xcconfig */;
+			baseConfigurationReference = C83ABDBB2208FCB95D1D0D72 /* Pods-PROVERClapperboard.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -674,6 +671,7 @@
 				DEVELOPMENT_TEAM = 8CCN58UW97;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PROVERClapperboard/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nordavind.PROVERClapperboardMVP;
 				PRODUCT_NAME = "$(TARGET_NAME)";

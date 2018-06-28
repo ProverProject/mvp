@@ -9,11 +9,11 @@
 #           - AS PER https://guides.cocoapods.org/using/using-cocoapods.html NEVER IGNORE THE LOCK FILE
 Pods/
 
+### Vim swap files
+*.swp
+
 ### IntelliJ AppCode ###
 .idea
-
-### Ruby version ###
-.ruby-version
 
 ### macOS ###
 .DS_Store
