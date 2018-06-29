@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1A1EAB5420D3E15200C8A3C9 /* AccountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1EAB5320D3E15200C8A3C9 /* AccountTests.swift */; };
+		1A4FE43620E621BC004433F0 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FE43520E621BC004433F0 /* VideoPreviewView.swift */; };
 		1A58439A20C96B6D00C8FA14 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A58439920C96B6D00C8FA14 /* Keychain.swift */; };
 		1A8A317720D15A1F00BB7E97 /* keccak.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A314D20D15A1F00BB7E97 /* keccak.c */; };
 		1A8A317820D15A1F00BB7E97 /* HashManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A314F20D15A1F00BB7E97 /* HashManager.swift */; };
@@ -226,6 +227,7 @@
 		1A1EAB5120D3E15200C8A3C9 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A1EAB5320D3E15200C8A3C9 /* AccountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTests.swift; sourceTree = "<group>"; };
 		1A1EAB5520D3E15200C8A3C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A4FE43520E621BC004433F0 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
 		1A58439920C96B6D00C8FA14 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		1A8A314D20D15A1F00BB7E97 /* keccak.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = keccak.c; sourceTree = "<group>"; };
 		1A8A314E20D15A1F00BB7E97 /* keccak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keccak.h; sourceTree = "<group>"; };
@@ -800,9 +802,9 @@
 			children = (
 				9A2EA9DE2074EB9300910CFB /* CPP */,
 				9A2EA9DA2074EB7E00910CFB /* Wrapper */,
-				9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */,
 				9A2EA9FA2074EC1D00910CFB /* SwypeDetector.swift */,
 				9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */,
+				9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */,
 				9A89F3CB207CA06D00E31F57 /* VideoRecorder.swift */,
 			);
 			path = Detection;
@@ -850,6 +852,7 @@
 				9AA2DC1720B577FF001F6376 /* SwypeScreenState.swift */,
 				9A2EAA252074F5F100910CFB /* SwypeViewController.swift */,
 				9A7B96DB20B54ADD00ED4799 /* TargetView.swift */,
+				1A4FE43520E621BC004433F0 /* VideoPreviewView.swift */,
 				9A8FDDCD20BED3780080FB30 /* VideoSaver.swift */,
 			);
 			path = Swype;
@@ -1446,6 +1449,7 @@
 				1A8A317720D15A1F00BB7E97 /* keccak.c in Sources */,
 				9A9DB78320737D7000E29A07 /* UIImage+extension.swift in Sources */,
 				9A19C11220B04A45005FCD04 /* UIImageView+extension.swift in Sources */,
+				1A4FE43620E621BC004433F0 /* VideoPreviewView.swift in Sources */,
 				9A63764020B2AF3600F07704 /* UILabel+extension.swift in Sources */,
 				1A8A317F20D15A1F00BB7E97 /* Base32.swift in Sources */,
 				1AACAB3020D1AD420018AAFA /* ServerExceptions.swift in Sources */,

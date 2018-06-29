@@ -16,11 +16,11 @@ class VideoProcessor {
     private weak var delegate: VideoProcessorDelegate!
     private weak var coordinateDelegate: SwypeDetectorCoordinateDelegate!
     
-    init(preview: UIView,
+    init(videoPreviewView: VideoPreviewView,
          coordinateDelegate: SwypeDetectorCoordinateDelegate,
          delegate: VideoProcessorDelegate) {
         
-        videoRecorder = VideoRecorder(withParent: preview)
+        videoRecorder = VideoRecorder(withParent: videoPreviewView)
         videoRecorder.delegate = self
 
         self.coordinateDelegate = coordinateDelegate
@@ -32,7 +32,11 @@ class VideoProcessor {
 
 // MARK: - Public methods (Detector)
 extension VideoProcessor {
-    
+
+    func viewWillLayoutSubviews() {
+        videoRecorder.viewWillLayoutSubviews()
+    }
+
     func setSwype(code: [Int]) {
         swypeDetector.setSwype(code: code)
     }

@@ -29,10 +29,10 @@
 	<string>Access to camera is required</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Access to microphone is required</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Access to the Photo Library is required</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Access to the Photo Library Additions is required</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to the Photo Library is required</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -46,6 +46,9 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

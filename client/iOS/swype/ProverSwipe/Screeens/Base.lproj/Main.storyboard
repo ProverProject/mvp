@@ -526,7 +526,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gOj-HD-XuC">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gOj-HD-XuC" customClass="VideoPreviewView" customModule="ProverSwipe" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
@@ -650,10 +650,10 @@
                     <connections>
                         <outlet property="balanceLabel" destination="cAl-Mi-600" id="Ueg-9r-C00"/>
                         <outlet property="infoView" destination="oM7-at-dh9" id="Irp-KZ-wcc"/>
-                        <outlet property="preview" destination="gOj-HD-XuC" id="P3Q-dG-N0C"/>
                         <outlet property="progressSwype" destination="Jhf-Mm-OSy" id="quf-zd-i4k"/>
                         <outlet property="recordButton" destination="SHN-i0-ZdJ" id="G7a-OX-qbt"/>
                         <outlet property="targetView" destination="T7K-8V-I5z" id="4Xh-26-Hzl"/>
+                        <outlet property="videoPreviewView" destination="gOj-HD-XuC" id="P3Q-dG-N0C"/>
                         <segue destination="4ZJ-jn-pTM" kind="show" identifier="showWalletSegue" id="36F-PT-BIZ"/>
                     </connections>
                 </viewController>

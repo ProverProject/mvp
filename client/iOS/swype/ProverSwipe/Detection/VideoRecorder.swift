@@ -14,17 +14,13 @@ class VideoRecorder: NSObject {
     // MARK: - Private properties
     private var currentDeviceOrientation = UIDeviceOrientation.portrait
     private var cameraAvailable: Bool
-    private var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer?
-    
-    private var defaultAVCaptureVideoOrientation = AVCaptureVideoOrientation.portrait
+    private var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer!
 
     private var captureSession: AVCaptureSession!
     private var captureSessionLoaded = false
     
-    private var parentView: UIView
-
     private let dataOutputQueue = DispatchQueue(label: "DataOutputQueue")
-    private var isAssetWriterSessionStarted = false
+    private var isRecordingSessionStarted = false
 
     private var assetVideoWriterInput: AVAssetWriterInput!
     private var assetAudioWriterInput: AVAssetWriterInput!
@@ -44,10 +40,11 @@ class VideoRecorder: NSObject {
     private let videoFileURL =
             FileManager.default.temporaryDirectory.appendingPathComponent("recorded_video.mp4")
     
-    // MARK: - Initiallization
-    init(withParent parent: UIView) {
+    // MARK: - Initialization
+    init(withParent parent: VideoPreviewView) {
         cameraAvailable = UIImagePickerController.isSourceTypeAvailable(.camera)
-        parentView = parent
+        captureVideoPreviewLayer = parent.videoPreviewLayer
+
         super.init()
     }
 }
@@ -82,9 +79,7 @@ extension VideoRecorder {
         
         captureSession.stopRunning()
 
-        captureVideoPreviewLayer?.removeFromSuperlayer()
-        captureVideoPreviewLayer = nil
-
+        captureVideoPreviewLayer.session = nil
         captureSessionLoaded = false
         
         stopRecord()
@@ -119,7 +114,7 @@ private extension VideoRecorder {
 
         captureSession.commitConfiguration()
 
-        addVideoPreviewLayer()
+        assignVideoPreviewLayerSession()
         
         captureSessionLoaded = true
         captureSession.startRunning()
@@ -207,19 +202,13 @@ private extension VideoRecorder {
         if captureSession.canAddOutput(captureVideoDataOutput) {
             captureSession.addOutput(captureVideoDataOutput)
         }
+
         captureVideoDataOutput.connection(with: .video)?.isEnabled = true
-
-        // set default video orientation
-        if (captureVideoDataOutput.connection(with: .video)?.isVideoOrientationSupported)! {
-            captureVideoDataOutput.connection(with: .video)?.videoOrientation = defaultAVCaptureVideoOrientation
-        }
-
-        // create a serial dispatch queue used for the sample buffer delegate as well as when
-        // a still image is captured a serial dispatch queue must be used to guarantee that
-        // video frames will be delivered in order see the header doc for
-        // setSampleBufferDelegate:queue: for more information
-        //let dataOutputQueue = DispatchQueue(label: "VideoDataOutputQueue")
         captureVideoDataOutput.setSampleBufferDelegate(self, queue: dataOutputQueue)
+
+        if let connection = captureVideoDataOutput.connection(with: .video), connection.isVideoOrientationSupported {
+            connection.videoOrientation = .portrait
+        }
     }
 
     func addCaptureAudioDataOutput() {
@@ -228,23 +217,35 @@ private extension VideoRecorder {
         if captureSession.canAddOutput(captureAudioDataOutput) {
             captureSession.addOutput(captureAudioDataOutput)
         }
-        captureAudioDataOutput.connection(with: .audio)?.isEnabled = true
 
-        //let dataOutputQueue = DispatchQueue(label: "AudioDataOutputQueue")
+        captureAudioDataOutput.connection(with: .audio)?.isEnabled = true
         captureAudioDataOutput.setSampleBufferDelegate(self, queue: dataOutputQueue)
     }
 
-    func addVideoPreviewLayer() {
-        captureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        
-        if (captureVideoPreviewLayer?.connection?.isVideoOrientationSupported)! {
-            captureVideoPreviewLayer?.connection?.videoOrientation = defaultAVCaptureVideoOrientation
+    func assignVideoPreviewLayerSession() {
+        captureVideoPreviewLayer.session = captureSession
+    }
+}
+
+// MARK: - Handle device rotation
+extension VideoRecorder {
+    func viewWillLayoutSubviews() {
+        guard let connection = captureVideoPreviewLayer.connection, connection.isVideoOrientationSupported else {
+            return
         }
-        
-        captureVideoPreviewLayer?.frame = parentView.frame
-        
-        captureVideoPreviewLayer?.videoGravity = .resizeAspectFill
-        parentView.layer.addSublayer(captureVideoPreviewLayer!)
+
+        switch (UIDevice.current.orientation) {
+        case .portrait:
+            connection.videoOrientation = .portrait
+        case .portraitUpsideDown:
+             connection.videoOrientation = .portraitUpsideDown
+        case .landscapeLeft:
+            connection.videoOrientation = .landscapeRight
+        case .landscapeRight:
+            connection.videoOrientation = .landscapeLeft
+        default:
+            break
+        }
     }
 }
 
@@ -317,7 +318,7 @@ extension VideoRecorder {
         assetWriterInputPixelBufferAdaptor = nil
         assetVideoWriterInput = nil
         assetAudioWriterInput = nil
-        isAssetWriterSessionStarted = false
+        isRecordingSessionStarted = false
     }
 }
 
@@ -335,9 +336,9 @@ extension VideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate, AVCapture
         let isRecording = assetWriter != nil && assetWriter.status == .writing
 
         if isRecording {
-            if (!isAssetWriterSessionStarted) {
+            if (!isRecordingSessionStarted) {
                 assetWriter.startSession(atSourceTime: sourceSampleTimeStamp)
-                isAssetWriterSessionStarted = true
+                isRecordingSessionStarted = true
             }
         }
 

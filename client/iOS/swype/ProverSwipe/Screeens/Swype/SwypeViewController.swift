@@ -11,7 +11,7 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     
     @IBOutlet weak var progressSwype: UIPageControl!
     
-    @IBOutlet weak var preview: UIImageView!
+    @IBOutlet weak var videoPreviewView: VideoPreviewView!
     @IBOutlet weak var recordButton: UIButton!
     
     @IBOutlet weak var balanceLabel: UILabel!
@@ -78,7 +78,12 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
         print("[SwypeViewController] viewDidDisappear")
         videoProcessor.stopCapture()
     }
-    
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        videoProcessor.viewWillLayoutSubviews()
+    }
+
     // MARK: - Segue
     enum Segue: String {
         case showWalletSegue
@@ -177,7 +182,7 @@ private extension SwypeViewController {
     
     func configDependencies() {
         
-        videoProcessor = VideoProcessor(preview: preview,
+        videoProcessor = VideoProcessor(videoPreviewView: videoPreviewView,
                                       coordinateDelegate: targetView,
                                       delegate: self)
         
