@@ -2,8 +2,7 @@ import UIKit
 import SafariServices
 
 class WalletViewController: UITableViewController, UpdateBalanceBehaviour {
-    
-    // MARK: - IBOutlet
+    /*
     private let balanceTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Balance"
@@ -13,6 +12,7 @@ class WalletViewController: UITableViewController, UpdateBalanceBehaviour {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+     */
     
     private let balanceLabel: UILabel = {
         let label = UILabel()
@@ -23,7 +23,16 @@ class WalletViewController: UITableViewController, UpdateBalanceBehaviour {
         label.tag = 100
         return label
     }()
-    
+
+    private lazy var navLabelsStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [self.balanceLabel])
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.alignment = .center
+        return stack
+    }()
+
+    // MARK: - IBOutlet
     @IBOutlet weak var refreshButton: UIBarButtonItem!
     
     @IBOutlet weak var walletAddress: UILabel! {
@@ -55,9 +64,20 @@ class WalletViewController: UITableViewController, UpdateBalanceBehaviour {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        configureNavigationTitle()
-        
+
+        let backImage = #imageLiteral(resourceName: "Rectangle")
+        let resizable = backImage.resizableImage(withCapInsets: UIEdgeInsets.zero, resizingMode: .stretch)
+
+        UINavigationBar.appearance().setBackgroundImage(resizable, for: .default)
+
+        let navBar = navigationController!.navigationBar
+        navBar.barStyle = .black
+        navBar.tintColor = .white
+
+        navigationItem.prompt = "Balance"
+
+        configureNavigationBarLabels()
+
         tableView.backgroundColor = view.backgroundColor
         // this is for hide separator lines beneath table
         tableView.tableFooterView = UIView()
@@ -99,26 +119,16 @@ class WalletViewController: UITableViewController, UpdateBalanceBehaviour {
 // MARK: - Private methods
 private extension WalletViewController {
     
-    func configureNavigationTitle() {
+    func configureNavigationBarLabels() {
         
-        guard let bar = navigationController?.navigationBar else { return }
-        
-        bar.addSubview(balanceTitleLabel)
-        bar.addSubview(balanceLabel)
-        
-        balanceTitleLabel.topAnchor
-            .constraint(equalTo: bar.topAnchor, constant: 10).isActive = true
-        balanceTitleLabel.leftAnchor
-            .constraint(equalTo: bar.leftAnchor, constant: 100).isActive = true
-        balanceTitleLabel.rightAnchor
-            .constraint(equalTo: bar.rightAnchor, constant: 100).isActive = true
-        
-        balanceLabel.topAnchor
-            .constraint(equalTo: balanceTitleLabel.bottomAnchor, constant: 2).isActive = true
-        balanceLabel.leftAnchor
-            .constraint(equalTo: balanceTitleLabel.leftAnchor).isActive = true
-        balanceLabel.rightAnchor
-            .constraint(equalTo: balanceTitleLabel.rightAnchor).isActive = true
+        let navBar = navigationController!.navigationBar
+
+        navBar.addSubview(navLabelsStack)
+
+        navLabelsStack.centerXAnchor.constraint(equalTo: navBar.centerXAnchor)
+                .isActive = true
+        navLabelsStack.bottomAnchor.constraint(equalTo: navBar.bottomAnchor, constant: -4)
+                .isActive = true
     }
     
     func showSafariView() {

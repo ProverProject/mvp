@@ -12,7 +12,6 @@ class VideoRecorder: NSObject {
     weak var delegate: VideoRecorderDelegate?
 
     // MARK: - Private properties
-    private var currentDeviceOrientation = UIDeviceOrientation.portrait
     private var cameraAvailable: Bool
     private var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer!
 
@@ -238,7 +237,7 @@ extension VideoRecorder {
         case .portrait:
             connection.videoOrientation = .portrait
         case .portraitUpsideDown:
-             connection.videoOrientation = .portraitUpsideDown
+            connection.videoOrientation = .portraitUpsideDown
         case .landscapeLeft:
             connection.videoOrientation = .landscapeRight
         case .landscapeRight:
@@ -305,16 +304,17 @@ extension VideoRecorder {
     }
 
     func stopRecord(handler: @escaping (URL) -> Void = {_ in }) {
-        if assetWriter != nil {
-            if assetWriter.status == .writing {
-                assetWriter.finishWriting { [unowned self] in
-                    handler(self.videoFileURL)
-                }
-            } else {
-                print("[VideoRecorder] Recording Error: asset writer status is not writing")
+        guard assetWriter != nil else { return }
+
+        if assetWriter.status == .writing {
+            assetWriter.finishWriting { [unowned self] in
+                handler(self.videoFileURL)
             }
-            assetWriter = nil
+        } else {
+            print("[VideoRecorder] Recording Error: asset writer status is not writing")
         }
+
+        assetWriter = nil
         assetWriterInputPixelBufferAdaptor = nil
         assetVideoWriterInput = nil
         assetAudioWriterInput = nil
@@ -335,11 +335,9 @@ extension VideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate, AVCapture
         let sourceSampleTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
         let isRecording = assetWriter != nil && assetWriter.status == .writing
 
-        if isRecording {
-            if (!isRecordingSessionStarted) {
-                assetWriter.startSession(atSourceTime: sourceSampleTimeStamp)
-                isRecordingSessionStarted = true
-            }
+        if isRecording && !isRecordingSessionStarted {
+            assetWriter.startSession(atSourceTime: sourceSampleTimeStamp)
+            isRecordingSessionStarted = true
         }
 
         switch output {

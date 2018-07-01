@@ -167,7 +167,6 @@
 		9A2EAA152074ECE400910CFB /* CircleDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA0E2074ECE400910CFB /* CircleDetector.cpp */; };
 		9A2EAA1D2074EEB100910CFB /* SwypeDetectorCppWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA1B2074EEB100910CFB /* SwypeDetectorCppWrapper.mm */; };
 		9A2EAA262074F5F100910CFB /* SwypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EAA252074F5F100910CFB /* SwypeViewController.swift */; };
-		9A43F90120B2D80200DB3E02 /* BaseNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A43F90020B2D80200DB3E02 /* BaseNavigationBar.swift */; };
 		9A63763E20B2AC4400F07704 /* UIButtom+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A63763D20B2AC4400F07704 /* UIButtom+extension.swift */; };
 		9A63764020B2AF3600F07704 /* UILabel+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A63763F20B2AF3600F07704 /* UILabel+extension.swift */; };
 		9A66098F2084CD6C00E7F071 /* VideoSubmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A66098E2084CD6C00E7F071 /* VideoSubmitter.swift */; };
@@ -412,7 +411,6 @@
 		9A2EAA1B2074EEB100910CFB /* SwypeDetectorCppWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SwypeDetectorCppWrapper.mm; sourceTree = "<group>"; };
 		9A2EAA1C2074EEB100910CFB /* SwypeDetectorCppWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwypeDetectorCppWrapper.h; sourceTree = "<group>"; };
 		9A2EAA252074F5F100910CFB /* SwypeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwypeViewController.swift; sourceTree = "<group>"; };
-		9A43F90020B2D80200DB3E02 /* BaseNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationBar.swift; sourceTree = "<group>"; };
 		9A63763D20B2AC4400F07704 /* UIButtom+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButtom+extension.swift"; sourceTree = "<group>"; };
 		9A63763F20B2AF3600F07704 /* UILabel+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+extension.swift"; sourceTree = "<group>"; };
 		9A66098E2084CD6C00E7F071 /* VideoSubmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSubmitter.swift; sourceTree = "<group>"; };
@@ -858,14 +856,6 @@
 			path = Swype;
 			sourceTree = "<group>";
 		};
-		9A43F8FF20B2D7F000DB3E02 /* BaseClasses */ = {
-			isa = PBXGroup;
-			children = (
-				9A43F90020B2D80200DB3E02 /* BaseNavigationBar.swift */,
-			);
-			path = BaseClasses;
-			sourceTree = "<group>";
-		};
 		9A9DB77620737B8900E29A07 /* Screeens */ = {
 			isa = PBXGroup;
 			children = (
@@ -1021,7 +1011,6 @@
 			isa = PBXGroup;
 			children = (
 				1AA98DA020D3EF49004D9D4D /* Assets */,
-				9A43F8FF20B2D7F000DB3E02 /* BaseClasses */,
 				1AF1FFA720C3362900176F53 /* Dependency */,
 				9A2EA9D72074EB1A00910CFB /* Detection */,
 				9A9DB78120737D6000E29A07 /* Extension */,
@@ -1372,7 +1361,6 @@
 				1A8A319220D15F5A00BB7E97 /* Sequence+Additions.swift in Sources */,
 				9AEF62DF20736B40006C59DD /* AppDelegate.swift in Sources */,
 				9A9DB7A1207392AA00E29A07 /* AsyncOperation.swift in Sources */,
-				9A43F90120B2D80200DB3E02 /* BaseNavigationBar.swift in Sources */,
 				1A97070A20D5A13F003E8EF4 /* MultisigSignatureTransactionModel.swift in Sources */,
 				9AB3CA1A207E4370005611DC /* Bool+Extension.swift in Sources */,
 				9A2EAA112074ECE400910CFB /* BoundsChecker.cpp in Sources */,
