@@ -60,6 +60,8 @@ class WalletViewController: UITableViewController, UpdateBalanceBehaviour {
     
     // MARK: - Dependency
     var store: DependencyStore!
+
+    var shouldHideLeftButton: Bool = false
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -73,6 +75,10 @@ class WalletViewController: UITableViewController, UpdateBalanceBehaviour {
         let navBar = navigationController!.navigationBar
         navBar.barStyle = .black
         navBar.tintColor = .white
+
+        if (shouldHideLeftButton) {
+            navigationItem.leftBarButtonItem = nil
+        }
 
         navigationItem.prompt = "Balance"
 

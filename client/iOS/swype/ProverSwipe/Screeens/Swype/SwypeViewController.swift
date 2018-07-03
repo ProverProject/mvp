@@ -42,7 +42,7 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     // MARK: - Dependencies
     var store: DependencyStore!
     var submitter: VideoSubmitter?
-    var videoProcessor: VideoProcessor!
+    var videoProcessor: VideoProcessor?
     var saver: VideoSaver?
     
     // MARK: - Private properties
@@ -51,37 +51,61 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     private let queue = OperationQueue()
     
     var state: State = .readyToRecord { didSet { update(by: state) }}
-        
+
+    var isAccessToCameraDenied: Bool = false
+
     // MARK: - View controller lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         print("[SwypeViewController] viewDidLoad")
-        configDependencies()
         refreshBalance(button: nil,
                        label: balanceLabel,
                        queue: queue,
                        store: store,
                        withSymbol: false)
         state = .readyToRecord
-        subscribeNotefications()
+        addBackgroundNotificationObservers()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         print("[SwypeViewController] viewWillAppear")
-        videoProcessor.startCapture()
+        super.viewWillAppear(animated)
         balanceLabel.text = "\(store.balance)"
+
+        if videoProcessor != nil {
+            videoProcessor!.startCapture()
+            return
+        }
+
+        let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+        let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
+
+        if audioStatus != .notDetermined && videoStatus == .authorized {
+            requestAuthorizationForAudioCapture()
+        }
     }
-    
+
+    override func viewDidAppear(_ animated: Bool) {
+        print("[SwypeViewController] viewDidAppear")
+        super.viewDidAppear(animated)
+
+        let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+        let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
+
+        if audioStatus == .notDetermined || videoStatus != .authorized {
+            requestAuthorizationForAudioCapture()
+        }
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("[SwypeViewController] viewDidDisappear")
-        videoProcessor.stopCapture()
+        videoProcessor?.stopCapture()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        videoProcessor.viewWillLayoutSubviews()
+        videoProcessor?.viewWillLayoutSubviews()
     }
 
     // MARK: - Segue
@@ -100,6 +124,7 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
             else { fatalError("[SwypeViewController] Cast to WalletViewController failed!") }
         
         walletVC.store = store
+        walletVC.shouldHideLeftButton = isAccessToCameraDenied
     }
 }
 
@@ -111,7 +136,7 @@ private extension SwypeViewController {
         let operation = GetSwypeOperation(hex: store.wallet.hexAddress,
                                           apiProvider: store.apiProvider)
         
-        operation.completionBlock = { [weak operation] in
+        operation.completionBlock = { [unowned self, weak operation] in
             
             guard let output = operation?.output else {
                 self.infoView.message("Unknown error while get swype")
@@ -144,17 +169,17 @@ private extension SwypeViewController {
         
         switch state {
         case .readyToRecord:
-            videoProcessor.startRecord()
+            videoProcessor?.startRecord()
         case .waitSwype:
-            videoProcessor.resetSwypeDetector()
-            videoProcessor.stopRecord(allowSubmit: false)
+            videoProcessor?.resetSwypeDetector()
+            videoProcessor?.stopRecord(allowSubmit: false)
             queue.cancelAllOperations()
         case .waitRoundMovement, .prepareForStart, .detection:
-            videoProcessor.resetSwypeDetector()
-            videoProcessor.stopRecord(allowSubmit: false)
+            videoProcessor?.resetSwypeDetector()
+            videoProcessor?.stopRecord(allowSubmit: false)
         case .finishDetection:
-            videoProcessor.resetSwypeDetector()
-            videoProcessor.stopRecord(allowSubmit: true)
+            videoProcessor?.resetSwypeDetector()
+            videoProcessor?.stopRecord(allowSubmit: true)
         case .submitVideo:
             fatalError("Record button have to be non enable")
         }
@@ -175,31 +200,101 @@ private extension SwypeViewController {
     }
     
     func startRecognize(swype: [Int]) {
-        videoProcessor.setSwype(code: swype)
+        videoProcessor?.setSwype(code: swype)
         state = .waitRoundMovement
         progressSwype.setSteps(number: swype.count - 1)
     }
-    
-    func configDependencies() {
+
+    func requestAuthorizationForAudioCapture() {
+        switch AVCaptureDevice.authorizationStatus(for: .audio) {
+        case .notDetermined: // The user has not yet been asked for microphone access.
+            AVCaptureDevice.requestAccess(for: .audio) { [unowned self] granted in
+                self.requestAuthorizationForVideoCapture()
+            }
+
+        default: // The user has previously denied access.
+            requestAuthorizationForVideoCapture()
+        }
+    }
+
+    func requestAuthorizationForVideoCapture() {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized: // The user has previously granted access to the camera.
+            createVideoProcessingStuff()
+
+        case .notDetermined: // The user has not yet been asked for camera access.
+            AVCaptureDevice.requestAccess(for: .video) { [unowned self] granted in
+                if granted {
+                    self.createVideoProcessingStuff()
+                }
+                else {
+                    self.skipSwypeViewController()
+                }
+            }
+
+        case .denied: // The user has previously denied access.
+            skipSwypeViewController()
+        case .restricted: // The user can't grant access due to restrictions.
+            skipSwypeViewController()
+        }
+    }
+
+    func createVideoProcessingStuff() {
+        if (!Thread.isMainThread) {
+            self.performSelector(onMainThread: #selector(doCreateVideoProcessingStuff), with: nil,
+                                 waitUntilDone: false)
+        }
+        else {
+            doCreateVideoProcessingStuff()
+        }
+    }
+
+    func skipSwypeViewController() {
+        if (!Thread.isMainThread) {
+            self.performSelector(onMainThread: #selector(doSkipSwypeViewController), with: nil,
+                                 waitUntilDone: false)
+        }
+        else {
+            doSkipSwypeViewController()
+        }
+    }
+
+    @objc func doCreateVideoProcessingStuff() {
         
         videoProcessor = VideoProcessor(videoPreviewView: videoPreviewView,
                                       coordinateDelegate: targetView,
                                       delegate: self)
         
-        submitter = VideoSubmitter(store: self.store)
-        submitter?.delegate = infoView
+        submitter = VideoSubmitter(store: store)
+        submitter!.delegate = infoView
         
         saver = VideoSaver()
-        saver?.delegate = self
+        saver!.delegate = self
+
+        videoProcessor!.startCapture()
+    }
+
+    @objc func doSkipSwypeViewController() {
+        let message = "The access to camera has been denied, so you will NOT be able " +
+                      "to record and submit video.  You can re-enable the access to camera " +
+                      "in your iPhone's Settings"
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .cancel) { [unowned self] _ in
+            self.isAccessToCameraDenied = true
+            self.performSegue(withIdentifier: Segue.showWalletSegue.rawValue, sender: nil)
+        }
+
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 
 // MARK: - Notification
 extension SwypeViewController {
     
-    func subscribeNotefications() {
+    func addBackgroundNotificationObservers() {
         
-        print("[SwypeViewController] subscribeNotefications()")
+        print("[SwypeViewController] addBackgroundNotificationObservers()")
         
         NotificationCenter.default
             .addObserver(self,
@@ -214,17 +309,17 @@ extension SwypeViewController {
                          object: nil)
     }
     
-    func unsubscribeNotefications() {
+    func removeBackgroundNotificationObservers() {
         
-        print("[SwypeViewController] unsubscribeNotefications()")
+        print("[SwypeViewController] removeBackgroundNotificationObservers()")
         NotificationCenter.default.removeObserver(self)
     }
     
     @objc func handleDidEnterBackground() {
         
         print("[SwypeViewController] handleDidBackground()")
-        videoProcessor.stopCapture()
-        videoProcessor.resetSwypeDetector()
+        videoProcessor?.stopCapture()
+        videoProcessor?.resetSwypeDetector()
     }
     
     @objc func handleWillEnterForeground() {
@@ -232,7 +327,7 @@ extension SwypeViewController {
         print("[SwypeViewController] handleWillEnterForeground()")
         
         state = .readyToRecord
-        videoProcessor.startCapture()
+        videoProcessor?.startCapture()
     }
 }
 
@@ -328,10 +423,10 @@ extension SwypeViewController: VideoProcessorDelegate, VideoSaverNotifier {
         print("[SwypeViewController] start process video from url: \(url)")
         
         submitter?.submit(videoURL: url,
-                          with: Hexadecimal(swypeBlock)!) { [weak self] result in
+                          with: Hexadecimal(swypeBlock)!) { [unowned self] result in
                             
-                            self?.videoProcessor.resetSwypeDetector()
-                            self?.state = .readyToRecord
+                            self.videoProcessor?.resetSwypeDetector()
+                            self.state = .readyToRecord
                             print("[SwypeViewController] submit result: \(result ?? "error submit")")
         }
     }

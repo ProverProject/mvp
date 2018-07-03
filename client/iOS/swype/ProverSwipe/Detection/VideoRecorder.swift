@@ -12,13 +12,12 @@ class VideoRecorder: NSObject {
     weak var delegate: VideoRecorderDelegate?
 
     // MARK: - Private properties
-    private var cameraAvailable: Bool
     private var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer!
 
     private var captureSession: AVCaptureSession!
-    private var captureSessionLoaded = false
     
     private let dataOutputQueue = DispatchQueue(label: "DataOutputQueue")
+    private var isRecording = false
     private var isRecordingSessionStarted = false
 
     private var assetVideoWriterInput: AVAssetWriterInput!
@@ -41,24 +40,18 @@ class VideoRecorder: NSObject {
     
     // MARK: - Initialization
     init(withParent parent: VideoPreviewView) {
-        cameraAvailable = UIImagePickerController.isSourceTypeAvailable(.camera)
         captureVideoPreviewLayer = parent.videoPreviewLayer
-
-        super.init()
     }
 }
 
 // MARK: - Public methods
 extension VideoRecorder {
     
-    @objc func startCapture() {
+    func startCapture() {
         guard !running else { return }
         running = true
-        
-        if !Thread.isMainThread {
-            performSelector(onMainThread: #selector(startCapture), with: nil, waitUntilDone: false)
-        }
-        if cameraAvailable { startCaptureSession() }
+
+        startCaptureSession()
     }
     
     func stopCapture() {
@@ -79,23 +72,15 @@ extension VideoRecorder {
         captureSession.stopRunning()
 
         captureVideoPreviewLayer.session = nil
-        captureSessionLoaded = false
         
         stopRecord()
-    }
-    
-    func pause() {
-        running = false
-        captureSession?.stopRunning()
     }
 }
 
 // MARK: - Private methods
 private extension VideoRecorder {
-    
+
     func startCaptureSession() {
-        
-        guard cameraAvailable, !captureSessionLoaded else { return }
 
         captureSession = createCaptureSession()
 
@@ -115,7 +100,6 @@ private extension VideoRecorder {
 
         assignVideoPreviewLayerSession()
         
-        captureSessionLoaded = true
         captureSession.startRunning()
     }
     
@@ -298,27 +282,34 @@ extension VideoRecorder {
                 return
             }
 
+            isRecording = true
         } catch {
             print("[VideoRecorder] Camera unable to create AVAssetWriter: \(error.localizedDescription)")
         }
     }
 
     func stopRecord(handler: @escaping (URL) -> Void = {_ in }) {
-        guard assetWriter != nil else { return }
+        guard isRecording else { return }
+
+        isRecording = false
+        isRecordingSessionStarted = false
 
         if assetWriter.status == .writing {
             assetWriter.finishWriting { [unowned self] in
+                self.disposeRecord()
                 handler(self.videoFileURL)
             }
         } else {
+            disposeRecord()
             print("[VideoRecorder] Recording Error: asset writer status is not writing")
         }
+    }
 
+    func disposeRecord() {
         assetWriter = nil
         assetWriterInputPixelBufferAdaptor = nil
         assetVideoWriterInput = nil
         assetAudioWriterInput = nil
-        isRecordingSessionStarted = false
     }
 }
 
@@ -333,7 +324,6 @@ extension VideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate, AVCapture
         }
 
         let sourceSampleTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        let isRecording = assetWriter != nil && assetWriter.status == .writing
 
         if isRecording && !isRecordingSessionStarted {
             assetWriter.startSession(atSourceTime: sourceSampleTimeStamp)
