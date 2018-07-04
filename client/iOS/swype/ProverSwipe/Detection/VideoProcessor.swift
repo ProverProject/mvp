@@ -4,11 +4,14 @@ protocol VideoProcessorDelegate: class {
     var state: SwypeViewController.State { get }
     func processVideo(at url: URL)
     func changeState(to state: SwypeViewController.State)
+    func recordingStopped()
     func showAlert(text: String)
     func save(url: URL)
 }
 
 class VideoProcessor {
+
+    public var isRecordingAlive: Bool { return videoRecorder.isRecordingAlive }
     
     private var videoRecorder: VideoRecorder!
     private var swypeDetector: SwypeDetector!
@@ -19,13 +22,13 @@ class VideoProcessor {
     init(videoPreviewView: VideoPreviewView,
          coordinateDelegate: SwypeDetectorCoordinateDelegate,
          delegate: VideoProcessorDelegate) {
-        
+
         videoRecorder = VideoRecorder(withParent: videoPreviewView)
         videoRecorder.delegate = self
 
         self.coordinateDelegate = coordinateDelegate
         resetSwypeDetector()
-        
+
         self.delegate = delegate
     }
 }
@@ -65,7 +68,10 @@ extension VideoProcessor {
     
     func stopRecord(allowSubmit: Bool) {
         videoRecorder.stopRecord { [unowned self] recordedVideoURL in
-            if (allowSubmit) {
+            if !allowSubmit {
+                self.delegate.recordingStopped()
+            }
+            else {
                 self.delegate.processVideo(at: recordedVideoURL)
                 self.delegate.save(url: recordedVideoURL)
             }

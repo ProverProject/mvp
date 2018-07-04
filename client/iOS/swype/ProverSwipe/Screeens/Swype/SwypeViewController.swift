@@ -18,21 +18,42 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     
     // MARK: - IBAction
     @IBAction func recordButtonPressed(_ sender: UIButton) {
-        
-        recordButtonUpdateVideoDetector()
-        
+
         switch state {
         case .readyToRecord:
+            videoProcessor.startRecord()
             getSwype()
-        case .waitSwype, .finishDetection:
+        case .waitSwype:
+            videoProcessor.stopRecord(allowSubmit: false)
+            queue.cancelAllOperations()
+        case .waitRoundMovement, .prepareForStart, .detection:
+            videoProcessor.stopRecord(allowSubmit: false)
+        case .finishDetection:
+            videoProcessor.stopRecord(allowSubmit: true)
+        case .submitVideo:
+            fatalError("Record button have to be non enable")
+        }
+
+        switch state {
+        case .readyToRecord, .waitSwype, .finishDetection:
             break
         case .waitRoundMovement, .prepareForStart, .detection:
             self.infoView.message("Detection is not finished")
         case .submitVideo:
             fatalError("Record button have to be non enable")
         }
-        
-        recordButtonUpdateState()
+
+        // Do switch to the next state
+        switch state {
+        case .readyToRecord:
+            state = .waitSwype
+        case .waitSwype, .waitRoundMovement, .prepareForStart, .detection:
+            state = .readyToRecord
+        case .finishDetection:
+            state = .submitVideo
+        case .submitVideo:
+            fatalError("Record button have to be non enable")
+        }
     }
     
     @IBAction func walletButtonAction(_ sender: UIButton) {
@@ -42,7 +63,7 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     // MARK: - Dependencies
     var store: DependencyStore!
     var submitter: VideoSubmitter?
-    var videoProcessor: VideoProcessor?
+    var videoProcessor: VideoProcessor!
     var saver: VideoSaver?
     
     // MARK: - Private properties
@@ -73,15 +94,16 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
         balanceLabel.text = "\(store.balance)"
 
         if videoProcessor != nil {
-            videoProcessor!.startCapture()
-            return
+            videoProcessor.startCapture()
         }
+        else {
 
-        let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
-        let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
+            let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+            let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
 
-        if audioStatus != .notDetermined && videoStatus == .authorized {
-            requestAuthorizationForAudioCapture()
+            if audioStatus != .notDetermined && videoStatus == .authorized {
+                createVideoProcessingStuff()
+            }
         }
     }
 
@@ -89,23 +111,25 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
         print("[SwypeViewController] viewDidAppear")
         super.viewDidAppear(animated)
 
-        let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
-        let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        if videoProcessor == nil {
+            let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+            let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
 
-        if audioStatus == .notDetermined || videoStatus != .authorized {
-            requestAuthorizationForAudioCapture()
+            if audioStatus == .notDetermined || videoStatus != .authorized {
+                requestAuthorizationForAudioCapture()
+            }
         }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("[SwypeViewController] viewDidDisappear")
-        videoProcessor?.stopCapture()
+        videoProcessor.stopCapture()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        videoProcessor?.viewWillLayoutSubviews()
+        videoProcessor.viewWillLayoutSubviews()
     }
 
     // MARK: - Segue
@@ -165,42 +189,8 @@ private extension SwypeViewController {
         queue.addOperation(operation)
     }
     
-    func recordButtonUpdateVideoDetector() {
-        
-        switch state {
-        case .readyToRecord:
-            videoProcessor?.startRecord()
-        case .waitSwype:
-            videoProcessor?.resetSwypeDetector()
-            videoProcessor?.stopRecord(allowSubmit: false)
-            queue.cancelAllOperations()
-        case .waitRoundMovement, .prepareForStart, .detection:
-            videoProcessor?.resetSwypeDetector()
-            videoProcessor?.stopRecord(allowSubmit: false)
-        case .finishDetection:
-            videoProcessor?.resetSwypeDetector()
-            videoProcessor?.stopRecord(allowSubmit: true)
-        case .submitVideo:
-            fatalError("Record button have to be non enable")
-        }
-    }
-    
-    func recordButtonUpdateState() {
-        
-        switch state {
-        case .readyToRecord:
-            state = .waitSwype
-        case .waitSwype, .waitRoundMovement, .prepareForStart, .detection:
-            state = .readyToRecord
-        case .finishDetection:
-            state = .submitVideo
-        case .submitVideo:
-            fatalError("Record button have to be non enable")
-        }
-    }
-    
     func startRecognize(swype: [Int]) {
-        videoProcessor?.setSwype(code: swype)
+        videoProcessor.setSwype(code: swype)
         state = .waitRoundMovement
         progressSwype.setSteps(number: swype.count - 1)
     }
@@ -271,7 +261,7 @@ private extension SwypeViewController {
         saver = VideoSaver()
         saver!.delegate = self
 
-        videoProcessor!.startCapture()
+        videoProcessor.startCapture()
     }
 
     @objc func doSkipSwypeViewController() {
@@ -318,8 +308,8 @@ extension SwypeViewController {
     @objc func handleDidEnterBackground() {
         
         print("[SwypeViewController] handleDidBackground()")
-        videoProcessor?.stopCapture()
-        videoProcessor?.resetSwypeDetector()
+        videoProcessor.stopCapture()
+        videoProcessor.resetSwypeDetector()
     }
     
     @objc func handleWillEnterForeground() {
@@ -327,7 +317,7 @@ extension SwypeViewController {
         print("[SwypeViewController] handleWillEnterForeground()")
         
         state = .readyToRecord
-        videoProcessor?.startCapture()
+        videoProcessor.startCapture()
     }
 }
 
@@ -371,26 +361,25 @@ extension SwypeViewController: SwypeScreenState {
         
         switch state {
         case .readyToRecord:
-            recordButton.setImage(image: #imageLiteral(resourceName: "start_record"))
-            recordButton.setEnable(true)
+            recordButton.isEnabled = !(videoProcessor?.isRecordingAlive ?? false)
         case .waitSwype:
             recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.setEnable(true)
+            recordButton.isEnabled = true
         case .waitRoundMovement:
             recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.setEnable(true)
+            recordButton.isEnabled = true
         case .prepareForStart:
             recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.setEnable(true)
+            recordButton.isEnabled = true
         case .detection:
             recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.setEnable(true)
+            recordButton.isEnabled = true
         case .finishDetection:
             recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.setEnable(true)
+            recordButton.isEnabled = true
         case .submitVideo:
             recordButton.setImage(image: #imageLiteral(resourceName: "start_record"))
-            recordButton.setEnable(false)
+            recordButton.isEnabled = false
         }
     }
 }
@@ -413,6 +402,15 @@ extension SwypeViewController: VideoProcessorDelegate, VideoSaverNotifier {
             break
         }
     }
+
+    func recordingStopped() {
+        print("[SwypeViewController] recordingStopped()")
+
+        videoProcessor.resetSwypeDetector()
+
+        recordButton.setImage(image: #imageLiteral(resourceName: "start_record"))
+        recordButton.isEnabled = true
+    }
     
     func processVideo(at url: URL) {
         
@@ -425,7 +423,7 @@ extension SwypeViewController: VideoProcessorDelegate, VideoSaverNotifier {
         submitter?.submit(videoURL: url,
                           with: Hexadecimal(swypeBlock)!) { [unowned self] result in
                             
-                            self.videoProcessor?.resetSwypeDetector()
+                            self.videoProcessor.resetSwypeDetector()
                             self.state = .readyToRecord
                             print("[SwypeViewController] submit result: \(result ?? "error submit")")
         }

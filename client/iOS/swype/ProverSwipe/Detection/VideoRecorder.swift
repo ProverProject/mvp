@@ -17,6 +17,7 @@ class VideoRecorder: NSObject {
     private var captureSession: AVCaptureSession!
     
     private let dataOutputQueue = DispatchQueue(label: "DataOutputQueue")
+    public var isRecordingAlive: Bool { return assetWriter != nil }
     private var isRecording = false
     private var isRecordingSessionStarted = false
 
@@ -33,7 +34,7 @@ class VideoRecorder: NSObject {
         return formatter
     }()
     
-    private var running = false
+    private var isCapturing = false
     
     private let videoFileURL =
             FileManager.default.temporaryDirectory.appendingPathComponent("recorded_video.mp4")
@@ -48,16 +49,16 @@ class VideoRecorder: NSObject {
 extension VideoRecorder {
     
     func startCapture() {
-        guard !running else { return }
-        running = true
+        guard !isCapturing else { return }
+        isCapturing = true
 
         startCaptureSession()
     }
     
     func stopCapture() {
         
-        guard running else { return }
-        running = false
+        guard isCapturing else { return }
+        isCapturing = false
         
         guard let captureSession = captureSession else { return }
         
@@ -295,11 +296,14 @@ extension VideoRecorder {
         isRecordingSessionStarted = false
 
         if assetWriter.status == .writing {
+            print("[VideoRecorder] stopRecord(), status is .writing")
             assetWriter.finishWriting { [unowned self] in
+                print("[VideoRecorder] stopRecord's completion, status is \(self.assetWriter.status.rawValue)")
                 self.disposeRecord()
                 handler(self.videoFileURL)
             }
         } else {
+            print("[VideoRecorder] stopRecord(), status is *** \(assetWriter.status.rawValue) ***!!!")
             disposeRecord()
             print("[VideoRecorder] Recording Error: asset writer status is not writing")
         }
