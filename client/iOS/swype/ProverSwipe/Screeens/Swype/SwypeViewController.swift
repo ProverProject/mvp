@@ -71,7 +71,7 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     
     private let queue = OperationQueue()
     
-    var state: State = .readyToRecord { didSet { update(by: state) }}
+    var state: State = .readyToRecord { didSet { update() }}
 
     var isAccessToCameraDenied: Bool = false
 
@@ -124,12 +124,12 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("[SwypeViewController] viewDidDisappear")
-        videoProcessor.stopCapture()
+        videoProcessor?.stopCapture()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        videoProcessor.viewWillLayoutSubviews()
+        videoProcessor?.viewWillLayoutSubviews()
     }
 
     // MARK: - Segue
@@ -230,30 +230,14 @@ private extension SwypeViewController {
     }
 
     func createVideoProcessingStuff() {
-        if (!Thread.isMainThread) {
-            self.performSelector(onMainThread: #selector(doCreateVideoProcessingStuff), with: nil,
-                                 waitUntilDone: false)
+        if !Thread.isMainThread {
+            DispatchQueue.main.async(execute: createVideoProcessingStuff)
+            return
         }
-        else {
-            doCreateVideoProcessingStuff()
-        }
-    }
 
-    func skipSwypeViewController() {
-        if (!Thread.isMainThread) {
-            self.performSelector(onMainThread: #selector(doSkipSwypeViewController), with: nil,
-                                 waitUntilDone: false)
-        }
-        else {
-            doSkipSwypeViewController()
-        }
-    }
-
-    @objc func doCreateVideoProcessingStuff() {
-        
         videoProcessor = VideoProcessor(videoPreviewView: videoPreviewView,
-                                      coordinateDelegate: targetView,
-                                      delegate: self)
+                                        coordinateDelegate: targetView,
+                                        delegate: self)
         
         submitter = VideoSubmitter(store: store)
         submitter!.delegate = infoView
@@ -264,7 +248,12 @@ private extension SwypeViewController {
         videoProcessor.startCapture()
     }
 
-    @objc func doSkipSwypeViewController() {
+    func skipSwypeViewController() {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async(execute: skipSwypeViewController)
+            return
+        }
+
         let message = "The access to camera has been denied, so you will NOT be able " +
                       "to record and submit video.  You can re-enable the access to camera " +
                       "in your iPhone's Settings"
@@ -308,16 +297,16 @@ extension SwypeViewController {
     @objc func handleDidEnterBackground() {
         
         print("[SwypeViewController] handleDidBackground()")
-        videoProcessor.stopCapture()
-        videoProcessor.resetSwypeDetector()
+        videoProcessor?.stopCapture()
+        videoProcessor?.resetSwypeDetector()
     }
-    
+
     @objc func handleWillEnterForeground() {
         
         print("[SwypeViewController] handleWillEnterForeground()")
         
         state = .readyToRecord
-        videoProcessor.startCapture()
+        videoProcessor?.startCapture()
     }
 }
 
@@ -351,10 +340,14 @@ extension SwypeViewController {
 }
 
 // MARK: - State machine
-extension SwypeViewController: SwypeScreenState {
+extension SwypeViewController {
     
-    func update(by state: SwypeViewController.State) {
-        
+    func update() {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async(execute: update)
+            return
+        }
+
         targetView.update(by: state)
         infoView.update(by: state)
         progressSwype.update(by: state)
@@ -362,19 +355,7 @@ extension SwypeViewController: SwypeScreenState {
         switch state {
         case .readyToRecord:
             recordButton.isEnabled = !(videoProcessor?.isRecordingAlive ?? false)
-        case .waitSwype:
-            recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.isEnabled = true
-        case .waitRoundMovement:
-            recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.isEnabled = true
-        case .prepareForStart:
-            recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.isEnabled = true
-        case .detection:
-            recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
-            recordButton.isEnabled = true
-        case .finishDetection:
+        case .waitSwype, .waitRoundMovement, .prepareForStart, .detection, .finishDetection:
             recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
             recordButton.isEnabled = true
         case .submitVideo:
@@ -404,6 +385,11 @@ extension SwypeViewController: VideoProcessorDelegate, VideoSaverNotifier {
     }
 
     func recordingStopped() {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async(execute: recordingStopped)
+            return
+        }
+
         print("[SwypeViewController] recordingStopped()")
 
         videoProcessor.resetSwypeDetector()
@@ -411,7 +397,7 @@ extension SwypeViewController: VideoProcessorDelegate, VideoSaverNotifier {
         recordButton.setImage(image: #imageLiteral(resourceName: "start_record"))
         recordButton.isEnabled = true
     }
-    
+
     func processVideo(at url: URL) {
         
         guard state == .submitVideo else {
