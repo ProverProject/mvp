@@ -38,7 +38,7 @@ class VideoRecorder: NSObject {
     
     private let videoFileURL =
             FileManager.default.temporaryDirectory.appendingPathComponent("recorded_video.mp4")
-    
+
     // MARK: - Initialization
     init(withParent parent: VideoPreviewView) {
         captureVideoPreviewLayer = parent.videoPreviewLayer
@@ -236,7 +236,7 @@ extension VideoRecorder {
 // MARK: - Recording
 extension VideoRecorder {
 
-    func startRecord() {
+    private var videoOutputSettings: [String : Any] {
         var videoCodec: Any
 
         if #available(iOS 11.0, *) {
@@ -245,10 +245,24 @@ extension VideoRecorder {
             videoCodec = AVVideoCodecH264
         }
 
-        let videoOutputSettings = [AVVideoWidthKey: 720,
-                                   AVVideoHeightKey: 1280,
-                                   AVVideoCodecKey: videoCodec]
+        let assistant = AVOutputSettingsAssistant(preset: Settings.currentVideoPreset)
+        let settings = assistant!.videoSettings!
+        let settingsWidth = settings[AVVideoWidthKey] as! Int
+        let settingsHeight = settings[AVVideoHeightKey] as! Int
 
+        // We record in the portrait mode so swap width and height
+        return [AVVideoWidthKey: settingsHeight,
+                AVVideoHeightKey: settingsWidth,
+                AVVideoCodecKey: videoCodec]
+    }
+
+    private var audioOutputSettings: [String : Any] {
+        return [AVFormatIDKey: kAudioFormatMPEG4AAC,
+                AVSampleRateKey: 12000,
+                AVNumberOfChannelsKey: 1]
+    }
+
+    func startRecord() {
         assetVideoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: videoOutputSettings)
         assetVideoWriterInput.expectsMediaDataInRealTime = true
 
@@ -257,10 +271,6 @@ extension VideoRecorder {
         assetWriterInputPixelBufferAdaptor = AVAssetWriterInputPixelBufferAdaptor(
                                    assetWriterInput: assetVideoWriterInput,
                                    sourcePixelBufferAttributes: videoOutputAttributes)
-
-        let audioOutputSettings = [AVFormatIDKey: kAudioFormatMPEG4AAC,
-                                   AVSampleRateKey: 12000,
-                                   AVNumberOfChannelsKey: 1]
 
         assetAudioWriterInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioOutputSettings)
         assetAudioWriterInput.expectsMediaDataInRealTime = true

@@ -60,6 +60,7 @@
 		1AACAB2E20D1AC890018AAFA /* ServerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AACAB2D20D1AC880018AAFA /* ServerModel.swift */; };
 		1AACAB3020D1AD420018AAFA /* ServerExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AACAB2F20D1AD410018AAFA /* ServerExceptions.swift */; };
 		1AACAB3620D1ADB70018AAFA /* NEMWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AACAB3320D1ADB60018AAFA /* NEMWallet.xcdatamodeld */; };
+		1AC9D53220EF8867006758CA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9D53120EF8867006758CA /* Settings.swift */; };
 		1AF1FFA620C32F2D00176F53 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF1FFA520C32F2C00176F53 /* Wallet.swift */; };
 		3C238EC22613F7B47957AE74 /* Pods_ProverSwipe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553F0162152AFFAD533356AC /* Pods_ProverSwipe.framework */; };
 		75A22DE2CD47F9C8C17234F8 /* Pods_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C9D87733EAB2586D64D03B3 /* Pods_Tests.framework */; };
@@ -289,6 +290,7 @@
 		1AACAB2D20D1AC880018AAFA /* ServerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerModel.swift; sourceTree = "<group>"; };
 		1AACAB2F20D1AD410018AAFA /* ServerExceptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerExceptions.swift; sourceTree = "<group>"; };
 		1AACAB3420D1ADB60018AAFA /* NEMWallet.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NEMWallet.xcdatamodel; sourceTree = "<group>"; };
+		1AC9D53120EF8867006758CA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		1AF1FFA520C32F2C00176F53 /* Wallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		1D8C41A3F68CF1161BBCAAA4 /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		553F0162152AFFAD533356AC /* Pods_ProverSwipe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProverSwipe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -681,6 +683,14 @@
 			path = Additions;
 			sourceTree = "<group>";
 		};
+		1AC9D53020EF8825006758CA /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				1AC9D53120EF8867006758CA /* Settings.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		1AF1FFA720C3362900176F53 /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
@@ -1017,6 +1027,7 @@
 				9A9DB78420737EA900E29A07 /* Model */,
 				9A9DB78E20737FB200E29A07 /* Network */,
 				9A9DB77620737B8900E29A07 /* Screeens */,
+				1AC9D53020EF8825006758CA /* Settings */,
 				9A9DB78520737ED800E29A07 /* Support */,
 				9AE467EA20C17C2A00EA6FB0 /* Wallet */,
 			);
@@ -1393,6 +1404,7 @@
 				9A9DB79F2073925300E29A07 /* HelloOperation.swift in Sources */,
 				9A9DB78B20737F7000E29A07 /* Hexadecimal.swift in Sources */,
 				1A8A318E20D15EB200BB7E97 /* String+Additions.swift in Sources */,
+				1AC9D53220EF8867006758CA /* Settings.swift in Sources */,
 				1AACAB2A20D17CC80018AAFA /* Constants.swift in Sources */,
 				9A9DB77C20737C0300E29A07 /* ImportWalletViewController.swift in Sources */,
 				9A9DB7962073805000E29A07 /* Info.swift in Sources */,

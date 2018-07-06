@@ -67,13 +67,16 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     var saver: VideoSaver?
     
     // MARK: - Private properties
-    private var swypeBlock = ""
-    
-    private let queue = OperationQueue()
-    
-    var state: State = .readyToRecord { didSet { update() }}
+    private var canStartVideoProcessing: Bool {
+        let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
 
-    var isAccessToCameraDenied: Bool = false
+        return videoStatus == .authorized && audioStatus != .notDetermined
+    }
+    private var swypeBlock = ""
+    private let queue = OperationQueue()
+
+    var state: State = .readyToRecord { didSet { update() }}
 
     // MARK: - View controller lifecycle
     override func viewDidLoad() {
@@ -96,14 +99,8 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
         if videoProcessor != nil {
             videoProcessor.startCapture()
         }
-        else {
-
-            let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
-            let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
-
-            if audioStatus != .notDetermined && videoStatus == .authorized {
-                createVideoProcessingStuff()
-            }
+        else if canStartVideoProcessing {
+            createVideoProcessingStuff()
         }
     }
 
@@ -111,18 +108,13 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
         print("[SwypeViewController] viewDidAppear")
         super.viewDidAppear(animated)
 
-        if videoProcessor == nil {
-            let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
-            let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
-
-            if audioStatus == .notDetermined || videoStatus != .authorized {
-                requestAuthorizationForAudioCapture()
-            }
+        if videoProcessor == nil && !canStartVideoProcessing {
+            requestAuthorizationForAudioCapture()
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         print("[SwypeViewController] viewDidDisappear")
         videoProcessor?.stopCapture()
     }
@@ -148,7 +140,7 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
             else { fatalError("[SwypeViewController] Cast to WalletViewController failed!") }
         
         walletVC.store = store
-        walletVC.shouldHideLeftButton = isAccessToCameraDenied
+        walletVC.shouldHideLeftButton = videoProcessor == nil
     }
 }
 
@@ -259,7 +251,6 @@ private extension SwypeViewController {
                       "in your iPhone's Settings"
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .cancel) { [unowned self] _ in
-            self.isAccessToCameraDenied = true
             self.performSegue(withIdentifier: Segue.showWalletSegue.rawValue, sender: nil)
         }
 
