@@ -28,7 +28,7 @@
                                 <rect key="frame" x="179" y="656" width="56" height="56"/>
                                 <state key="normal" image="start_record"/>
                                 <connections>
-                                    <action selector="recordButtonPressed:" destination="E3s-0G-vsR" eventType="touchUpInside" id="GcV-Y2-DoI"/>
+                                    <action selector="recordButtonAction:" destination="E3s-0G-vsR" eventType="touchUpInside" id="GcV-Y2-DoI"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T7K-8V-I5z" customClass="TargetView" customModule="ProverSwipe" customModuleProvider="target">
@@ -96,7 +96,7 @@
                                     <outlet property="titleLabel" destination="gDh-vD-JuE" id="y5k-ZT-nIY"/>
                                 </connections>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Lx-qz-hZa" userLabel="walletButton">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Lx-qz-hZa" userLabel="Wallet Button">
                                 <rect key="frame" x="165.66666666666666" y="36" width="83" height="48"/>
                                 <state key="normal" backgroundImage="wallet_button_background"/>
                                 <connections>
@@ -115,6 +115,17 @@
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="Jhf-Mm-OSy">
                                 <rect key="frame" x="188" y="186.33333333333334" width="39" height="37"/>
                             </pageControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kVT-ew-oOT">
+                                <rect key="frame" x="67" y="668" width="100" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="0000 x 0000">
+                                    <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="videoQualityButtonAction:" destination="E3s-0G-vsR" eventType="touchUpInside" id="1GK-Zp-x41"/>
+                                    <segue destination="hoK-OB-PLp" kind="show" identifier="showVideoQualitySegue" id="mea-w0-6iB"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -125,8 +136,10 @@
                             <constraint firstAttribute="bottom" secondItem="SHN-i0-ZdJ" secondAttribute="bottom" constant="24" id="K1b-b6-UfD"/>
                             <constraint firstItem="2Lx-qz-hZa" firstAttribute="top" secondItem="XtG-15-3Lr" secondAttribute="top" constant="36" id="Lwj-OV-JtY"/>
                             <constraint firstItem="SHN-i0-ZdJ" firstAttribute="centerX" secondItem="XtG-15-3Lr" secondAttribute="centerX" id="Ptb-O5-bD7"/>
+                            <constraint firstItem="kVT-ew-oOT" firstAttribute="centerY" secondItem="SHN-i0-ZdJ" secondAttribute="centerY" id="UeE-67-hVg"/>
                             <constraint firstItem="Jhf-Mm-OSy" firstAttribute="centerX" secondItem="XtG-15-3Lr" secondAttribute="centerX" id="V4e-KR-SY9"/>
                             <constraint firstItem="cAl-Mi-600" firstAttribute="leading" secondItem="0dx-xG-3Pe" secondAttribute="trailing" constant="10" id="evX-Rv-UeX"/>
+                            <constraint firstItem="SHN-i0-ZdJ" firstAttribute="leading" secondItem="kVT-ew-oOT" secondAttribute="trailing" constant="12" id="fld-kp-bRI"/>
                             <constraint firstAttribute="bottom" secondItem="gOj-HD-XuC" secondAttribute="bottom" id="fyn-C1-nqf"/>
                             <constraint firstItem="oM7-at-dh9" firstAttribute="top" secondItem="2Lx-qz-hZa" secondAttribute="bottom" constant="40" id="ktt-yT-iNw"/>
                             <constraint firstItem="0dx-xG-3Pe" firstAttribute="centerY" secondItem="2Lx-qz-hZa" secondAttribute="centerY" id="o5T-NN-G78"/>
@@ -148,12 +161,51 @@
                         <outlet property="recordButton" destination="SHN-i0-ZdJ" id="G7a-OX-qbt"/>
                         <outlet property="targetView" destination="T7K-8V-I5z" id="4Xh-26-Hzl"/>
                         <outlet property="videoPreviewView" destination="gOj-HD-XuC" id="P3Q-dG-N0C"/>
+                        <outlet property="videoQualityButton" destination="kVT-ew-oOT" id="kEd-Ef-DqG"/>
+                        <outlet property="walletButton" destination="2Lx-qz-hZa" id="RcN-lr-gQW"/>
                         <segue destination="4ZJ-jn-pTM" kind="show" identifier="showWalletSegue" id="36F-PT-BIZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ALw-3O-2O3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="472.46376811594206" y="-349.72826086956525"/>
+        </scene>
+        <!--Video Quality View Controller-->
+        <scene sceneID="bNx-pd-Zam">
+            <objects>
+                <tableViewController id="hoK-OB-PLp" customClass="VideoQualityViewController" customModule="ProverSwipe" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Ptp-fB-jK7">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="VideoQualityTableViewCell" textLabel="1Jd-TP-5aF" style="IBUITableViewCellStyleDefault" id="Hee-vG-5lZ">
+                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Hee-vG-5lZ" id="P8s-6o-lZC">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1Jd-TP-5aF">
+                                            <rect key="frame" x="20" y="0.0" width="374" height="43.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="hoK-OB-PLp" id="WJ9-7Q-OND"/>
+                            <outlet property="delegate" destination="hoK-OB-PLp" id="plO-EJ-1lx"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="A6x-7w-DES" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="472" y="439"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="FTO-tK-BZW">

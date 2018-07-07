@@ -11,8 +11,8 @@ protocol VideoProcessorDelegate: class {
 
 class VideoProcessor {
 
-    public var isRecordingAlive: Bool { return videoRecorder.isRecordingAlive }
-    
+    public var isRecording: Bool { return videoRecorder.isRecording }
+
     private var videoRecorder: VideoRecorder!
     private var swypeDetector: SwypeDetector!
 
@@ -54,21 +54,21 @@ extension VideoProcessor {
 // MARK: - Public methods (Detector)
 extension VideoProcessor {
     
-    func startCapture() {
-        videoRecorder.startCapture()
+    func startSession() {
+        videoRecorder.startSession()
     }
     
-    func stopCapture() {
-        videoRecorder.stopCapture()
+    func stopSession() {
+        videoRecorder.stopSession()
     }
     
     func startRecord() {
         videoRecorder.startRecord()
     }
     
-    func stopRecord(allowSubmit: Bool) {
+    func stopRecord(submit: Bool) {
         videoRecorder.stopRecord { [unowned self] recordedVideoURL in
-            if !allowSubmit {
+            if !submit {
                 self.delegate.recordingStopped()
             }
             else {

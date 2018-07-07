@@ -12,24 +12,29 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     @IBOutlet weak var progressSwype: UIPageControl!
     
     @IBOutlet weak var videoPreviewView: VideoPreviewView!
+
     @IBOutlet weak var recordButton: UIButton!
+
+    @IBOutlet weak var walletButton: UIButton!
     
     @IBOutlet weak var balanceLabel: UILabel!
     
+    @IBOutlet weak var videoQualityButton: UIButton!
+    
     // MARK: - IBAction
-    @IBAction func recordButtonPressed(_ sender: UIButton) {
+    @IBAction func recordButtonAction(_ sender: UIButton) {
 
         switch state {
         case .readyToRecord:
             videoProcessor.startRecord()
             getSwype()
         case .waitSwype:
-            videoProcessor.stopRecord(allowSubmit: false)
+            videoProcessor.stopRecord(submit: false)
             queue.cancelAllOperations()
         case .waitRoundMovement, .prepareForStart, .detection:
-            videoProcessor.stopRecord(allowSubmit: false)
+            videoProcessor.stopRecord(submit: false)
         case .finishDetection:
-            videoProcessor.stopRecord(allowSubmit: true)
+            videoProcessor.stopRecord(submit: true)
         case .submitVideo:
             fatalError("Record button have to be non enable")
         }
@@ -58,6 +63,10 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     
     @IBAction func walletButtonAction(_ sender: UIButton) {
         performSegue(withIdentifier: Segue.showWalletSegue.rawValue, sender: nil)
+    }
+    
+    @IBAction func videoQualityButtonAction(_ sender: UIButton) {
+        performSegue(withIdentifier: Segue.showVideoQualitySegue.rawValue, sender: nil)
     }
     
     // MARK: - Dependencies
@@ -97,11 +106,14 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
         balanceLabel.text = "\(store.balance)"
 
         if videoProcessor != nil {
-            videoProcessor.startCapture()
+            videoProcessor.startSession()
         }
         else if canStartVideoProcessing {
             createVideoProcessingStuff()
         }
+
+        let videoQuality = Settings.currentVideoQuality
+        videoQualityButton.setTitle("\(videoQuality.width)×\(videoQuality.height)", for: .normal)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -116,31 +128,43 @@ class SwypeViewController: UIViewController, UpdateBalanceBehaviour {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         print("[SwypeViewController] viewDidDisappear")
-        videoProcessor?.stopCapture()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+
+        guard !(videoProcessor?.isRecording ?? false) else {
+            return
+        }
+
         videoProcessor?.viewWillLayoutSubviews()
+    }
+
+    override var shouldAutorotate: Bool {
+        return !(videoProcessor?.isRecording ?? false)
     }
 
     // MARK: - Segue
     enum Segue: String {
         case showWalletSegue
+        case showVideoQualitySegue
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let segueStrID = segue.identifier, Segue(rawValue: segueStrID) != nil
+        guard let segueID = Segue(rawValue: segue.identifier!)
             else { fatalError("[SwypeViewController] Wrong segue ID!") }
-        
-        guard let navigationVC = segue.destination as? UINavigationController
-            else { fatalError("[SwypeViewController] Cast to UINavigationController failed!") }
-        
-        guard let walletVC = navigationVC.viewControllers.first as? WalletViewController
-            else { fatalError("[SwypeViewController] Cast to WalletViewController failed!") }
-        
-        walletVC.store = store
-        walletVC.shouldHideLeftButton = videoProcessor == nil
+
+        switch segueID {
+        case .showWalletSegue:
+            let navigationVC = segue.destination as! UINavigationController
+            let walletVC = navigationVC.viewControllers.first as! WalletViewController
+
+            walletVC.store = store
+            walletVC.shouldHideLeftButton = videoProcessor == nil
+
+        case .showVideoQualitySegue:
+            break
+        }
     }
 }
 
@@ -174,6 +198,7 @@ private extension SwypeViewController {
                 case .convertResponceError(let text):
                     self.infoView.message(text)
                 }
+                self.videoProcessor.stopRecord(submit: false)
                 self.state = .readyToRecord
             }
         }
@@ -237,7 +262,7 @@ private extension SwypeViewController {
         saver = VideoSaver()
         saver!.delegate = self
 
-        videoProcessor.startCapture()
+        videoProcessor.startSession()
     }
 
     func skipSwypeViewController() {
@@ -288,7 +313,7 @@ extension SwypeViewController {
     @objc func handleDidEnterBackground() {
         
         print("[SwypeViewController] handleDidBackground()")
-        videoProcessor?.stopCapture()
+        videoProcessor?.stopSession()
         videoProcessor?.resetSwypeDetector()
     }
 
@@ -297,7 +322,7 @@ extension SwypeViewController {
         print("[SwypeViewController] handleWillEnterForeground()")
         
         state = .readyToRecord
-        videoProcessor?.startCapture()
+        videoProcessor?.startSession()
     }
 }
 
@@ -345,13 +370,17 @@ extension SwypeViewController {
         
         switch state {
         case .readyToRecord:
-            recordButton.isEnabled = !(videoProcessor?.isRecordingAlive ?? false)
+            let isAssetWriterAlive = videoProcessor?.isRecording ?? false
+            recordButton.isEnabled = !isAssetWriterAlive
+            walletButton.isEnabled = !isAssetWriterAlive
         case .waitSwype, .waitRoundMovement, .prepareForStart, .detection, .finishDetection:
             recordButton.setImage(image: #imageLiteral(resourceName: "stop_record"))
             recordButton.isEnabled = true
+            walletButton.isEnabled = false
         case .submitVideo:
             recordButton.setImage(image: #imageLiteral(resourceName: "start_record"))
             recordButton.isEnabled = false
+            walletButton.isEnabled = false
         }
     }
 }
@@ -387,6 +416,7 @@ extension SwypeViewController: VideoProcessorDelegate, VideoSaverNotifier {
 
         recordButton.setImage(image: #imageLiteral(resourceName: "start_record"))
         recordButton.isEnabled = true
+        walletButton.isEnabled = true
     }
 
     func processVideo(at url: URL) {

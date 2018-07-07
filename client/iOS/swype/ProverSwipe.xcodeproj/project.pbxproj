@@ -60,6 +60,7 @@
 		1AACAB2E20D1AC890018AAFA /* ServerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AACAB2D20D1AC880018AAFA /* ServerModel.swift */; };
 		1AACAB3020D1AD420018AAFA /* ServerExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AACAB2F20D1AD410018AAFA /* ServerExceptions.swift */; };
 		1AACAB3620D1ADB70018AAFA /* NEMWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AACAB3320D1ADB60018AAFA /* NEMWallet.xcdatamodeld */; };
+		1AC002CA20F163AE007942E6 /* VideoQualityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC002C920F163AE007942E6 /* VideoQualityViewController.swift */; };
 		1AC9D53220EF8867006758CA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9D53120EF8867006758CA /* Settings.swift */; };
 		1AF1FFA620C32F2D00176F53 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF1FFA520C32F2C00176F53 /* Wallet.swift */; };
 		3C238EC22613F7B47957AE74 /* Pods_ProverSwipe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553F0162152AFFAD533356AC /* Pods_ProverSwipe.framework */; };
@@ -203,7 +204,6 @@
 		9AEF62E620736B41006C59DD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E520736B41006C59DD /* Images.xcassets */; };
 		9AEF62E920736B41006C59DD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEF62E720736B41006C59DD /* LaunchScreen.storyboard */; };
 		9AF02BA620B59B9A00C5BC3A /* VideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */; };
-		9AF364A320BBF21400A6A968 /* SwypeDetectionProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */; };
 		9AFB3C9A2080AD69003F72AA /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFB3C992080AD69003F72AA /* APIError.swift */; };
 		9AFB3CA02080BC97003F72AA /* GetSwypeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFB3C9F2080BC97003F72AA /* GetSwypeOperation.swift */; };
 		9AFB3CA22080C29C003F72AA /* SwypeResponce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFB3CA12080C29C003F72AA /* SwypeResponce.swift */; };
@@ -290,6 +290,7 @@
 		1AACAB2D20D1AC880018AAFA /* ServerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerModel.swift; sourceTree = "<group>"; };
 		1AACAB2F20D1AD410018AAFA /* ServerExceptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerExceptions.swift; sourceTree = "<group>"; };
 		1AACAB3420D1ADB60018AAFA /* NEMWallet.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NEMWallet.xcdatamodel; sourceTree = "<group>"; };
+		1AC002C920F163AE007942E6 /* VideoQualityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityViewController.swift; sourceTree = "<group>"; };
 		1AC9D53120EF8867006758CA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		1AF1FFA520C32F2C00176F53 /* Wallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		1D8C41A3F68CF1161BBCAAA4 /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -450,7 +451,6 @@
 		9AEF62E820736B41006C59DD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9AEF62EA20736B41006C59DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcessor.swift; sourceTree = "<group>"; };
-		9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwypeDetectionProtocols.swift; sourceTree = "<group>"; };
 		9AFB3C992080AD69003F72AA /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		9AFB3C9F2080BC97003F72AA /* GetSwypeOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetSwypeOperation.swift; sourceTree = "<group>"; };
 		9AFB3CA12080C29C003F72AA /* SwypeResponce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwypeResponce.swift; sourceTree = "<group>"; };
@@ -683,6 +683,14 @@
 			path = Additions;
 			sourceTree = "<group>";
 		};
+		1AC002C820F16337007942E6 /* Video Quality */ = {
+			isa = PBXGroup;
+			children = (
+				1AC002C920F163AE007942E6 /* VideoQualityViewController.swift */,
+			);
+			path = "Video Quality";
+			sourceTree = "<group>";
+		};
 		1AC9D53020EF8825006758CA /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -811,7 +819,6 @@
 				9A2EA9DE2074EB9300910CFB /* CPP */,
 				9A2EA9DA2074EB7E00910CFB /* Wrapper */,
 				9A2EA9FA2074EC1D00910CFB /* SwypeDetector.swift */,
-				9AF364A220BBF21400A6A968 /* SwypeDetectionProtocols.swift */,
 				9AF02BA520B59B9A00C5BC3A /* VideoProcessor.swift */,
 				9A89F3CB207CA06D00E31F57 /* VideoRecorder.swift */,
 			);
@@ -872,6 +879,7 @@
 				9A9DB77D20737C1200E29A07 /* Export Wallet */,
 				9A9DB77A20737BE400E29A07 /* Import Wallet */,
 				9A2EAA242074F5C800910CFB /* Swype */,
+				1AC002C820F16337007942E6 /* Video Quality */,
 				9A9DB77720737BA000E29A07 /* Wallet */,
 				9AEF62E220736B40006C59DD /* Main.storyboard */,
 				9A2EA9D52074DFCA00910CFB /* UpdateBalanceBehaviour.swift */,
@@ -1382,7 +1390,6 @@
 				1A97070620D5A13F003E8EF4 /* BlockModel.swift in Sources */,
 				1A8A318620D15A1F00BB7E97 /* sc.c in Sources */,
 				9A9DB78720737EF600E29A07 /* DependencyStore.swift in Sources */,
-				9AF364A320BBF21400A6A968 /* SwypeDetectionProtocols.swift in Sources */,
 				1A97070320D5A13F003E8EF4 /* MultisigCosignatoryModificationModel.swift in Sources */,
 				1AF1FFA620C32F2D00176F53 /* Wallet.swift in Sources */,
 				1A58439A20C96B6D00C8FA14 /* Keychain.swift in Sources */,
@@ -1455,6 +1462,7 @@
 				1AACAB3020D1AD420018AAFA /* ServerExceptions.swift in Sources */,
 				9AE7B4F420B0023400DF0E93 /* UIView+extension.swift in Sources */,
 				1A97070420D5A13F003E8EF4 /* TransactionMetaDataModel.swift in Sources */,
+				1AC002CA20F163AE007942E6 /* VideoQualityViewController.swift in Sources */,
 				9A2EA9D62074DFCA00910CFB /* UpdateBalanceBehaviour.swift in Sources */,
 				9A2EAA142074ECE400910CFB /* Vector.cpp in Sources */,
 				9A2EAA0F2074ECE400910CFB /* VectorExplained.cpp in Sources */,

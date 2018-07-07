@@ -31,7 +31,7 @@
     
     int width = (int)CVPixelBufferGetWidth(imageBuffer);
     int height = (int)CVPixelBufferGetHeight(imageBuffer);
-    int bytePerRow = (int)CVPixelBufferGetBytesPerRow(imageBuffer);
+    size_t bytePerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
     unsigned char *pixels = (unsigned char *) CVPixelBufferGetBaseAddress(imageBuffer);
     
     cv::Mat sourceMat = cv::Mat(height, width,
