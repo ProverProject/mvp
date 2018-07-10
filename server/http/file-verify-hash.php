@@ -29,7 +29,7 @@ function uploadResult($isSuccess, $fileName, $transactions, $hash, $error, $debu
 // для вывода результата строго в JSON делаем фокус
 error_reporting(0); //show all errors
 
-function callAnalyticProgramm($file, $blockHash, $txHash, $user)
+function callAnalyticProgramm($file, $blockHash, $txHash, $user, $hash, $fileName)
 {
     $validated = false;
     $swype = 0;
@@ -46,11 +46,13 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user)
     }
 
     $resultJson = [];
-    $return_code = 999;
+    $return_code = null;
+    $output = null;
     if ($cmd) {
         $resultJson = exec($cmd, $output, $return_code);
     }
 
+    $result = null;
     if ($return_code === 0) {
         $result = @json_decode($resultJson, true);
         if ($result && isset($result['result'])) {
@@ -61,6 +63,48 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user)
             $swype = @$result['swype-code'];
         }
     }
+
+    if (!$swype) {
+        $common_video_upload_dir = __DIR__ . '/swype_did_not_recognized';
+        $specific_video_upload_dir_inner = "$common_video_upload_dir/$hash";
+        if (!is_dir($common_video_upload_dir) && !mkdir($common_video_upload_dir, 0777, true)) {
+            error_log('can not create folder swype_did_not_recognized');
+        } else {
+            if (!chmod($common_video_upload_dir, 0777)) {
+                error_log('can not chmod folder swype_did_not_recognized');
+            } else {
+                if (!is_dir($specific_video_upload_dir_inner) && !mkdir($specific_video_upload_dir_inner, 0777, true)) {
+                    error_log('can not create specific folder swype_did_not_recognized');
+                } else {
+                    if (!chmod($specific_video_upload_dir_inner, 0777)) {
+                        error_log('can not chmod specific folder swype_did_not_recognized');
+                    } else {
+                        if (!is_file("$specific_video_upload_dir_inner/$fileName")) {
+                            if (!move_uploaded_file($file, "$specific_video_upload_dir_inner/$fileName")) {
+                                copy($file, "$specific_video_upload_dir_inner/$fileName");
+                            }
+                        }
+                        $data = [
+                            'blockHash' => $blockHash,
+                            'txHash' => $txHash,
+                            'user' => $user,
+                            'hash' => $hash,
+                            'fileName' => $fileName,
+                            'analyzefile_output' => $output,
+                            'analyzefile_return_code' => $return_code
+                        ];
+                        if ($result) {
+                            $data['analyzefile_result'] = $result;
+                        } else {
+                            $data['analyzefile_bad_result'] = $resultJson;
+                        }
+                        file_put_contents("$specific_video_upload_dir_inner/" . time() . ".txt", json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                    }
+                }
+            }
+        }
+    }
+
     return [
         'validated' => $validated,
         'swype' => $swype,
@@ -196,7 +240,7 @@ function worker($file, $fileName)
                     if ($transactionDetails->input === TRANSACTIONBYHASH_CORRECT_INPUT) {
                         if ($transactionDetails->blockHash) {
                             $transaction2_details = json_decode(json_encode($requestSwypeCode_block));
-                            $analyticResult = callAnalyticProgramm($file, $transactionDetails->blockHash, $transactionDetails->hash, '');
+                            $analyticResult = callAnalyticProgramm($file, $transactionDetails->blockHash, $transactionDetails->hash, '', $hash, $fileName);
                             $call = $analyticResult['cmd'];
                             $validated = $analyticResult['validated'];
                             $swype = $analyticResult['swype'];
@@ -214,7 +258,7 @@ function worker($file, $fileName)
                 if ($fastBlock) {
                     $requestSwypeCode_block = $fastBlock;
                     $user = preg_replace('/(0x)[0]*(.*)/', '$1$2', $senderAddress);
-                    $analyticResult = callAnalyticProgramm($file, $data, '', $user);
+                    $analyticResult = callAnalyticProgramm($file, $data, '', $user, $hash, $fileName);
                     $call = $analyticResult['cmd'];
                     $validated = $analyticResult['validated'];
                     $swype = $analyticResult['swype'];
@@ -261,6 +305,7 @@ if (!empty($_FILES['file'])) {
     $fileName = $_FILES['file']['name'];
 } else if (isset($argv[1])) {
     $file = $argv[1];
+    $fileName = basename($argv[1]);
 }
 
 $workerResult = worker($file, $fileName);
