@@ -33,6 +33,8 @@ class VideoRecorder: NSObject {
     private var assetWriterInputPixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor!
     private var assetWriter: AVAssetWriter!
 
+    private var isMicrophoneEnabled: Bool = false
+
     // MARK: - Dependencies
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -99,6 +101,8 @@ private extension VideoRecorder {
                               position: .back)
         
         let captureVideoDevice = discoverySession.devices.first!
+
+        // We MUST have available camera here so aren't catching any exceptions
         let captureVideoDeviceInput = try! AVCaptureDeviceInput(device: captureVideoDevice)
 
         // support for autofocus
@@ -123,13 +127,20 @@ private extension VideoRecorder {
                 position: .unspecified)
 
         let captureAudioDevice = discoverySession.devices.first!
-        let captureAudioDeviceInput = try! AVCaptureDeviceInput(device: captureAudioDevice)
 
-        if (captureSession.canAddInput(captureAudioDeviceInput)) {
-            captureSession.addInput(captureAudioDeviceInput)
-        }
-        else {
-            print("[VideoRecorder] Could not add the audio device input to capture session!")
+        do {
+            let captureAudioDeviceInput = try AVCaptureDeviceInput(device: captureAudioDevice)
+
+            if (captureSession.canAddInput(captureAudioDeviceInput)) {
+                captureSession.addInput(captureAudioDeviceInput)
+
+                isMicrophoneEnabled = true
+            }
+            else {
+                print("[VideoRecorder] Could not add the audio device input to capture session!")
+            }
+        } catch {
+            print("[VideoRecorder] Okay, mike is disabled, the video will just be silent: \(error.localizedDescription)")
         }
     }
 
@@ -158,6 +169,10 @@ private extension VideoRecorder {
     }
 
     func addCaptureAudioDataOutput() {
+        guard isMicrophoneEnabled else {
+            return
+        }
+
         let captureAudioDataOutput = AVCaptureAudioDataOutput()
 
         if captureSession.canAddOutput(captureAudioDataOutput) {
@@ -233,6 +248,10 @@ extension VideoRecorder {
 
         recordingStatus = .recording
 
+        FileManager.clearTempDirectory()
+
+        assetWriter = try! AVAssetWriter(url: videoFileURL, fileType: .mp4)
+
         assetVideoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: assetVideoSettings)
         assetVideoWriterInput.expectsMediaDataInRealTime = true
 
@@ -242,19 +261,17 @@ extension VideoRecorder {
                                    assetWriterInput: assetVideoWriterInput,
                                    sourcePixelBufferAttributes: videoOutputAttributes)
 
-        assetAudioWriterInput = AVAssetWriterInput(mediaType: .audio, outputSettings: assetAudioSettings)
-        assetAudioWriterInput.expectsMediaDataInRealTime = true
-
-        FileManager.clearTempDirectory()
-
-        assetWriter = try! AVAssetWriter(url: videoFileURL, fileType: .mp4)
-
         if assetWriter.canAdd(assetVideoWriterInput) {
             assetWriter.add(assetVideoWriterInput)
         }
 
-        if assetWriter.canAdd(assetAudioWriterInput) {
-            assetWriter.add(assetAudioWriterInput)
+        if isMicrophoneEnabled {
+            assetAudioWriterInput = AVAssetWriterInput(mediaType: .audio, outputSettings: assetAudioSettings)
+            assetAudioWriterInput.expectsMediaDataInRealTime = true
+
+            if assetWriter.canAdd(assetAudioWriterInput) {
+                assetWriter.add(assetAudioWriterInput)
+            }
         }
 
         guard assetWriter.startWriting() else {
@@ -266,7 +283,10 @@ extension VideoRecorder {
         captureSession.beginConfiguration()
 
         addCaptureVideoDataOutput()
-        addCaptureAudioDataOutput()
+
+        if isMicrophoneEnabled {
+            addCaptureAudioDataOutput()
+        }
 
         captureSession.commitConfiguration()
         captureSession.startRunning()
