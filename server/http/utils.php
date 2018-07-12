@@ -74,6 +74,7 @@ function loadConfig()
     }
     DEFINE('TEST_SEARCHQRCODE_PASSWORD', $config['test_searchqrcode_password']);
     DEFINE('TEST_SEARCHSWYPECODE_PASSWORD', $config['test_searchswypecode_password']);
+    DEFINE('TEST_SEARCHCUTDETECT_PASSWORD', $config['test_searchcutdetect_password']);
 
     // если конфиг отличается после проверки всех параметров
     if (json_encode($config) !== json_encode($config_saved)) {

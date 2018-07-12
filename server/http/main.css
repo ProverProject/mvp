@@ -518,9 +518,13 @@ input[type='search']::-webkit-search-results-decoration {
     margin: 0;
     padding: 85px 0 50px;
 }
-.box.has-advanced-upload .box__error p {
+.box.has-advanced-upload .box__error p,
+.box.has-advanced-upload .box__montage p {
     color: #ff0000;
     font-size: 14px;
+}
+.box.has-advanced-upload .box__montage p {
+    margin-bottom: 30px;
 }
 .box.has-advanced-upload .box__success p {
     color: #7cc576;
@@ -632,6 +636,7 @@ input[type='search']::-webkit-search-results-decoration {
 
 .box.is-uploading .box__input,
 .box.is-success .box__input,
+.box.is-montage .box__input,
 .box.is-error .box__input {
     visibility: hidden;
 }
@@ -639,6 +644,7 @@ input[type='search']::-webkit-search-results-decoration {
 .box__uploading,
 .box__success,
 .box__error,
+.box_montage,
 .box__input {
     height: 100%;
     width: 100%;
@@ -646,12 +652,14 @@ input[type='search']::-webkit-search-results-decoration {
 
 .box__uploading,
 .box__success,
+.box__montage,
 .box__error {
     display: none;
 }
 
 .box.is-uploading .box__uploading,
 .box.is-success .box__success,
+.box.is-montage .box__montage,
 .box.is-error .box__error {
     display: block;
     position: absolute;
@@ -663,7 +671,8 @@ input[type='search']::-webkit-search-results-decoration {
     transform: translateY(-50%);
 }
 
-.box.is-error .box__error {
+.box.is-error .box__error,
+.box.is-montage .box__montage {
     height: 100%;
 }
 
@@ -672,7 +681,8 @@ input[type='search']::-webkit-search-results-decoration {
     max-width: 94%;
 }
 
-.box__success_msg, .box__error > span {
+.box__success_msg, .box__error > span,
+.box__success_msg, .box__montage > span {
     font-weight: 100;
     text-align: left;
     display: inline-block;
@@ -732,9 +742,11 @@ input[type='search']::-webkit-search-results-decoration {
 #upload-file .box__input,
 #upload-file .box__success strong,
 #upload-file .box__error,
+#upload-file .box__montage,
 #clapperboard-upload-file .box__input,
 #clapperboard-upload-file .box__success strong,
-#clapperboard-upload-file .box__error {
+#clapperboard-upload-file .box__error,
+#clapperboard-upload-file .box__montage {
     cursor: pointer;
 }
 
@@ -1325,10 +1337,12 @@ footer a {
         width: 100%;
         padding: 0 80px;
     }
-    .box__error {
+    .box__error,
+    .box__montage {
         padding: 0 10px;
     }
-    .box__error > span {
+    .box__error > span,
+    .box__montage > span {
         text-align: center;
     }
     .box.has-advanced-upload .box__success .hash span {

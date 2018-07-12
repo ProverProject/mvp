@@ -9,13 +9,14 @@ if (!$loadConfig_result[0]) {
 
 DEFINE('SUBMIT_HASH', '0x708b34fe');
 
-function uploadResult($isSuccess, $fileName, $typeText, $hash, $datetime_ts, $error, $debug = false)
+function uploadResult($isSuccess, $fileName, $typeText, $hash, $datetime_ts, $cutdetect, $error, $debug = false)
 {
     return json_encode([
         'fileName' => '/pdf/' . $fileName . '.pdf',
         'success' => $isSuccess,
         'typeText' => $typeText,
         'hash' => $hash,
+        'cutdetect' => $cutdetect,
         'datetime_ts' => $datetime_ts,
         'error' => $error,
         'debug' => $debug
@@ -69,6 +70,7 @@ function getBlockByHash(&$gethClient, $hash)
 function worker($file, $fileName)
 {
     $hash = hash_file('sha256', $file);
+    $resultCutdetect = [];
     $result = exec("searchqrcode -w 1000 $file --orig-file-name '$fileName' 2> /dev/null", $output, $return_code);
 
     if ($return_code !== 0) {
@@ -76,6 +78,7 @@ function worker($file, $fileName)
             'isSuccess' => false,
             'typeText' => '',
             'hash' => '0x' . $hash,
+            'cutdetect' => $resultCutdetect,
             'error' => 'wrong searchqrcode input file'
         ];
     }
@@ -87,6 +90,7 @@ function worker($file, $fileName)
             'isSuccess' => false,
             'typeText' => '',
             'hash' => '0x' . $hash,
+            'cutdetect' => $resultCutdetect,
             'error' => 'wrong searchqrcode result'
         ];
     }
@@ -119,6 +123,7 @@ function worker($file, $fileName)
                 'isSuccess' => false,
                 'typeText' => '',
                 'hash' => '0x' . $hash,
+                'cutdetect' => $resultCutdetect,
                 'error' => 'wrong block hash'
             ];
         }
@@ -135,6 +140,7 @@ function worker($file, $fileName)
                 'isSuccess' => false,
                 'typeText' => '',
                 'hash' => '0x' . $hash,
+                'cutdetect' => $resultCutdetect,
                 'error' => 'wrong submit hash input'
             ];
         }
@@ -144,6 +150,11 @@ function worker($file, $fileName)
         $block = getBlockByHash($gethClient, $gethClient->result->blockHash);
         $datetime_ts = hexdec($block->timestamp);
 
+        $cmdCutdetect = "cutdetect $file --orig-file-name $fileName -j";
+        $resultCutdetectJson = exec($cmdCutdetect, $outputCutdetect, $return_code_cutdetect);
+        if ($return_code_cutdetect === 0)
+            $resultCutdetect = @json_decode($resultCutdetectJson, true);
+
         generationPdfQr($fileName, $inputStr, '0x' . $hash, $datetime_ts);
         return [
             'fileName' => $fileName,
@@ -151,6 +162,7 @@ function worker($file, $fileName)
             'typeText' => $inputStr,
             'datetime_ts' => $datetime_ts,
             'hash' => '0x' . $hash,
+            'cutdetect' => $resultCutdetect,
             'error' => ''
         ];
     } else {
@@ -158,6 +170,7 @@ function worker($file, $fileName)
             'isSuccess' => false,
             'typeText' => '',
             'hash' => '0x' . $hash,
+            'cutdetect' => $resultCutdetect,
             'error' => $gethClient->error
         ];
     }
@@ -173,6 +186,6 @@ if (!empty($_FILES['file'])) {
 }
 $fileName = str_replace(" ", "_", $fileName);
 $workerResult = worker($file, $fileName);
-die(uploadResult($workerResult['isSuccess'], $workerResult['fileName'], $workerResult['typeText'], $workerResult['hash'], $workerResult['datetime_ts'], $workerResult['error']));
+die(uploadResult($workerResult['isSuccess'], $workerResult['fileName'], $workerResult['typeText'], $workerResult['hash'], $workerResult['datetime_ts'], $workerResult['cutdetect'], $workerResult['error']));
 
 

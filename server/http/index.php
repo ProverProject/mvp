@@ -40,193 +40,202 @@ saveClientInfo('index');
         </label>
         <div id="prover">
             <div class="container">
-            <div class="logo">
-                <a href="https://prover.io"><img class="logo__img" src="images/logo_bw.svg"></a>
-    <!--            <a target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.provermvp"><img class="google__play" src="images/gplay_eng.svg"></a>-->
-            </div>
-    <!--        <div class="content">-->
-    <!---->
-    <!--        </div>-->
-    <!--        <div class="controllers">-->
-    <!--            <a href="manual.html" class="btn">How it works</a>-->
-    <!--            <a class="btn" id="get_eth_open">Get ropsten testnet ether</a>-->
-    <!--            <br>-->
-    <!--            <span id="get_eth_block" style="">-->
-    <!--                <input type="search" placeholder="Enter your wallet address" class="btn" id="send_eth_addr"><a href="manual.html" class="btn btn-send" id="send_eth_btn">send 0.05 Eth</a>-->
-    <!--            </span>-->
-    <!--                <span id="get_eth_loading" class="content" style="display: none;">-->
-    <!--                <br>-->
-    <!--                <br>-->
-    <!--                Loading...-->
-    <!--            </span>-->
-    <!--                <span id="get_eth_result" class="content" style="display: none;">-->
-    <!--                <br>-->
-    <!--                <br>-->
-    <!--                <span id="get_eth_result_text"></span>-->
-    <!--            </span>-->
-    <!--        </div>-->
-    <!--        <div class="block_client_address_info"></div>-->
-            <section id="main" class="main">
-                <div class="menu">
-                    <ul class="menu-list">
-                        <li class="menu-list__item"><a href="#upload-file">Check file</a></li>
-                        <li class="menu-list__item"><a href="#get-ether">Get ropsten testnet ether</a></li>
-                        <li class="menu-list__item"><a href="#how-it-works">How it works</a></li>
-                        <li class="menu-list__item"><a href="#use-cases">Use cases</a></li>
-                        <li class="menu-list__item">
-                            <a class="market-link" target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.provermvp">
-                                <img class="google__play" src="images/googleplay_white.svg">
-                            </a>
-                        </li>
-                    </ul>
+                <div class="logo">
+                    <a href="https://prover.io"><img class="logo__img" src="images/logo_bw.svg"></a>
+                    <!--            <a target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.provermvp"><img class="google__play" src="images/gplay_eng.svg"></a>-->
                 </div>
-                <div class="main-image">
-                    <img src="images/phone.png" alt="Prover app">
-                </div>
-                <div class="main-description">
-                    <img src="images/icon_prover.svg" alt="Prover icon">
-                    <p>
-                        Prover is an independent assistant that helps authenticate and verify video content.
-                    </p>
-                    <p>
-                        This online-service was created using blockchain technology.
-                        The platform was created to eliminate forgery of video materials, and confirm their authenticity.
-                    </p>
-                </div>
-            </section>
-            <section id="upload-file" class="upload-file">
-                <form method="post" id="uploadForm" action="file-verify-hash.php" enctype="multipart/form-data" novalidate class="box">
-                    <div class="box__input" onclick="document.getElementById('file').click()">
-                        <div class="red-line"></div>
-                        <h3 class="box__verification">File verification (mp4)</h3>
-                        <input type="file" name="file" id="file" class="box__file">
-                        <label class="box__labelFile_default" for="">
-                            <strong>Choose a file</strong>
-                            <span class="box__dragndrop"> or drag it here.</span>
-                        </label>
-                        <label class="box__labelFile_file" for=""></label>
-                        <button type="submit" class="box__button">Upload</button>
+                <!--        <div class="content">-->
+                <!---->
+                <!--        </div>-->
+                <!--        <div class="controllers">-->
+                <!--            <a href="manual.html" class="btn">How it works</a>-->
+                <!--            <a class="btn" id="get_eth_open">Get ropsten testnet ether</a>-->
+                <!--            <br>-->
+                <!--            <span id="get_eth_block" style="">-->
+                <!--                <input type="search" placeholder="Enter your wallet address" class="btn" id="send_eth_addr"><a href="manual.html" class="btn btn-send" id="send_eth_btn">send 0.05 Eth</a>-->
+                <!--            </span>-->
+                <!--                <span id="get_eth_loading" class="content" style="display: none;">-->
+                <!--                <br>-->
+                <!--                <br>-->
+                <!--                Loading...-->
+                <!--            </span>-->
+                <!--                <span id="get_eth_result" class="content" style="display: none;">-->
+                <!--                <br>-->
+                <!--                <br>-->
+                <!--                <span id="get_eth_result_text"></span>-->
+                <!--            </span>-->
+                <!--        </div>-->
+                <!--        <div class="block_client_address_info"></div>-->
+                <section id="main" class="main">
+                    <div class="menu">
+                        <ul class="menu-list">
+                            <li class="menu-list__item"><a href="#upload-file">Check file</a></li>
+                            <li class="menu-list__item"><a href="#get-ether">Get ropsten testnet ether</a></li>
+                            <li class="menu-list__item"><a href="#how-it-works">How it works</a></li>
+                            <li class="menu-list__item"><a href="#use-cases">Use cases</a></li>
+                            <li class="menu-list__item">
+                                <a class="market-link" target="_blank" href="https://play.google.com/store/apps/details?id=io.prover.provermvp">
+                                    <img class="google__play" src="images/googleplay_white.svg">
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-
-                    <div class="box__uploading">
-                        <div class="upload-background"></div>
-                        <div class="upload">
+                    <div class="main-image">
+                        <img src="images/phone.png" alt="Prover app">
+                    </div>
+                    <div class="main-description">
+                        <img src="images/icon_prover.svg" alt="Prover icon">
+                        <p>
+                            Prover is an independent assistant that helps authenticate and verify video content.
+                        </p>
+                        <p>
+                            This online-service was created using blockchain technology.
+                            The platform was created to eliminate forgery of video materials, and confirm their authenticity.
+                        </p>
+                    </div>
+                </section>
+                <section id="upload-file" class="upload-file">
+                    <form method="post" id="uploadForm" action="file-verify-hash.php" enctype="multipart/form-data" novalidate class="box">
+                        <div class="box__input" onclick="document.getElementById('file').click()">
                             <div class="red-line"></div>
-                            <p class="progress">0%</p>
-                            <h3 class="box__verification">Uploading&hellip;</h3>
-                            <img src="images/gear.png">
-                            <p class="name-file"></p>
-                            <p class="size-file"></p>
+                            <h3 class="box__verification">File verification (mp4)</h3>
+                            <input type="file" name="file" id="file" class="box__file">
+                            <label class="box__labelFile_default" for="">
+                                <strong>Choose a file</strong>
+                                <span class="box__dragndrop"> or drag it here.</span>
+                            </label>
+                            <label class="box__labelFile_file" for=""></label>
+                            <button type="submit" class="box__button">Upload</button>
+                        </div>
+
+                        <div class="box__uploading">
+                            <div class="upload-background"></div>
+                            <div class="upload">
+                                <div class="red-line"></div>
+                                <p class="progress">0%</p>
+                                <h3 class="box__verification">Uploading&hellip;</h3>
+                                <img src="images/gear.png">
+                                <p class="name-file"></p>
+                                <p class="size-file"></p>
+                            </div>
+                        </div>
+                        <div class="box__success">
+                            <div class="green-line"></div>
+                            <p>file hash matched</p>
+                            <h3 class="box__verification">Done!</h3>
+                            <div class="success_information">
+                                <p class="hash">File hash: <span></span></p>
+                                <p class="time_swype-code">Request swype-code on <span></span></p>
+                                <p class="time_hash">Submit media hash on <span></span></p>
+                                <p class="swype-code">Swype-code: <span></span></p>
+                                <p class="swype-begin-end">Swype begin/end: <span></span></p>
+                                <a target="_blank" href="" class="download-pdf">Download .pdf certificate</a>
+                                <strong onclick="document.getElementById('file').click()">Try another file</strong>
+                            </div>
+                        </div>
+                        <div class="box__error" onclick="document.getElementById('file').click()">
+                            <div class="red-line"></div>
+                            <p>nothing found</p>
+                            <h3 class="box__verification">Failed to verify</h3>
+                            <strong>Try another file</strong>
+                        </div>
+                        <div class="box__montage" onclick="document.getElementById('file').click()">
+                            <div class="red-line"></div>
+                            <p>montage found</p>
+                            <h3 class="box__verification">Failed to verify</h3>
+                            <div class="error_information">
+                                <p class="montage">File montage: <span></span></p>
+                                <strong>Try another file</strong>
+                            </div>
+                        </div>
+                    </form>
+                    <p>
+                        To authenticate a file, please upload your video. Our system will verify the file hash and existence of
+                        swype code. In the case of coincidence of hashes and swype codes - the video file will be considered as
+                        authentic.
+                    </p>
+                </section>
+                <section id="get-ether" class="get-ether">
+                    <h3>Get ropsten testnet ether</h3>
+                    <span id="get_eth_block">
+                        <input type="search" placeholder="Enter your wallet address" id="send_eth_addr"><a href="manual.html" class="btn btn-send" id="send_eth_btn">send 0.05 Eth</a>
+                    </span>
+                    <p id="get_eth_result"></p>
+                </section>
+                <section id="how-it-works" class="how-it-works">
+                    <h3>How it works</h3>
+                    <div class="row">
+                        <div class="info-block">
+                            <div class="img-background">
+                                <img class="" src="images/1_pr.svg">
+                            </div>
+                            <div class="info"><p>Upload a video, recorded with Prover technology.</p></div>
+                        </div>
+                        <div class="info-block">
+                            <div class="img-background">
+                                <img class="" src="images/2_pr.svg">
+                            </div>
+                            <div class="info "><p>Our service will check the hash of a file previously stored in the blockchain and the presence of inputted swype code.</p></div>
                         </div>
                     </div>
-                    <div class="box__success">
-                        <div class="green-line"></div>
-                        <p>file hash matched</p>
-                        <h3 class="box__verification">Done!</h3>
-                        <div class="success_information">
-                            <p class="hash">File hash: <span></span></p>
-                            <p class="time_swype-code">Request swype-code on <span></span></p>
-                            <p class="time_hash">Submit media hash on <span></span></p>
-                            <p class="swype-code">Swype-code: <span></span></p>
-                            <p class="swype-begin-end">Swype begin/end: <span></span></p>
-                            <a target="_blank" href="" class="download-pdf">Download .pdf certificate</a>
-                            <strong onclick="document.getElementById('file').click()">Try another file</strong>
+                    <div class="row">
+                        <div class="info-block">
+                            <div class="img-background">
+                                <img class="" src="images/3_pr.svg">
+                            </div>
+                            <div class="info"><p>In the case of matching hashes, and a swype-code the video file will be considered as authentic.</p></div>
+                        </div>
+                        <div class="info-block">
+                            <div class="img-background">
+                                <img class="" src="images/4_pr.svg">
+                            </div>
+                            <div class="info "><p>You will get the report, with the link of hash of the file and swipe code to be able to verify independently.</p></div>
                         </div>
                     </div>
-                    <div class="box__error" onclick="document.getElementById('file').click()">
-                        <div class="red-line"></div>
-                        <p>nothing found</p>
-                        <h3 class="box__verification">Failed to verify</h3>
-                        <strong>Try another file</strong>
+                </section>
+                <section id="use-cases" class="use-cases">
+                    <h3>Use cases</h3>
+                    <div class="use-case__block">
+                        <p><span class="red-line"></span>Both parties involved in a traffic accident can rely on a video recording to prove authenticity of time, date and record of the accident</p>
                     </div>
-                </form>
-                <p>
-                    To authenticate a file, please upload your video. Our system will verify the file hash and existence of
-                    swype code. In the case of coincidence of hashes and swype codes - the video file will be considered as
-                    authentic.
-                </p>
-            </section>
-            <section id="get-ether" class="get-ether">
-                <h3>Get ropsten testnet ether</h3>
-                <span id="get_eth_block">
-                    <input type="search" placeholder="Enter your wallet address" id="send_eth_addr"><a href="manual.html" class="btn btn-send" id="send_eth_btn">send 0.05 Eth</a>
-                </span>
-                <p id="get_eth_result"></p>
-            </section>
-            <section id="how-it-works" class="how-it-works">
-                <h3>How it works</h3>
-                <div class="row">
-                    <div class="info-block">
-                        <div class="img-background">
-                            <img class="" src="images/1_pr.svg">
-                        </div>
-                        <div class="info"><p>Upload a video, recorded with Prover technology.</p></div>
+                    <div class="use-case__block">
+                        <p><span class="red-line"></span>Both users and platforms can prove the authenticity and exclusivity of user-generated video content and share monetization proceeds</p>
                     </div>
-                    <div class="info-block">
-                        <div class="img-background">
-                            <img class="" src="images/2_pr.svg">
-                        </div>
-                        <div class="info "><p>Our service will check the hash of a file previously stored in the blockchain and the presence of inputted swype code.</p></div>
+                    <div class="use-case__block">
+                        <p><span class="red-line"></span>Doctors and insurance companies can be sure that patients are taking the prescribed drugs properly without keeping them in hospitals</p>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="info-block">
-                        <div class="img-background">
-                            <img class="" src="images/3_pr.svg">
-                        </div>
-                        <div class="info"><p>In the case of matching hashes, and a swype-code the video file will be considered as authentic.</p></div>
+                    <div class="use-case__block">
+                        <p><span class="red-line"></span>Users can be sure that they are chatting with a real person on video dating websites and services</p>
                     </div>
-                    <div class="info-block">
-                        <div class="img-background">
-                            <img class="" src="images/4_pr.svg">
-                        </div>
-                        <div class="info "><p>You will get the report, with the link of hash of the file and swipe code to be able to verify independently.</p></div>
+                    <div class="use-case__block">
+                        <p><span class="red-line"></span>Employers and contractors can exchange authentic and time stamped work reports</p>
                     </div>
-                </div>
-            </section>
-            <section id="use-cases" class="use-cases">
-                <h3>Use cases</h3>
-                <div class="use-case__block">
-                    <p><span class="red-line"></span>Both parties involved in a traffic accident can rely on a video recording to prove authenticity of time, date and record of the accident</p>
-                </div>
-                <div class="use-case__block">
-                    <p><span class="red-line"></span>Both users and platforms can prove the authenticity and exclusivity of user-generated video content and share monetization proceeds</p>
-                </div>
-                <div class="use-case__block">
-                    <p><span class="red-line"></span>Doctors and insurance companies can be sure that patients are taking the prescribed drugs properly without keeping them in hospitals</p>
-                </div>
-                <div class="use-case__block">
-                    <p><span class="red-line"></span>Users can be sure that they are chatting with a real person on video dating websites and services</p>
-                </div>
-                <div class="use-case__block">
-                    <p><span class="red-line"></span>Employers and contractors can exchange authentic and time stamped work reports</p>
-                </div>
-                <div class="use-case__block">
-                    <p><span class="red-line"></span>Parties can maintain a Blockchain video database of trusted "hand shake" agreements</p>
-                </div>
-                <div class="use-case__block">
-                    <p><span class="red-line"></span>Public and crowdsourced news platforms can validate the authenticity, exclusivity and timing of video news submitted by individual contributors</p>
-                </div>
-            </section>
-            <section id="faq" class="faq">
-                <h3>FAQ</h3>
-                <h4><span class="red-line"></span>Where can I get Ropsten Testnet ether?</h4>
-                <p>There are many ways to get Ropsten Testnet ether, which you can find out on the Internet. However, we took care of our users and provide our own convenient tool for obtaining a test ether. Just follow <a href="/#get-ether">the link</a>, enter the address of wallet that Prover MVP application generated for you and receive the Ropsten Testnet ether.</p>
-                <h4><span class="red-line"></span>Does my video go somewhere when I record it?</h4>
-                <p>The files recorded using the Prover MVP application never leave your mobile device. Only the hash of the created video file is sent to the Service and to the blockchain. You can send the video file to our <a href="/">Service</a> to verify its authenticity.</p>
-                <h4><span class="red-line"></span>How much does it cost to verify one video?</h4>
-                <p>In the demo mode, the payment for video confirmation is performed by the Ropsten Testnet ether, and therefore, it costs nothing. In the final implementation, the user will use service in exchange for the PROOF tokens, while paying the cost of the gas necessary for the performing of Ethereum transactions.</p>
-            </section>
-            <footer>
-                <div class="link mail"><a href="mailto:info@prover.io">info@prover.io</a></div>
-                <div class="link social_networks">
-                    <a target="_blank" href="https://www.facebook.com/prover.blockchain/"><img src="images/facebook.svg"></a>
-                    <a target="_blank" href="https://twitter.com/prover_io"><img src="images/twitter.svg"></a>
-                    <a target="_blank" href="https://t.me/joinchat/AAHHrURp4xhK-RuCYhtPlA"><img src="images/telegram.svg"></a>
-                </div>
-                <div class="link copyright">Prover © 2018</div>
-            </footer>
-        </div>
+                    <div class="use-case__block">
+                        <p><span class="red-line"></span>Parties can maintain a Blockchain video database of trusted "hand shake" agreements</p>
+                    </div>
+                    <div class="use-case__block">
+                        <p><span class="red-line"></span>Public and crowdsourced news platforms can validate the authenticity, exclusivity and timing of video news submitted by individual contributors</p>
+                    </div>
+                </section>
+                <section id="faq" class="faq">
+                    <h3>FAQ</h3>
+                    <h4><span class="red-line"></span>Where can I get Ropsten Testnet ether?</h4>
+                    <p>There are many ways to get Ropsten Testnet ether, which you can find out on the Internet. However, we took care of our users and provide our own convenient tool for obtaining a test ether. Just follow <a href="/#get-ether">the link</a>, enter the address of wallet that Prover MVP application generated for you and receive the Ropsten Testnet ether.</p>
+                    <h4><span class="red-line"></span>Does my video go somewhere when I record it?</h4>
+                    <p>The files recorded using the Prover MVP application never leave your mobile device. Only the hash of the created video file is sent to the Service and to the blockchain. You can send the video file to our <a href="/">Service</a> to verify its authenticity.</p>
+                    <h4><span class="red-line"></span>How much does it cost to verify one video?</h4>
+                    <p>In the demo mode, the payment for video confirmation is performed by the Ropsten Testnet ether, and therefore, it costs nothing. In the final implementation, the user will use service in exchange for the PROOF tokens, while paying the cost of the gas necessary for the performing of Ethereum transactions.</p>
+                </section>
+                <footer>
+                    <div class="link mail"><a href="mailto:info@prover.io">info@prover.io</a></div>
+                    <div class="link social_networks">
+                        <a target="_blank" href="https://www.facebook.com/prover.blockchain/"><img src="images/facebook.svg"></a>
+                        <a target="_blank" href="https://twitter.com/prover_io"><img src="images/twitter.svg"></a>
+                        <a target="_blank" href="https://t.me/joinchat/AAHHrURp4xhK-RuCYhtPlA"><img src="images/telegram.svg"></a>
+                    </div>
+                    <div class="link copyright">Prover © 2018</div>
+                </footer>
+            </div>
         </div>
         <div id="clapperboard" style="display:none; opacity:0">
             <div class="container">
@@ -326,6 +335,15 @@ saveClientInfo('index');
                             <h3 class="box__verification">Failed to verify</h3>
                             <strong>Try another file</strong>
                         </div>
+                        <div class="box__montage" onclick="document.getElementById('clapperboard-file').click()">
+                            <div class="red-line"></div>
+                            <p>montage found</p>
+                            <h3 class="box__verification">Failed to verify</h3>
+                            <div class="error_information">
+                                <p class="montage">File montage: <span></span></p>
+                                <strong>Try another file</strong>
+                            </div>
+                        </div>
                     </form>
                     <p>
                         To authenticate a file, please upload your video or image. Our system will verify the file hash and existence of QR code. In the case of coincidence of hashes and QR codes the video file will be considered authentic. QR code must occupy at least 10 % of the uploaded video or image.
@@ -334,8 +352,8 @@ saveClientInfo('index');
                 <section id="clapperboard-get-ether" class="get-ether">
                     <h3>Get ropsten testnet ether</h3>
                     <span id="get_eth_block">
-                        <input type="search" placeholder="Enter your wallet address" id="send_eth_addr"><a href="manual.html" class="btn btn-send" id="send_eth_btn">send 0.05 Eth</a>
-                    </span>
+                            <input type="search" placeholder="Enter your wallet address" id="send_eth_addr"><a href="manual.html" class="btn btn-send" id="send_eth_btn">send 0.05 Eth</a>
+                        </span>
                     <p id="get_eth_result"></p>
                 </section>
                 <section id="clapperboard-how-it-works" class="how-it-works">

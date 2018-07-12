@@ -83,6 +83,7 @@ Array.prototype.forEach.call(forms, function (form) {
         successHash = form.querySelector('.hash span'),
         successDateCreateQRCode = form.querySelector('.date-create span'),
         successSwypeCode = form.querySelector('.swype-code span'),
+        errorMontage = form.querySelector('.montage span'),
         successDownloadPdf = form.querySelector('.download-pdf'),
         successSwypeBeginEnd = form.querySelector('.swype-begin-end span'),
         successTimeHash = form.querySelector('.time_hash span'),
@@ -157,6 +158,7 @@ Array.prototype.forEach.call(forms, function (form) {
                 msgTypeText = 'Nothing found',
                 msgSwypeCode = 'Nothing found',
                 msgDateCreateQRCode = 'Nothing found',
+                msgMontage = 'Nothing found',
                 msgSwypeBeginEnd = 'Nothing found';
             form.classList.add('is-success');
             var senderAddressesSpans = '';
@@ -222,6 +224,17 @@ Array.prototype.forEach.call(forms, function (form) {
                 successSwypeCode.innerHTML = msgTypeText;
             }
 
+            if (response.cutdetect.length !== 0) {
+                form.classList.remove('is-success');
+                form.classList.add('is-montage');
+                msgMontage = '';
+                response.cutdetect.forEach(function(item, index) {
+                    msgMontage += item;
+                    if (index != response.cutdetect.length-1)
+                        msgMontage += ', ';
+                })
+                errorMontage.innerHTML = msgMontage;
+            }
         }
     }
 
@@ -233,6 +246,7 @@ Array.prototype.forEach.call(forms, function (form) {
         }
 
         form.classList.remove('is-error');
+        form.classList.remove('is-montage');
         form.classList.remove('is-success');
         form.classList.add('is-uploading');
 
@@ -259,7 +273,7 @@ Array.prototype.forEach.call(forms, function (form) {
                     } catch (exception) {
                         updateOnResponse({
                             success: false,
-                            error: 'upload exception 😱: ' + ajax.responseText
+                            error: 'upload exception 😱: ' + exception
                         });
                     }
                 } else {

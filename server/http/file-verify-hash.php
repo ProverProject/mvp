@@ -14,13 +14,14 @@ define('USER_ADDRESS_FILTER', null);
 define('EXAMPLE_FILE_HASH', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
 define('TRANSACTIONBYHASH_CORRECT_INPUT', '0x74305b38');
 
-function uploadResult($isSuccess, $fileName, $transactions, $hash, $error, $debug = false)
+function uploadResult($isSuccess, $fileName, $transactions, $hash, $cutdetect, $error, $debug = false)
 {
     return json_encode([
         'fileName' => '/pdf/' . $fileName . '.pdf',
         'success' => $isSuccess,
         'transactions' => $transactions,
         'hash' => $hash,
+        'cutdetect' => $cutdetect,
         'error' => $error,
         'debug' => $debug
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -35,6 +36,7 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user, $hash, $fileNam
     $swype = 0;
     $beginSwypeTime = 0;
     $endSwypeTime = 0;
+    $resultCutdetect = [];
 
     $cmd = '';
     if ($txHash) {
@@ -55,6 +57,9 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user, $hash, $fileNam
     $result = null;
     if ($return_code === 0) {
         $result = @json_decode($resultJson, true);
+        $cmdCutdetect = "cutdetect $file --orig-file-name $fileName -j";
+        $resultCutdetectJson = exec($cmdCutdetect, $outputCutdetect, $return_code_cutdetect);
+        $resultCutdetect = @json_decode($resultCutdetectJson, true);
         if ($result && isset($result['result'])) {
             $swype = @$result['swype-code'];
             $beginSwypeTime = @$result['result']['time-begin'];
@@ -107,6 +112,7 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user, $hash, $fileNam
 
     return [
         'validated' => $validated,
+        'cutdetect' => $resultCutdetect,
         'swype' => $swype,
         'beginSwypeTime' => $beginSwypeTime,
         'endSwypeTime' => $endSwypeTime,
@@ -162,6 +168,7 @@ function worker($file, $fileName)
 {
     $isSuccess = false;
     $transactions = [];
+    $cutdetect = '';
     $error = '';
 
     $hash = hash_file('sha256', $file);
@@ -243,6 +250,7 @@ function worker($file, $fileName)
                             $analyticResult = callAnalyticProgramm($file, $transactionDetails->blockHash, $transactionDetails->hash, '', $hash, $fileName);
                             $call = $analyticResult['cmd'];
                             $validated = $analyticResult['validated'];
+                            $cutdetect = $analyticResult['cutdetect'];
                             $swype = $analyticResult['swype'];
                             $beginSwypeTime = $analyticResult['beginSwypeTime'];
                             $endSwypeTime = $analyticResult['endSwypeTime'];
@@ -261,6 +269,7 @@ function worker($file, $fileName)
                     $analyticResult = callAnalyticProgramm($file, $data, '', $user, $hash, $fileName);
                     $call = $analyticResult['cmd'];
                     $validated = $analyticResult['validated'];
+                    $cutdetect = $analyticResult['cutdetect'];
                     $swype = $analyticResult['swype'];
                     $beginSwypeTime = $analyticResult['beginSwypeTime'];
                     $endSwypeTime = $analyticResult['endSwypeTime'];
@@ -293,6 +302,7 @@ function worker($file, $fileName)
         'fileName' => $fileName,
         'isSuccess' => $isSuccess,
         'transactions' => $transactions,
+        'cutdetect' => $cutdetect,
         'hash' => '0x' . $hash,
         'error' => $error
     ];
@@ -309,4 +319,4 @@ if (!empty($_FILES['file'])) {
 }
 
 $workerResult = worker($file, $fileName);
-die(uploadResult($workerResult['isSuccess'], $workerResult['fileName'], $workerResult['transactions'], $workerResult['hash'], $workerResult['error']));
+die(uploadResult($workerResult['isSuccess'], $workerResult['fileName'], $workerResult['transactions'], $workerResult['hash'], $workerResult['cutdetect'], $workerResult['error']));
