@@ -103,6 +103,9 @@ function callAnalyticProgramm($file, $blockHash, $txHash, $user, $hash, $fileNam
                         } else {
                             $data['analyzefile_bad_result'] = $resultJson;
                         }
+                        $version = exec("analyzefile --version", $output, $return_code);
+                        if ($return_code === 0)
+                            $data['version'] = $version;
                         file_put_contents("$specific_video_upload_dir_inner/" . time() . ".txt", json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                     }
                 }
