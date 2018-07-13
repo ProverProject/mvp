@@ -4,12 +4,16 @@
         formProver = document.querySelector('#uploadForm'),
         formClapperboard = document.querySelector('#clapperboard-uploadForm');
     inputElem.addEventListener('change', function (e) {
-        document.querySelector('.name-file').innerHTML = this.files[0].name;
-        document.querySelector('.size-file').innerHTML = Number(this.files[0].size / 1048576).toFixed(1) + " Mb";
+        if (this.files.length !== 0) {
+            document.querySelector('.name-file').innerHTML = this.files[0].name;
+            document.querySelector('.size-file').innerHTML = Number(this.files[0].size / 1048576).toFixed(1) + " Mb";
+        }
     });
     clapperboardInputElem.addEventListener('change', function (e) {
-        document.querySelector('.clapperboard-name-file').innerHTML = this.files[0].name;
-        document.querySelector('.clapperboard-size-file').innerHTML = Number(this.files[0].size / 1048576).toFixed(1) + " Mb";
+        if (this.files.length !== 0) {
+            document.querySelector('.clapperboard-name-file').innerHTML = this.files[0].name;
+            document.querySelector('.clapperboard-size-file').innerHTML = Number(this.files[0].size / 1048576).toFixed(1) + " Mb";
+        }
     });
     formProver.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -248,10 +252,14 @@ Array.prototype.forEach.call(forms, function (form) {
         form.classList.remove('is-error');
         form.classList.remove('is-montage');
         form.classList.remove('is-success');
-        form.classList.add('is-uploading');
 
         if (isAdvancedUpload) { // ajax file upload for modern browsers
+            var inputFile = form.querySelectorAll('.box__file');
+            if (inputFile[0].files.length === 0)
+                return false;
+
             e.preventDefault();
+            form.classList.add('is-uploading');
 
             // gathering the form data
             var ajaxData = new FormData(form);
