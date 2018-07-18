@@ -1,50 +1,3 @@
-(function () {
-    var inputElem = document.querySelector('#file'),
-        clapperboardInputElem = document.querySelector('#clapperboard-file'),
-        formProver = document.querySelector('#uploadForm'),
-        formClapperboard = document.querySelector('#clapperboard-uploadForm');
-    inputElem.addEventListener('change', function (e) {
-        if (this.files.length !== 0) {
-            document.querySelector('.name-file').innerHTML = this.files[0].name;
-            document.querySelector('.size-file').innerHTML = Number(this.files[0].size / 1048576).toFixed(1) + " Mb";
-        }
-    });
-    clapperboardInputElem.addEventListener('change', function (e) {
-        if (this.files.length !== 0) {
-            document.querySelector('.clapperboard-name-file').innerHTML = this.files[0].name;
-            document.querySelector('.clapperboard-size-file').innerHTML = Number(this.files[0].size / 1048576).toFixed(1) + " Mb";
-        }
-    });
-    formProver.addEventListener('submit', function (e) {
-        e.preventDefault();
-        uploadForm(this);
-    }, false);
-    formClapperboard.addEventListener('submit', function (e) {
-        e.preventDefault();
-        uploadForm(this);
-    }, false);
-
-    function uploadForm(form) {
-        var input = form.querySelector('input[type=file]');
-        if (input.value) {
-            var xhr = new XMLHttpRequest(),
-                remind,
-                progress = form.querySelector('.progress'),
-                uploadBackground = form.querySelector('.upload-background');
-            xhr.open('POST', 'index.php');
-            xhr.upload.addEventListener('progress', function (e) {
-                uploadBackground.style.width = e.loaded / e.total * 100 + '%';
-                uploadBackground.style.max = e.total + '%';
-                remind = e.loaded / e.total * 100;
-                progress.innerHTML = Math.round(remind) + ' %';
-            });
-            var formData = new FormData();
-            formData.append('file', input.files[0]);
-            xhr.send(formData);
-        }
-    }
-})();
-
 // feature detection for drag&drop upload
 var isAdvancedUpload = function () {
     var div = document.createElement('div');
@@ -80,6 +33,7 @@ function getSenderInfo(address) {
 // applying the effect for every form
 var forms = document.querySelectorAll('.box');
 Array.prototype.forEach.call(forms, function (form) {
+    var boxInput, line, labelLine, boxTitle, gearImg, buttonUploadFile, attrOnClick;
     var input = form.querySelector('input[type="file"]'),
         labelFile = form.querySelector('label.box__labelFile_file'),
         labelDefault = form.querySelector('label.box__labelFile_default'),
@@ -87,17 +41,13 @@ Array.prototype.forEach.call(forms, function (form) {
         successHash = form.querySelector('.hash span'),
         successDateCreateQRCode = form.querySelector('.date-create span'),
         successSwypeCode = form.querySelector('.swype-code span'),
-        errorMontage = form.querySelector('.montage span'),
+        successTypeText = form.querySelector('.type-text span'),
+        errorMontage = form.querySelector('.montage-time span'),
         successDownloadPdf = form.querySelector('.download-pdf'),
         successSwypeBeginEnd = form.querySelector('.swype-begin-end span'),
         successTimeHash = form.querySelector('.time_hash span'),
         restart = form.querySelectorAll('.box__restart'),
         droppedFiles = false,
-        showFiles = function (files) {
-            labelFile.textContent = files.length > 1 ? ( input.getAttribute('data-multiple-caption') || '' ).replace('{count}', files.length) : files[0].name;
-            labelDefault.style.display = 'none';
-            labelFile.style.display = '';
-        },
         triggerFormSubmit = function () {
             var event = document.createEvent('HTMLEvents');
             event.initEvent('submit', true, true);
@@ -138,9 +88,35 @@ Array.prototype.forEach.call(forms, function (form) {
             });
         });
         form.addEventListener('drop', function (e) {
-            droppedFiles = e.dataTransfer.files; // the files that were dropped
+            form.querySelector('.box__file').files = e.dataTransfer.files;
             triggerFormSubmit();
         });
+    }
+
+    function uploadForm(form) {
+        var input = form.querySelector('input[type=file]');
+        var gearImg = form.querySelector('.upload-img');
+        if (input.value) {
+            form.querySelector('.box__header').innerHTML = 'Uploading';
+            var xhr = new XMLHttpRequest(),
+                remind,
+                progress = form.querySelector('.progress'),
+                uploadBackground = form.querySelector('.upload-background');
+            xhr.open('POST', 'index.php');
+            xhr.upload.addEventListener('progress', function (e) {
+                uploadBackground.style.width = e.loaded / e.total * 100 + '%';
+                uploadBackground.style.max = e.total + '%';
+                remind = e.loaded / e.total * 100;
+                progress.innerHTML = Math.round(remind) + ' %';
+                if (remind == 100) {
+                    gearImg.classList.add('animating');
+                    form.querySelector('.box__header').innerHTML = 'File analysis';
+                }
+            });
+            var formData = new FormData();
+            formData.append('file', input.files[0]);
+            xhr.send(formData);
+        }
     }
 
     function hexTsToDate(hexTs) {
@@ -150,11 +126,11 @@ Array.prototype.forEach.call(forms, function (form) {
     function updateOnResponse(response) {
         console.log(response);
         //todo: remove console.log
-        form.classList.remove('is-error');
-        form.classList.remove('is-success');
-        form.classList.remove('is-uploading');
+        boxInput.classList.remove('error');
+        boxInput.classList.remove('success');
+        boxInput.classList.remove('uploading');
         if (!response.success) {
-            form.classList.add('is-error');
+            boxInput.classList.add('error');
         } else {
             var msgTimeSwypeCode = 'Nothing found',
                 msgTimeHash = 'Nothing found',
@@ -164,9 +140,9 @@ Array.prototype.forEach.call(forms, function (form) {
                 msgDateCreateQRCode = 'Nothing found',
                 msgMontage = 'Nothing found',
                 msgSwypeBeginEnd = 'Nothing found';
-            form.classList.add('is-success');
+
+            boxInput.classList.add('success');
             var senderAddressesSpans = '';
-            successSwypeCode.innerHTML = '';
             if (response.transactions !== undefined) {
                 response.transactions.forEach(function (transaction) {
                     senderAddressesSpans +=
@@ -178,6 +154,7 @@ Array.prototype.forEach.call(forms, function (form) {
                 });
                 if (response.transactions.length) {
                     if (response.transactions[0].swype) {
+                        successSwypeCode.innerHTML = '';
                         msgSwypeCode = response.transactions[0].swype;
                         msgSwypeBeginEnd =
                             response.transactions[0].beginSwypeTime
@@ -194,11 +171,14 @@ Array.prototype.forEach.call(forms, function (form) {
                         if (submitMediaHash_ts) {
                             var requestSwypeCode_ts = response.transactions[0].requestSwypeCode_block.timestamp;
                             if (requestSwypeCode_ts) {
-                                msgTimeSwypeCode += hexTsToDate(requestSwypeCode_ts);
+                                if (response.transactions[0].transaction2_details.length !== 0)
+                                    msgTimeSwypeCode += '<a class="ropsten-link" href="https://ropsten.etherscan.io/tx/'+ response.transactions[0].transaction2_details.transactionHash +'" target="_blank">'+ hexTsToDate(requestSwypeCode_ts) +'</a>';
+                                else
+                                    msgTimeSwypeCode += '<a class="ropsten-link" href="https://ropsten.etherscan.io/block/'+ parseInt(response.transactions[0].requestSwypeCode_block.number) +'" target="_blank">'+ hexTsToDate(requestSwypeCode_ts) +'</a>';
                             } else {
                                 msgTimeSwypeCode += 'not found 😢';
                             }
-                            msgTimeHash += hexTsToDate(submitMediaHash_ts);
+                            msgTimeHash += '<a class="ropsten-link" href="https://ropsten.etherscan.io/tx/'+ response.transactions[0].transaction1_details.transactionHash +'" target="_blank">'+ hexTsToDate(submitMediaHash_ts) +'</a>';;
                             if (requestSwypeCode_ts) {
                                 // msg += '<br>Swype code and relative time later with analytic program';
                             }
@@ -216,27 +196,28 @@ Array.prototype.forEach.call(forms, function (form) {
             if (response.hash)
                 msgHash = response.hash;
             successHash.innerHTML = msgHash;
-            successDownloadPdf.setAttribute('href', response.fileName);
+            if (response.cutdetect.length === 0)
+                successDownloadPdf.setAttribute('href', response.fileName);
 
             if (response.datetime_ts) {
                 msgDateCreateQRCode = new Date(response.datetime_ts * 1000);
-                successDateCreateQRCode.innerHTML = msgDateCreateQRCode;
+                successDateCreateQRCode.innerHTML = '<a class="ropsten-link" href="https://ropsten.etherscan.io/tx/'+ response.txhash +'" target="_blank">'+ msgDateCreateQRCode +'</a>';
             }
 
             if (response.typeText) {
                 msgTypeText = response.typeText;
-                successSwypeCode.innerHTML = msgTypeText;
+                successTypeText.innerHTML = msgTypeText;
             }
 
             if (response.cutdetect.length !== 0) {
-                form.classList.remove('is-success');
-                form.classList.add('is-montage');
+                boxInput.classList.remove('success');
+                boxInput.classList.add('montage');
                 msgMontage = '';
                 response.cutdetect.forEach(function(item, index) {
                     msgMontage += item;
                     if (index != response.cutdetect.length-1)
                         msgMontage += ', ';
-                })
+                });
                 errorMontage.innerHTML = msgMontage;
             }
         }
@@ -244,22 +225,41 @@ Array.prototype.forEach.call(forms, function (form) {
 
     // if the form was submitted
     form.addEventListener('submit', function (e) {
+        boxInput = form.querySelector('.box__input'),
+            line = boxInput.querySelector('.line'),
+            labelLine = boxInput.querySelector('.line-label'),
+            boxTitle = boxInput.querySelector('.box__header'),
+            gearImg = boxInput.querySelector('.upload-img'),
+            buttonUploadFile = boxInput.querySelector('.box__labelFile_default strong'),
+            attrOnClick = boxInput.getAttribute('onclick');
+        if (attrOnClick) {
+            boxInput.setAttribute('onclick', '');
+            buttonUploadFile.setAttribute('onclick', attrOnClick);
+        }
+
         // preventing the duplicate submissions if the current one is in progress
-        if (form.classList.contains('is-uploading')) {
+        if (boxInput.classList.contains('uploading')) {
             return false;
         }
 
-        form.classList.remove('is-error');
-        form.classList.remove('is-montage');
-        form.classList.remove('is-success');
+        var inputFile = form.querySelector('.box__file');
+        if (inputFile.files.length === 0)
+            return false;
+
+        boxInput.classList.remove('success');
+        boxInput.classList.remove('montage');
+        boxInput.classList.remove('error');
+        line.classList.remove('line-green');
+        line.classList.add('line-red');
 
         if (isAdvancedUpload) { // ajax file upload for modern browsers
-            var inputFile = form.querySelectorAll('.box__file');
-            if (inputFile[0].files.length === 0)
-                return false;
-
             e.preventDefault();
-            form.classList.add('is-uploading');
+            boxInput.classList.remove('input');
+            boxInput.querySelector('.name-file').innerHTML = inputFile.files[0].name;
+            boxInput.querySelector('.size-file').innerHTML = Number(inputFile.files[0].size / 1048576).toFixed(1) + " Mb";
+            boxInput.classList.add('uploading');
+            labelLine.classList.add('progress');
+            uploadForm(this);
 
             // gathering the form data
             var ajaxData = new FormData(form);
@@ -276,7 +276,15 @@ Array.prototype.forEach.call(forms, function (form) {
                 if (ajax.status >= 200 && ajax.status < 400) {
                     try {
                         var response = JSON.parse(ajax.responseText);
-                        form.classList.add(response.success ? 'is-success' : 'is-error');
+                        boxInput.classList.remove('uploading');
+                        labelLine.classList.remove('progress');
+                        gearImg.classList.remove('animating');
+                        buttonUploadFile.innerHTML = 'Try another file';
+                        line.classList.remove('line-red');
+                        line.classList.add(response.success && response.cutdetect.length == 0 ? 'line-green' : 'line-red');
+                        boxInput.classList.add(response.success ? response.cutdetect.length == 0 ? 'success' : 'montage' : 'error');
+                        boxTitle.innerHTML = response.success && response.cutdetect.length == 0 ? 'Done!' : 'Failed to verify';
+                        labelLine.innerHTML = response.success ? response.cutdetect.length == 0 ? 'file hash matched' : 'montage found' : 'nothing found';
                         updateOnResponse(response);
                     } catch (exception) {
                         updateOnResponse({
@@ -287,13 +295,15 @@ Array.prototype.forEach.call(forms, function (form) {
                 } else {
                     updateOnResponse({
                         success: false,
-                        error: 'upload exception ☹️: ' + ajax.status
+                        error: 'upload exception ☹: ' + ajax.status
                     });
                 }
             };
 
             ajax.onerror = function () {
-                form.classList.remove('is-uploading');
+                boxInput.classList.remove('uploading');
+                labelLine.classList.remove('progress');
+                buttonUploadFile.innerHTML = 'Try another file';
                 alert('Error. Please, try again!');
             };
 
@@ -323,7 +333,7 @@ Array.prototype.forEach.call(forms, function (form) {
     Array.prototype.forEach.call(restart, function (entry) {
         entry.addEventListener('click', function (e) {
             e.preventDefault();
-            form.classList.remove('is-error', 'is-success');
+            boxInput.classList.remove('error', 'success');
             labelFile.textContent = '';
             labelDefault.style.display = '';
             labelFile.style.display = 'none';

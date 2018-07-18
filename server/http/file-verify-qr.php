@@ -9,7 +9,7 @@ if (!$loadConfig_result[0]) {
 
 DEFINE('SUBMIT_HASH', '0x708b34fe');
 
-function uploadResult($isSuccess, $fileName, $typeText, $hash, $datetime_ts, $cutdetect, $error, $debug = false)
+function uploadResult($isSuccess, $fileName, $typeText, $hash, $datetime_ts, $cutdetect, $txhash, $error, $debug = false)
 {
     return json_encode([
         'fileName' => '/pdf/' . $fileName . '.pdf',
@@ -17,6 +17,7 @@ function uploadResult($isSuccess, $fileName, $typeText, $hash, $datetime_ts, $cu
         'typeText' => $typeText,
         'hash' => $hash,
         'cutdetect' => $cutdetect,
+        'txhash' => $txhash,
         'datetime_ts' => $datetime_ts,
         'error' => $error,
         'debug' => $debug
@@ -163,6 +164,7 @@ function worker($file, $fileName)
             'datetime_ts' => $datetime_ts,
             'hash' => '0x' . $hash,
             'cutdetect' => $resultCutdetect,
+            'txhash' => $qrcodeInfo['txhash'],
             'error' => ''
         ];
     } else {
@@ -171,6 +173,7 @@ function worker($file, $fileName)
             'typeText' => '',
             'hash' => '0x' . $hash,
             'cutdetect' => $resultCutdetect,
+            'txhash' => '',
             'error' => $gethClient->error
         ];
     }
@@ -186,6 +189,6 @@ if (!empty($_FILES['file'])) {
 }
 $fileName = str_replace(" ", "_", $fileName);
 $workerResult = worker($file, $fileName);
-die(uploadResult($workerResult['isSuccess'], $workerResult['fileName'], $workerResult['typeText'], $workerResult['hash'], $workerResult['datetime_ts'], $workerResult['cutdetect'], $workerResult['error']));
+die(uploadResult($workerResult['isSuccess'], $workerResult['fileName'], $workerResult['typeText'], $workerResult['hash'], $workerResult['datetime_ts'], $workerResult['cutdetect'], $workerResult['txhash'], $workerResult['error']));
 
 
